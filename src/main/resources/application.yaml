@@ -1,0 +1,33 @@
+spring:
+    application:
+        name: Rezflix
+
+    datasource:
+        url: jdbc:postgresql://localhost:5432/splitfast_db
+        username: postgres
+        password: root
+        hikari:
+            maximumPoolSize: 40
+            minimum-idle: 2
+            idle-timeout: 600000
+            max-lifetime: 1200000
+            validation-timeout: 5000
+
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        open-in-view: false
+        properties:
+            org:
+                hibernate:
+                    flushMode: COMMIT
+            hibernate:
+                show_sql: false
+                format_sql: true
+                jdbc:
+                    batch_size: 25
+                order_inserts: true
+                order_updates: true
+
+    liquibase:
+        change-log: db/changelog/db.changelog-master.xml
