@@ -42,6 +42,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
@@ -85,6 +91,41 @@
     <build>
         <finalName>rezflix</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.13.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-openapi</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generatorName>spring</generatorName>
+                    <inputSpecRootDirectory>${project.basedir}/contracts/</inputSpecRootDirectory>
+                    <inputSpec>.</inputSpec>
+                    <apiPackage>ua.edu.ukma.springers.rezflix.controllers.rest.api</apiPackage>
+                    <modelPackage>ua.edu.ukma.springers.rezflix.controllers.rest.model</modelPackage>
+                    <modelNameSuffix>Dto</modelNameSuffix>
+                    <mergedFileName>_index-auto</mergedFileName>
+                    <generateApiTests>false</generateApiTests>
+                    <generateModelTests>false</generateModelTests>
+                    <openapiNormalizer>REF_AS_PARENT_IN_ALLOF=true</openapiNormalizer>
+                    <additionalProperties>removeEnumValuePrefix=false</additionalProperties>
+                    <configOptions>
+                        <interfaceOnly>true</interfaceOnly>
+                        <useSpringBoot3>true</useSpringBoot3>
+                        <useTags>true</useTags>
+                        <openApiNullable>false</openApiNullable>
+                        <skipDefaultInterface>true</skipDefaultInterface>
+                        <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                    </configOptions>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

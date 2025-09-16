@@ -3,7 +3,7 @@ spring:
         name: Rezflix
 
     datasource:
-        url: jdbc:postgresql://localhost:5432/splitfast_db
+        url: jdbc:postgresql://localhost:5432/rezflix_db
         username: postgres
         password: root
         hikari:
