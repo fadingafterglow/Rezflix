@@ -32,6 +32,10 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
+    # Temporarily disabled
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
 springdoc:
     swagger-ui:
         path: /api-docs

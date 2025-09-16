@@ -23,3 +23,5 @@ paths:
             text/plain:
               schema:
                 type: string
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
