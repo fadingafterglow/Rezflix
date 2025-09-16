@@ -31,3 +31,7 @@ spring:
 
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
+
+springdoc:
+    swagger-ui:
+        path: /api-docs
