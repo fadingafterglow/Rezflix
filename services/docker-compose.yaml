@@ -18,7 +18,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/splitfast_db'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/rezflix_db'
 
 volumes:
   rezflix_db:
