@@ -1,0 +1,25 @@
+name: rezflix-services
+services:
+  postgres:
+    image: postgres:17.2
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - rezflix_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: rezflix_db
+
+  spring:
+    depends_on:
+      - postgres
+    image: ghcr.io/fadingafterglow/rezflix:main
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/splitfast_db'
+
+volumes:
+  rezflix_db:
+    external: true
