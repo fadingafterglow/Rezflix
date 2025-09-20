@@ -1,0 +1,75 @@
+package ua.edu.ukma.springers.rezflix.services;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
+import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
+import ua.edu.ukma.springers.rezflix.mergers.IMerger;
+import ua.edu.ukma.springers.rezflix.repositories.IRepository;
+import ua.edu.ukma.springers.rezflix.validators.IValidator;
+
+import java.util.function.Supplier;
+
+@RequiredArgsConstructor
+public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I extends Comparable<I>> implements ICRUDService<E, CV, UV, I> {
+
+    protected final IRepository<E, I> repository;
+    protected final IValidator<E> validator;
+    protected final IMerger<E, CV, UV> merger;
+    protected final Class<E> entityClass;
+    protected final Supplier<E> entitySupplier;
+
+    @Transactional(readOnly = true)
+    public E getByIdWithoutValidation(@NonNull I id) {
+        return repository.findById(id).orElseThrow(() -> new NotFoundException(entityClass, "id: " + id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public E getById(@NonNull I id) {
+        E entity = getByIdWithoutValidation(id);
+        validator.validForView(entity);
+        return entity;
+    }
+
+    @Override
+    @Transactional
+    public I create(@NonNull CV view) {
+        return createEntity(view).getId();
+    }
+
+    @Transactional
+    public E createEntity(@NonNull CV view) {
+        E entity = entitySupplier.get();
+        merger.mergeForCreate(entity, view);
+        postCreate(entity, view);
+        validator.validForCreate(entity);
+        return repository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public boolean update(@NonNull I id, @NonNull UV view) {
+        E entity = getByIdWithoutValidation(id);
+        merger.mergeForUpdate(entity, view);
+        postUpdate(entity, view);
+        validator.validForUpdate(entity);
+        repository.save(entity);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public void delete(@NonNull I id) {
+        E entity = getByIdWithoutValidation(id);
+        validator.validForDelete(entity);
+        repository.delete(entity);
+    }
+
+    protected void postCreate(@NonNull E entity, @NonNull CV view) {
+    }
+
+    protected void postUpdate(@NonNull E entity, @NonNull UV view) {
+    }
+}

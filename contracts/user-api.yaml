@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  description: User Service
+  version: '1.0'
+  title: User Service
+
+tags:
+  - name: user-controller
+    description: User Controller
+
+paths:
+  /api/user/register:
+    post:
+      operationId: registerUser
+      tags:
+        - user-controller
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterUser'
+      responses:
+        200:
+          description: Id of the registered user
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/user/curent:
+    get:
+      operationId: getCurrentUserInfo
+      tags:
+        - user-controller
+      summary: Get current user info
+      responses:
+        200:
+          description: Info about the current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserInfo'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/user:
+    post:
+      operationId: createUser
+      tags:
+        - user-controller
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+      responses:
+        200:
+          description: Id of the created user
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    UserType:
+      type: string
+      enum:
+        - MODERATOR
+        - CONTENT_MANAGER
+        - VIEWER
+
+    UserRole:
+      type: string
+      enum:
+        - SUPER_ADMIN
+        - MODERATOR
+        - CONTENT_MANAGER
+        - VIEWER
+        - ANONYMOUS
+
+    UpdateUser:
+      type: object
+      properties:
+        about:
+          type: string
+          maxLength: 5000
+
+    RegisterUser:
+      allOf:
+        - $ref: '#/components/schemas/UpdateUser'
+        - type: object
+          properties:
+            username:
+              type: string
+              maxLength: 64
+            password:
+              type: string
+          required:
+            - username
+            - password
+
+    CreateUser:
+      allOf:
+        - $ref: '#/components/schemas/RegisterUser'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/UserType'
+          required:
+            - type
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UpdateUser'
+        - type: object
+          properties:
+            id:
+              type: integer
+            type:
+              $ref: '#/components/schemas/UserType'
+            username:
+              type: string
+          required:
+            - id
+            - type
+            - username
+
+    CurrentUserInfo:
+      type: object
+      properties:
+        role:
+          $ref: '#/components/schemas/UserRole'
+        info:
+          $ref: '#/components/schemas/User'
+      required:
+        - role

@@ -34,7 +34,9 @@ import java.util.Set;
 public class OpenAPIConfiguration {
 
     public static final String BEARER_AUTH = "bearerAuth";
-    private static final Set<String> PUBLIC_ENDPOINTS = Set.of();
+    private static final Set<String> PUBLIC_ENDPOINTS = Set.of(
+        "registerUser"
+    );
 
     static {
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = true;
