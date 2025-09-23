@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: Film Rating Service
+  version: '0.1'
+  description: Film Rating Service
+
+tags:
+  - name: film-rating-controller
+    description: Film Rating Controller
+
+paths:
+  /api/film/{filmId}/rating:
+    parameters:
+      - $ref: 'film-api.yaml#/components/parameters/FilmId'
+
+    get:
+      operationId: getUserRating
+      tags:
+        - film-rating-controller
+      summary: Get user's rating for the film
+      responses:
+        200:
+          description: User's rating for the film
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmRating'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: setUserRating
+      tags:
+        - film-rating-controller
+      summary: Set user's rating for the film
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilmRating'
+      responses:
+        204:
+          description: User's rating was set successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteUserRating
+      tags:
+        - film-rating-controller
+      summary: Remove user's rating for the film
+      responses:
+        204:
+          description: User's rating was removed successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    FilmRating:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+      required:
+        - rating

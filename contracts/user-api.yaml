@@ -166,18 +166,16 @@ components:
             - username
 
     UserList:
-      type: object
-      properties:
-        total:
-          type: integer
-          format: int64
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-      required:
-        - total
-        - items
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+          required:
+            - items
 
     UserCriteria:
       allOf:
@@ -188,6 +186,17 @@ components:
               $ref: '#/components/schemas/UserType'
             query:
               type: string
+
+    ShortUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+      required:
+        - id
+        - username
 
     CurrentUserInfo:
       type: object

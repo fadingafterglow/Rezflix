@@ -1,0 +1,188 @@
+openapi: 3.0.0
+info:
+  title: Film Comment Service
+  version: '0.1'
+  description: Film Comment Service
+
+tags:
+  - name: film-comment-controller
+    description: Film Comment Controller
+
+paths:
+  /api/film/comment:
+    get:
+      operationId: getCommentsByCriteria
+      tags:
+        - film-comment-controller
+      summary: Get comments matching the criteria
+      parameters:
+        - name: criteria
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CommentCriteria'
+      responses:
+        200:
+          description: List of comments matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    post:
+      operationId: createComment
+      tags:
+        - film-comment-controller
+      summary: Post a new comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        200:
+          description: Id of the created comment
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film/comment/{commentId}:
+    parameters:
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      operationId: getComment
+      tags:
+        - film-comment-controller
+      summary: Get a single comment by id
+      responses:
+        200:
+          description: The requested comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateComment
+      tags:
+        - film-comment-controller
+      summary: Edit a comment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComment'
+      responses:
+        204:
+          description: Comment updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteComment
+      tags:
+        - film-comment-controller
+      summary: Delete a comment
+      responses:
+        204:
+          description: Comment deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    UpdateComment:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 2000
+      required:
+        - text
+
+    CreateComment:
+      allOf:
+        - $ref: '#/components/schemas/UpdateComment'
+        - type: object
+          properties:
+            filmId:
+              type: integer
+          required:
+            - filmId
+
+    Comment:
+      allOf:
+        - $ref: '#/components/schemas/CreateComment'
+        - type: object
+          properties:
+            id:
+              type: integer
+            createdAt:
+              type: string
+              format: date-time
+            author:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+            authorRating:
+              $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
+          required:
+            - id
+            - createdAt
+            - author
+
+    CommentList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+          required:
+            - items
+
+    CommentCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            filmId:
+              type: integer
