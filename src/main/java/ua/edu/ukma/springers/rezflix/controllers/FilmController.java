@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmInfoControllerApi;
+import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class FilmController implements FilmInfoControllerApi {
+public class FilmController implements FilmControllerApi {
     @Override
     public ResponseEntity<Integer> createFilm(CreateFilmDto dto) {
         log.info("Create film {}", dto.getTitle());
