@@ -7,6 +7,8 @@ info:
 tags:
   - name: film-info-controller
     description: Film Info Controller
+  - name: film-comments-controller
+    description: Film Comments Controller
 
 paths:
   /api/film-info:
@@ -40,12 +42,7 @@ paths:
         - film-info-controller
       summary: Get film info
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the request film
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         200:
           description: Film by provided id
@@ -64,12 +61,7 @@ paths:
         - film-info-controller
       summary: Update film info
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the film to be updated
+        - $ref: '#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -90,12 +82,7 @@ paths:
         - film-info-controller
       summary: Delete the film
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the film to be deleted
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         204:
           description: Film was deleted successfully
@@ -111,12 +98,7 @@ paths:
         - film-info-controller
       summary: Set user's rating for the film
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the film to be rated
+        - $ref: '#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -137,12 +119,7 @@ paths:
         - film-info-controller
       summary: Get user's rating for the film
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the film
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         200:
           description: User's rating for the film
@@ -161,12 +138,7 @@ paths:
         - film-info-controller
       summary: Remove user's rating for the film
       parameters:
-        - name: filmId
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: Id of the film
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         204:
           description: User's rating was removed successfully
@@ -175,7 +147,136 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
+  /api/film-comments/{filmId}:
+    post:
+      operationId: createComment
+      tags:
+        - film-comments-controller
+      summary: Post a new comment for the film
+      parameters:
+        - $ref: '#/components/parameters/FilmIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        201:
+          description: Id of the created comment
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    get:
+      operationId: getCommentsList
+      tags:
+        - film-comments-controller
+      summary: Get comments list for a film
+      parameters:
+        - $ref: '#/components/parameters/FilmIdParam'
+      responses:
+        200:
+          description: List of comments for the film
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film-comments/{filmId}/{commentId}:
+    get:
+      operationId: getComment
+      tags:
+        - film-comments-controller
+      summary: Get a single comment by id
+      parameters:
+        - $ref: '#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      responses:
+        200:
+          description: The requested comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateComment
+      tags:
+        - film-comments-controller
+      summary: Edit a comment
+      parameters:
+        - $ref: '#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComment'
+      responses:
+        204:
+          description: Comment updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteComment
+      tags:
+        - film-comments-controller
+      summary: Delete a comment
+      parameters:
+        - $ref: '#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      responses:
+        204:
+          description: Comment deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
 components:
+  parameters:
+    FilmIdParam:
+      name: filmId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id of the film
+
+    CommentIdParam:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id of the comment
+
   schemas:
     CreateFilm:
       allOf:
@@ -219,3 +320,41 @@ components:
           maximum: 5
       required:
         - rating
+
+    Comment:
+        allOf:
+          - $ref: '#/components/schemas/UpdateComment'
+          - type: object
+            properties:
+              id:
+                type: integer
+              text:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              authorId:
+                type: integer
+              authorUserName:
+                type: string
+              authorRating:
+                type: integer
+            required:
+              - id
+              - text
+              - createdAt
+              - userId
+              - authorUserName
+
+    CreateComment:
+      allOf:
+        - $ref: '#/components/schemas/UpdateComment'
+
+    UpdateComment:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 2000
+      required:
+        - text
