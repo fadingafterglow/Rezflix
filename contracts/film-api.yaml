@@ -33,13 +33,14 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
+  /api/film-info/{filmId}:
     get:
       operationId: getFilm
       tags:
         - film-info-controller
       summary: Get film info
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
@@ -63,7 +64,7 @@ paths:
         - film-info-controller
       summary: Update film info
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
@@ -89,7 +90,7 @@ paths:
         - film-info-controller
       summary: Delete the film
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
@@ -103,14 +104,14 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
-  /api/film-info/rating:
+  /api/film-info/{filmId}/rating:
     put:
       operationId: setUserRating
       tags:
         - film-info-controller
       summary: Set user's rating for the film
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
@@ -136,7 +137,7 @@ paths:
         - film-info-controller
       summary: Get user's rating for the film
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
@@ -160,7 +161,7 @@ paths:
         - film-info-controller
       summary: Remove user's rating for the film
       parameters:
-        - name: id
+        - name: filmId
           in: path
           required: true
           schema:
