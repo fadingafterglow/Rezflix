@@ -46,6 +46,10 @@ paths:
       summary: Get comments list for a film
       parameters:
         - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - name: criteria
+          in: query
+          schema:
+            $ref: '#/components/schemas/CommentsListCriteria'
       responses:
         200:
           description: List of comments for the film
@@ -146,6 +150,10 @@ components:
       description: Id of the comment
 
   schemas:
+    CommentsListCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+
     Comment:
       allOf:
         - $ref: '#/components/schemas/UpdateComment'
