@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  description: Film Service
+  version: '0.1'
+  title: Film Service
+
+tags:
+  - name: film-info-controller
+    description: Film Info Controller
+
+paths:
+  /api/film-info:
+    post:
+      operationId: createFilm
+      tags:
+        - film-info-controller
+      summary: Create a new film
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFilm'
+      responses:
+        201:
+          description: Id of the created film
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    get:
+      operationId: getFilm
+      tags:
+        - film-info-controller
+      summary: Get film info
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Id of the request film
+      responses:
+        200:
+          description: Film by provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Film'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateFilm
+      tags:
+        - film-info-controller
+      summary: Update film info
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Id of the film to be updated
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFilm'
+      responses:
+        204:
+          description: Film updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteFilm
+      tags:
+        - film-info-controller
+      summary: Delete the film
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Id of the film to be deleted
+      responses:
+        204:
+          description: Film deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    CreateFilm:
+      allOf:
+        - $ref: '#/components/schemas/UpdateFilm'
+
+    Film:
+      allOf:
+        - $ref: '#/components/schemas/UpdateFilm'
+        - type: object
+          properties:
+            rating:
+              type: number
+          required:
+            - rating
+
+    UpdateFilm:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 256
+        description:
+          type: string
+          maxLength: 5000
+      required:
+        - title
+        - description
