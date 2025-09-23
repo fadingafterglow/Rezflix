@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  description: Film Service
+  title: Film Rating Service
   version: '0.1'
-  title: Film Service
+  description: Film Rating Service
 
 tags:
   - name: film-rating-controller

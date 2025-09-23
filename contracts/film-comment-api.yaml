@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  description: Film Service
+  title: Film Comment Service
   version: '0.1'
-  title: Film Service
+  description: Film Comment Service
 
 tags:
   - name: film-comment-controller
