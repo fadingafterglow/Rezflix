@@ -13,8 +13,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class FilmController implements FilmControllerApi {
+
     @Override
-    public ResponseEntity<Integer> createFilm(CreateFilmDto dto) {
+    public ResponseEntity<Integer> createFilm(UpsertFilmDto dto) {
         log.info("Create film {}", dto.getTitle());
         return ResponseEntity.ok(1);
     }
@@ -51,7 +52,7 @@ public class FilmController implements FilmControllerApi {
     }
 
     @Override
-    public ResponseEntity<Void> updateFilm(Integer filmId, UpdateFilmDto dto) {
+    public ResponseEntity<Void> updateFilm(Integer filmId, UpsertFilmDto dto) {
         log.info("Update film {} by id {}", dto.getTitle(), filmId);
         return ResponseEntity.noContent().build();
     }

@@ -50,6 +50,29 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
   /api/user:
+    get:
+      operationId: getUsersByCriteria
+      tags:
+        - user-controller
+      summary: Get users by criteria
+      parameters:
+        - in: query
+          name: criteria
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserCriteria'
+      responses:
+        200:
+          description: List of users matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
     post:
       operationId: createUser
       tags:
@@ -141,6 +164,28 @@ components:
             - id
             - type
             - username
+
+    UserList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+          required:
+            - items
+
+    UserCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/UserType'
+            query:
+              type: string
 
     ShortUser:
       type: object

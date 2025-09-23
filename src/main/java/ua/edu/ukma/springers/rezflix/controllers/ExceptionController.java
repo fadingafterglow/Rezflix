@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -49,6 +50,11 @@ public class ExceptionController {
                 .toList();
         response.setDetails(details);
         return toResponseEntity(HttpStatus.BAD_REQUEST, response);
+    }
+
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResponseEntity<ErrorResponseDto> badRequest() {
+        return toResponseEntity(HttpStatus.BAD_REQUEST, responseOf("error.application.invalid-data"));
     }
 
     @ExceptionHandler(UnauthenticatedException.class)
