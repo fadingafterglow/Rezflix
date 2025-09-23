@@ -5,15 +5,15 @@ info:
   title: Film Service
 
 tags:
-  - name: film-info-controller
-    description: Film Info Controller
+  - name: film-controller
+    description: Film Controller
 
 paths:
   /api/film:
     post:
       operationId: createFilm
       tags:
-        - film-info-controller
+        - film-controller
       summary: Create a new film
       requestBody:
         required: true
@@ -40,7 +40,7 @@ paths:
     get:
       operationId: getFilmsByCriteria
       tags:
-        - film-info-controller
+        - film-controller
       summary: Get films list
       parameters:
         - name: criteria
@@ -64,8 +64,8 @@ paths:
     get:
       operationId: getFilm
       tags:
-        - film-info-controller
-      summary: Get film info
+        - film-controller
+      summary: Get the film
       parameters:
         - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
       responses:
@@ -85,8 +85,8 @@ paths:
     put:
       operationId: updateFilm
       tags:
-        - film-info-controller
-      summary: Update film info
+        - film-controller
+      summary: Update the film
       parameters:
         - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
       requestBody:
@@ -112,7 +112,7 @@ paths:
     delete:
       operationId: deleteFilm
       tags:
-        - film-info-controller
+        - film-controller
       summary: Delete the film
       parameters:
         - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'

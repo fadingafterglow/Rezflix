@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class FilmInfoController implements FilmInfoControllerApi {
+public class FilmController implements FilmInfoControllerApi {
     @Override
     public ResponseEntity<Integer> createFilm(CreateFilmDto dto) {
         log.info("Create film {}", dto.getTitle());
