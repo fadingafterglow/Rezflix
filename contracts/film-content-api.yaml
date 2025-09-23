@@ -16,7 +16,7 @@ paths:
         - film-content-controller
       summary: Upload content for a film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -48,7 +48,7 @@ paths:
         - film-content-controller
       summary: Get download URL for film content
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       responses:
         200:
           description: A download URL for the film content
@@ -69,7 +69,7 @@ paths:
         - film-content-controller
       summary: Delete film content
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       responses:
         204:
           description: Film content deleted successfully

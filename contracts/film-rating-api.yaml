@@ -16,7 +16,7 @@ paths:
         - film-rating-controller
       summary: Set user's rating for the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -43,7 +43,7 @@ paths:
         - film-rating-controller
       summary: Get user's rating for the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       responses:
         200:
           description: User's rating for the film
@@ -68,7 +68,7 @@ paths:
         - film-rating-controller
       summary: Remove user's rating for the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       responses:
         204:
           description: User's rating was removed successfully

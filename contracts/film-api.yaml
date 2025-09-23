@@ -67,7 +67,7 @@ paths:
         - film-controller
       summary: Get the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         200:
           description: Film by provided id
@@ -88,7 +88,7 @@ paths:
         - film-controller
       summary: Update the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -115,7 +115,7 @@ paths:
         - film-controller
       summary: Delete the film
       parameters:
-        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         204:
           description: Film was deleted successfully
@@ -131,6 +131,15 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
 components:
+  parameters:
+    FilmIdParam:
+      name: filmId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id of the film
+
   schemas:
     FilmsListCriteria:
       allOf:
