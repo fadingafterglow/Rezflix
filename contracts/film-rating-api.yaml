@@ -22,7 +22,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RateFilm'
+              $ref: '#/components/schemas/FilmRating'
       responses:
         204:
           description: User's rating was set successfully
@@ -50,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RateFilm'
+                $ref: '#/components/schemas/FilmRating'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
@@ -85,7 +85,7 @@ paths:
 
 components:
   schemas:
-    RateFilm:
+    FilmRating:
       type: object
       properties:
         rating:

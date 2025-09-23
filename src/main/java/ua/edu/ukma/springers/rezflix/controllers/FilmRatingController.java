@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmRatingControllerApi;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.RateFilmDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 
 @Slf4j
 @RestController
@@ -18,12 +18,12 @@ public class FilmRatingController implements FilmRatingControllerApi {
     }
 
     @Override
-    public ResponseEntity<RateFilmDto> getUserRating(Integer filmId) {
-        return ResponseEntity.ok(new RateFilmDto(5));
+    public ResponseEntity<FilmRatingDto> getUserRating(Integer filmId) {
+        return ResponseEntity.ok(new FilmRatingDto(5));
     }
 
     @Override
-    public ResponseEntity<Void> setUserRating(Integer filmId, RateFilmDto rateFilmDto) {
+    public ResponseEntity<Void> setUserRating(Integer filmId, FilmRatingDto dto) {
         log.info("Set user rating for film id {}", filmId);
         return ResponseEntity.noContent().build();
     }
