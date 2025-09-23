@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: Film Service
+  version: '0.1'
+  description: Film Service
+
+tags:
+  - name: film-content-controller
+    description: Film Content Controller
+
+paths:
+  /api/film/{filmId}/content:
+    put:
+      operationId: uploadFilmContent
+      tags:
+        - film-content-controller
+      summary: Upload content for a film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The film file to upload
+      responses:
+        204:
+          description: Film content uploaded successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    get:
+      operationId: getFilmContentUrl
+      tags:
+        - film-content-controller
+      summary: Get download URL for film content
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      responses:
+        200:
+          description: A download URL for the film content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmContentUrlResponse'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteFilmContent
+      tags:
+        - film-content-controller
+      summary: Delete film content
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      responses:
+        204:
+          description: Film content deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    FilmContentUrlResponse:
+      type: object
+      properties:
+        downloadUrl:
+          type: string
+          format: uri
+          description: URL to download or stream the film content
+      required:
+        - downloadUrl
