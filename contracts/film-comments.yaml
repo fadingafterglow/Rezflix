@@ -32,6 +32,10 @@ paths:
                 type: integer
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
@@ -53,6 +57,8 @@ paths:
                   $ref: '#/components/schemas/Comment'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
@@ -75,7 +81,7 @@ paths:
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         404:
-          description: Comment not found
+          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
@@ -98,8 +104,12 @@ paths:
           description: Comment updated successfully
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
         404:
-          description: Comment not found
+          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
@@ -116,8 +126,12 @@ paths:
           description: Comment deleted successfully
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
         404:
-          description: Comment not found
+          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
