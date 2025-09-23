@@ -1,9 +1,12 @@
 package ua.edu.ukma.springers.rezflix.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.BaseCriteriaDto;
 
 import java.util.Map;
 
@@ -11,7 +14,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 @Component
+@RequiredArgsConstructor
 public class GeneralRequests {
+
+    private final ObjectMapper mapper;
 
     public String getAuthToken(String login, String password) {
         // TODO: implement token retrieval
@@ -155,6 +161,36 @@ public class GeneralRequests {
                 .when()
                 .get(apiPath);
     }
+
+    @SuppressWarnings("unchecked")
+    public <Response, Criteria extends BaseCriteriaDto> Response getByCriteria(String apiPath, Criteria criteria, String authToken, Class<Response> respClass) {
+        return given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .queryParams(mapper.convertValue(criteria, Map.class))
+                .expect()
+                .statusCode(HttpServletResponse.SC_OK)
+                .body(notNullValue())
+                .when()
+                .get(apiPath)
+                .as(respClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <Criteria extends BaseCriteriaDto> void getByCriteriaFail(String apiPath, Criteria criteria, String authToken, int errorCode) {
+        given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, authToken)
+                .queryParams(mapper.convertValue(criteria, Map.class))
+                .expect()
+                .statusCode(errorCode)
+                .body(notNullValue())
+                .when()
+                .get(apiPath);
+    }
+
 }
 
 

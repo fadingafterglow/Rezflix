@@ -35,7 +35,7 @@ public class OpenAPIConfiguration {
 
     public static final String BEARER_AUTH = "bearerAuth";
     private static final Set<String> PUBLIC_ENDPOINTS = Set.of(
-        "registerUser"
+        "registerUser", "getUsersByCriteria"
     );
 
     static {

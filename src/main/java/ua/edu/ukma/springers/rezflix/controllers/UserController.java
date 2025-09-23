@@ -6,9 +6,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.UserControllerApi;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.CurrentUserInfoDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.services.UserService;
 
 @Slf4j
@@ -21,6 +19,11 @@ public class UserController implements UserControllerApi {
     @Override
     public ResponseEntity<CurrentUserInfoDto> getCurrentUserInfo() {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public ResponseEntity<UserListDto> getUsersByCriteria(UserCriteriaDto criteria) {
+        return ResponseEntity.ok(userService.getListResponseByCriteria(criteria));
     }
 
     @Override

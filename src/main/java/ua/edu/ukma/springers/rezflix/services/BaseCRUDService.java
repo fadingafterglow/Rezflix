@@ -3,18 +3,22 @@ package ua.edu.ukma.springers.rezflix.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.springers.rezflix.criteria.Criteria;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mergers.IMerger;
+import ua.edu.ukma.springers.rezflix.repositories.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.repositories.IRepository;
 import ua.edu.ukma.springers.rezflix.validators.IValidator;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I extends Comparable<I>> implements ICRUDService<E, CV, UV, I> {
 
     protected final IRepository<E, I> repository;
+    protected final CriteriaRepository criteriaRepository;
     protected final IValidator<E> validator;
     protected final IMerger<E, CV, UV> merger;
     protected final Class<E> entityClass;
@@ -31,6 +35,20 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         E entity = getByIdWithoutValidation(id);
         validator.validForView(entity);
         return entity;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<E> getList(@NonNull Criteria<E, ?> criteria) {
+        List<E> entities = criteriaRepository.find(criteria);
+        validator.validForView(entities);
+        return entities;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long count(@NonNull Criteria<E, ?> criteria) {
+        return criteriaRepository.count(criteria);
     }
 
     @Override
