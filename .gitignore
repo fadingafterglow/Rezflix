@@ -36,4 +36,4 @@ build/
 .DS_Store
 
 ### Local Configuration Files ###
-application-local.yml
+application-local.yaml

@@ -2,6 +2,9 @@ spring:
     application:
         name: Rezflix
 
+    profiles:
+        active: local
+
     datasource:
         url: jdbc:postgresql://localhost:5432/rezflix_db
         username: postgres
@@ -38,4 +41,7 @@ spring:
 
 springdoc:
     swagger-ui:
-        path: /api-docs
+        path: /api
+
+api-keys:
+    omdb: <KEY>

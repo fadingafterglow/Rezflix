@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info:
+  description: Film Info Lookup Service
+  version: '1.0'
+  title: Film Info Lookup Service
+
+tags:
+  - name: film-info-lookup-controller
+    description: Film Info Lookup Controller
+
+paths:
+  /api/film/info-lookup:
+    get:
+      operationId: lookupFilmInfo
+      tags:
+        - film-info-lookup-controller
+      summary: Lookup film info by title
+      parameters:
+        - in: query
+          name: title
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Film info lookup result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmInfoLookupResult'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    FilmInfoLookupResult:
+      type: object
+      properties:
+        title:
+          type: string
+        year:
+          type: string
+        rated:
+          type: string
+        released:
+          type: string
+        runtime:
+          type: string
+        genre:
+          type: string
+        director:
+          type: string
+        writer:
+          type: string
+        actors:
+          type: string
+        plot:
+          type: string
+        language:
+          type: string
+        country:
+          type: string
+        awards:
+          type: string
+        poster:
+          type: string
+        ratings:
+          type: array
+          items:
+            type: object
+            properties:
+              source:
+                type: string
+              value:
+                type: string
+            required:
+              - source
+              - value
+        metascore:
+          type: string
+        imdbRating:
+          type: string
+        imdbVotes:
+          type: string
+        imdbID:
+          type: string
+        type:
+          type: string
+      required:
+        - title
+        - year
+        - rated
+        - released
+        - runtime
+        - genre
+        - director
+        - writer
+        - actors
+        - plot
+        - language
+        - country
+        - awards
+        - poster
+        - ratings
+        - metascore
+        - imdbRating
+        - imdbVotes
+        - imdbID
+        - type

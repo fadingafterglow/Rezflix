@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -52,7 +53,10 @@ public class ExceptionController {
         return toResponseEntity(HttpStatus.BAD_REQUEST, response);
     }
 
-    @ExceptionHandler(HttpMessageConversionException.class)
+    @ExceptionHandler({
+            HttpMessageConversionException.class,
+            MissingRequestValueException.class
+    })
     public ResponseEntity<ErrorResponseDto> badRequest() {
         return toResponseEntity(HttpStatus.BAD_REQUEST, responseOf("error.application.invalid-data"));
     }
