@@ -1,4 +1,13 @@
 components:
+  parameters:
+    FilmIdParam:
+      name: filmId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id of the film
+
   schemas:
     BaseCriteria:
       type: object

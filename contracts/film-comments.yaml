@@ -1,0 +1,171 @@
+openapi: 3.0.0
+info:
+  description: Film Service
+  version: '0.1'
+  title: Film Service
+
+tags:
+  - name: film-comment-controller
+    description: Film Comment Controller
+
+paths:
+  /api/film/{filmId}/comment:
+    post:
+      operationId: createComment
+      tags:
+        - film-comment-controller
+      summary: Post a new comment for the film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComment'
+      responses:
+        201:
+          description: Id of the created comment
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    get:
+      operationId: getCommentsList
+      tags:
+        - film-comment-controller
+      summary: Get comments list for a film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      responses:
+        200:
+          description: List of comments for the film
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film/{filmId}/comment/{commentId}:
+    get:
+      operationId: getComment
+      tags:
+        - film-comment-controller
+      summary: Get a single comment by id
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      responses:
+        200:
+          description: The requested comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateComment
+      tags:
+        - film-comment-controller
+      summary: Edit a comment
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateComment'
+      responses:
+        204:
+          description: Comment updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteComment
+      tags:
+        - film-comment-controller
+      summary: Delete a comment
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+        - $ref: '#/components/parameters/CommentIdParam'
+      responses:
+        204:
+          description: Comment deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        404:
+          description: Comment not found
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  parameters:
+    CommentIdParam:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Id of the comment
+
+  schemas:
+    Comment:
+      allOf:
+        - $ref: '#/components/schemas/UpdateComment'
+        - type: object
+          properties:
+            id:
+              type: integer
+            text:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            authorId:
+              type: integer
+            authorUserName:
+              type: string
+            authorRating:
+              type: integer
+          required:
+            - id
+            - text
+            - createdAt
+            - userId
+            - authorUserName
+
+    CreateComment:
+      allOf:
+        - $ref: '#/components/schemas/UpdateComment'
+
+    UpdateComment:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 2000
+      required:
+        - text

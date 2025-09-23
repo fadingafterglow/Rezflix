@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  description: Film Service
+  version: '0.1'
+  title: Film Service
+
+tags:
+  - name: film-rating-controller
+    description: Film Rating Controller
+
+paths:
+  /api/film/{filmId}/rating:
+    put:
+      operationId: setUserRating
+      tags:
+        - film-rating-controller
+      summary: Set user's rating for the film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateFilm'
+      responses:
+        204:
+          description: User's rating was set successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    get:
+      operationId: getUserRating
+      tags:
+        - film-rating-controller
+      summary: Get user's rating for the film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      responses:
+        200:
+          description: User's rating for the film
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateFilm'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteUserRating
+      tags:
+        - film-rating-controller
+      summary: Remove user's rating for the film
+      parameters:
+        - $ref: 'common-types.yaml#/components/parameters/FilmIdParam'
+      responses:
+        204:
+          description: User's rating was removed successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    RateFilm:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+      required:
+        - rating
