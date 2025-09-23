@@ -24,7 +24,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateComment'
       responses:
-        201:
+        200:
           description: Id of the created comment
           content:
             application/json:

@@ -91,7 +91,6 @@ components:
       properties:
         downloadUrl:
           type: string
-          format: uri
           description: URL to download or stream the film content
       required:
         - downloadUrl
