@@ -142,6 +142,17 @@ components:
             - type
             - username
 
+    ShortUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+      required:
+        - id
+        - username
+
     CurrentUserInfo:
       type: object
       properties:

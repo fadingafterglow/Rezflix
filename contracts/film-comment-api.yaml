@@ -9,18 +9,41 @@ tags:
     description: Film Comment Controller
 
 paths:
-  /api/film-comment:
+  /api/film/comment:
+    get:
+      operationId: getCommentsByCriteria
+      tags:
+        - film-comment-controller
+      summary: Get comments matching the criteria
+      parameters:
+        - name: criteria
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/CommentCriteria'
+      responses:
+        200:
+          description: List of comments matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
     post:
       operationId: createComment
       tags:
         - film-comment-controller
-      summary: Post a new comment for the film
+      summary: Post a new comment
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpsertComment'
+              $ref: '#/components/schemas/CreateComment'
       responses:
         200:
           description: Id of the created comment
@@ -32,44 +55,22 @@ paths:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
           $ref: 'common-types.yaml#/components/responses/Unauthorized'
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
-    get:
-      operationId: getCommentsByCriteria
-      tags:
-        - film-comment-controller
-      summary: Get comments list for a film
-      parameters:
-        - name: criteria
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/CommentCriteria'
-      responses:
-        200:
-          description: List of comments for the film
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CommentList'
-        400:
-          $ref: 'common-types.yaml#/components/responses/BadRequest'
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
-        500:
-          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+  /api/film/comment/{commentId}:
+    parameters:
+      - name: commentId
+        in: path
+        required: true
+        schema:
+          type: integer
 
-  /api/film-comment/{commentId}:
     get:
       operationId: getComment
       tags:
         - film-comment-controller
       summary: Get a single comment by id
-      parameters:
-        - $ref: '#/components/parameters/CommentIdParam'
       responses:
         200:
           description: The requested comment
@@ -77,8 +78,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
-        400:
-          $ref: 'common-types.yaml#/components/responses/BadRequest'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
@@ -89,14 +88,12 @@ paths:
       tags:
         - film-comment-controller
       summary: Edit a comment
-      parameters:
-        - $ref: '#/components/parameters/CommentIdParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpsertComment'
+              $ref: '#/components/schemas/UpdateComment'
       responses:
         204:
           description: Comment updated successfully
@@ -116,8 +113,6 @@ paths:
       tags:
         - film-comment-controller
       summary: Delete a comment
-      parameters:
-        - $ref: '#/components/parameters/CommentIdParam'
       responses:
         204:
           description: Comment deleted successfully
@@ -133,23 +128,44 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
 components:
-  parameters:
-    CommentIdParam:
-      name: commentId
-      in: path
-      required: true
-      schema:
-        type: integer
-      description: Id of the comment
-
   schemas:
-    CommentCriteria:
+    UpdateComment:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 2000
+      required:
+        - text
+
+    CreateComment:
       allOf:
-        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - $ref: '#/components/schemas/UpdateComment'
         - type: object
           properties:
             filmId:
               type: integer
+          required:
+            - filmId
+
+    Comment:
+      allOf:
+        - $ref: '#/components/schemas/CreateComment'
+        - type: object
+          properties:
+            id:
+              type: integer
+            createdAt:
+              type: string
+              format: date-time
+            author:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+            authorRating:
+              $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
+          required:
+            - id
+            - createdAt
+            - author
 
     CommentList:
       allOf:
@@ -163,36 +179,10 @@ components:
           required:
             - items
 
-    UpsertComment:
-      type: object
-      properties:
-        filmId:
-          type: integer
-        text:
-          type: string
-          maxLength: 2000
-      required:
-        - filmId
-        - text
-
-    Comment:
+    CommentCriteria:
       allOf:
-        - $ref: '#/components/schemas/UpsertComment'
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
         - type: object
           properties:
-            id:
+            filmId:
               type: integer
-            createdAt:
-              type: string
-              format: date-time
-            authorId:
-              type: integer
-            authorUserName:
-              type: string
-            authorRating:
-              type: integer
-          required:
-            - id
-            - createdAt
-            - authorId
-            - authorUserName

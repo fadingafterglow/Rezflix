@@ -10,13 +10,31 @@ tags:
 
 paths:
   /api/film/{filmId}/content:
+    parameters:
+      - $ref: 'film-api.yaml#/components/parameters/FilmId'
+
+    get:
+      operationId: getFilmContentUrl
+      tags:
+        - film-content-controller
+      summary: Get download URL for film content
+      responses:
+        200:
+          description: A download URL for the film content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmContentUrlResponse'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
     put:
       operationId: uploadFilmContent
       tags:
         - film-content-controller
       summary: Upload content for a film
-      parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
@@ -37,29 +55,6 @@ paths:
           $ref: 'common-types.yaml#/components/responses/Unauthorized'
         403:
           $ref: 'common-types.yaml#/components/responses/Forbidden'
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
-        500:
-          $ref: 'common-types.yaml#/components/responses/InternalServerError'
-
-    get:
-      operationId: getFilmContentUrl
-      tags:
-        - film-content-controller
-      summary: Get download URL for film content
-      parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
-      responses:
-        200:
-          description: A download URL for the film content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FilmContentUrlResponse'
-        400:
-          $ref: 'common-types.yaml#/components/responses/BadRequest'
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
@@ -68,8 +63,6 @@ paths:
       tags:
         - film-content-controller
       summary: Delete film content
-      parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       responses:
         204:
           description: Film content deleted successfully

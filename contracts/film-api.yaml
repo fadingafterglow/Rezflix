@@ -10,33 +10,6 @@ tags:
 
 paths:
   /api/film:
-    post:
-      operationId: createFilm
-      tags:
-        - film-controller
-      summary: Create a new film
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateFilm'
-      responses:
-        200:
-          description: Id of the created film
-          content:
-            application/json:
-              schema:
-                type: integer
-        400:
-          $ref: 'common-types.yaml#/components/responses/BadRequest'
-        401:
-          $ref: 'common-types.yaml#/components/responses/Unauthorized'
-        403:
-          $ref: 'common-types.yaml#/components/responses/Forbidden'
-        500:
-          $ref: 'common-types.yaml#/components/responses/InternalServerError'
-
     get:
       operationId: getFilmsByCriteria
       tags:
@@ -60,14 +33,42 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
+    post:
+      operationId: createFilm
+      tags:
+        - film-controller
+      summary: Create a new film
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertFilm'
+      responses:
+        200:
+          description: Id of the created film
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
   /api/film/{filmId}:
+    parameters:
+      - $ref: '#/components/parameters/FilmId'
+
     get:
       operationId: getFilm
       tags:
         - film-controller
       summary: Get the film
-      parameters:
-        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         200:
           description: Film by provided id
@@ -75,8 +76,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Film'
-        400:
-          $ref: 'common-types.yaml#/components/responses/BadRequest'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
@@ -87,14 +86,12 @@ paths:
       tags:
         - film-controller
       summary: Update the film
-      parameters:
-        - $ref: '#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateFilm'
+              $ref: '#/components/schemas/UpsertFilm'
       responses:
         204:
           description: Film was updated successfully
@@ -114,8 +111,6 @@ paths:
       tags:
         - film-controller
       summary: Delete the film
-      parameters:
-        - $ref: '#/components/parameters/FilmIdParam'
       responses:
         204:
           description: Film was deleted successfully
@@ -132,18 +127,36 @@ paths:
 
 components:
   parameters:
-    FilmIdParam:
+    FilmId:
       name: filmId
       in: path
       required: true
       schema:
         type: integer
-      description: Id of the film
 
   schemas:
-    FilmCriteria:
+    UpsertFilm:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 256
+        description:
+          type: string
+          maxLength: 5000
+      required:
+        - title
+        - description
+
+    Film:
       allOf:
-        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - $ref: '#/components/schemas/UpsertFilm'
+        - type: object
+          properties:
+            totalRating:
+              $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
+            currentUserRating:
+              $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
 
     FilmList:
       allOf:
@@ -157,35 +170,6 @@ components:
           required:
             - items
 
-    CreateFilm:
+    FilmCriteria:
       allOf:
-        - $ref: '#/components/schemas/UpdateFilm'
-
-    Film:
-      allOf:
-        - $ref: '#/components/schemas/UpdateFilm'
-        - type: object
-          properties:
-            totalRating:
-              type: number
-              minimum: 0
-              maximum: 5
-            currentUserRating:
-              type: integer
-              minimum: 1
-              maximum: 5
-          required:
-            - rating
-
-    UpdateFilm:
-      type: object
-      properties:
-        title:
-          type: string
-          maxLength: 256
-        description:
-          type: string
-          maxLength: 5000
-      required:
-        - title
-        - description
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
