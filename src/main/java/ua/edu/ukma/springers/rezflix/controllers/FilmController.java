@@ -25,8 +25,8 @@ public class FilmController implements FilmControllerApi {
     }
 
     @Override
-    public ResponseEntity<FilmsListDto> getFilmsByCriteria(FilmsListCriteriaDto criteria) {
-        return ResponseEntity.ok(new FilmsListDto(List.of(
+    public ResponseEntity<FilmListDto> getFilmsByCriteria(FilmCriteriaDto criteria) {
+        return ResponseEntity.ok(new FilmListDto(List.of(
                 new FilmDto("Slyga Naroda", "Ya, lyublyu svoyu stranu"),
                 new FilmDto("Slyga Naroda", "Lyublyu svoyu zhenu"),
                 new FilmDto("Slyga Naroda", "Lyublyu svoyu sobaku"),

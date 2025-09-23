@@ -47,14 +47,14 @@ paths:
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/FilmsListCriteria'
+            $ref: '#/components/schemas/FilmCriteria'
       responses:
         200:
           description: List of films
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FilmsList'
+                $ref: '#/components/schemas/FilmList'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         500:
@@ -141,11 +141,11 @@ components:
       description: Id of the film
 
   schemas:
-    FilmsListCriteria:
+    FilmCriteria:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
 
-    FilmsList:
+    FilmList:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseList'
         - type: object
