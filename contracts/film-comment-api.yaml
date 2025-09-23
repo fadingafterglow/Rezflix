@@ -9,20 +9,18 @@ tags:
     description: Film Comment Controller
 
 paths:
-  /api/film/{filmId}/comment:
+  /api/film-comment:
     post:
       operationId: createComment
       tags:
         - film-comment-controller
       summary: Post a new comment for the film
-      parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateComment'
+              $ref: '#/components/schemas/UpsertComment'
       responses:
         200:
           description: Id of the created comment
@@ -45,19 +43,18 @@ paths:
         - film-comment-controller
       summary: Get comments list for a film
       parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
         - name: criteria
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/CommentsListCriteria'
+            $ref: '#/components/schemas/CommentCriteria'
       responses:
         200:
           description: List of comments for the film
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CommentsList'
+                $ref: '#/components/schemas/CommentList'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         404:
@@ -65,14 +62,13 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
-  /api/film/{filmId}/comment/{commentId}:
+  /api/film-comment/{commentId}:
     get:
       operationId: getComment
       tags:
         - film-comment-controller
       summary: Get a single comment by id
       parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
         - $ref: '#/components/parameters/CommentIdParam'
       responses:
         200:
@@ -94,14 +90,13 @@ paths:
         - film-comment-controller
       summary: Edit a comment
       parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
         - $ref: '#/components/parameters/CommentIdParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateComment'
+              $ref: '#/components/schemas/UpsertComment'
       responses:
         204:
           description: Comment updated successfully
@@ -122,7 +117,6 @@ paths:
         - film-comment-controller
       summary: Delete a comment
       parameters:
-        - $ref: 'film-api.yaml#/components/parameters/FilmIdParam'
         - $ref: '#/components/parameters/CommentIdParam'
       responses:
         204:
@@ -149,11 +143,15 @@ components:
       description: Id of the comment
 
   schemas:
-    CommentsListCriteria:
+    CommentCriteria:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            filmId:
+              type: integer
 
-    CommentsList:
+    CommentList:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseList'
         - type: object
@@ -165,15 +163,25 @@ components:
           required:
             - items
 
+    UpsertComment:
+      type: object
+      properties:
+        filmId:
+          type: integer
+        text:
+          type: string
+          maxLength: 2000
+      required:
+        - filmId
+        - text
+
     Comment:
       allOf:
-        - $ref: '#/components/schemas/UpdateComment'
+        - $ref: '#/components/schemas/UpsertComment'
         - type: object
           properties:
             id:
               type: integer
-            text:
-              type: string
             createdAt:
               type: string
               format: date-time
@@ -185,20 +193,6 @@ components:
               type: integer
           required:
             - id
-            - text
             - createdAt
-            - userId
+            - authorId
             - authorUserName
-
-    CreateComment:
-      allOf:
-        - $ref: '#/components/schemas/UpdateComment'
-
-    UpdateComment:
-      type: object
-      properties:
-        text:
-          type: string
-          maxLength: 2000
-      required:
-        - text
