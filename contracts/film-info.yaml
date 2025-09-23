@@ -38,13 +38,14 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     get:
-      operationId: getFilmsList
+      operationId: getFilmsByCriteria
       tags:
         - film-info-controller
       summary: Get films list
       parameters:
         - name: criteria
           in: query
+          required: true
           schema:
             $ref: '#/components/schemas/FilmsListCriteria'
       responses:
@@ -53,9 +54,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Film'
+                $ref: '#/components/schemas/FilmsList'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         500:
@@ -136,6 +135,18 @@ components:
     FilmsListCriteria:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+
+    FilmsList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Film'
+          required:
+            - items
 
     CreateFilm:
       allOf:

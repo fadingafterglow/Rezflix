@@ -23,6 +23,15 @@ components:
         descendingOrder:
           type: boolean
 
+    BaseList:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+      required:
+        - total
+
     ErrorResponse:
       type: object
       properties:
