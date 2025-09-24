@@ -7,10 +7,6 @@ import ua.edu.ukma.springers.rezflix.criteria.UserCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.mappers.UserMapper;
-import ua.edu.ukma.springers.rezflix.mergers.IMerger;
-import ua.edu.ukma.springers.rezflix.repositories.CriteriaRepository;
-import ua.edu.ukma.springers.rezflix.repositories.IRepository;
-import ua.edu.ukma.springers.rezflix.validators.IValidator;
 
 import java.util.List;
 
@@ -20,10 +16,8 @@ public class UserService extends BaseCRUDService<UserEntity, CreateUserDto, Upda
     private final UserMapper mapper;
     private final EnumsMapper enumsMapper;
 
-    public UserService(IRepository<UserEntity, Integer> repository, CriteriaRepository criteriaRepository,
-                       IValidator<UserEntity> validator, IMerger<UserEntity, CreateUserDto, UpdateUserDto> merger,
-                       UserMapper mapper, EnumsMapper enumsMapper) {
-        super(repository, criteriaRepository, validator, merger, UserEntity.class, UserEntity::new);
+    public UserService(UserMapper mapper, EnumsMapper enumsMapper) {
+        super(UserEntity.class, UserEntity::new);
         this.mapper = mapper;
         this.enumsMapper = enumsMapper;
     }

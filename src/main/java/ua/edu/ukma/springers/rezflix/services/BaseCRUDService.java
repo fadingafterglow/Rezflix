@@ -1,6 +1,7 @@
 package ua.edu.ukma.springers.rezflix.services;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.criteria.Criteria;
@@ -14,15 +15,24 @@ import ua.edu.ukma.springers.rezflix.validators.IValidator;
 import java.util.List;
 import java.util.function.Supplier;
 
-@RequiredArgsConstructor
 public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I extends Comparable<I>> implements ICRUDService<E, CV, UV, I> {
 
-    protected final IRepository<E, I> repository;
-    protected final CriteriaRepository criteriaRepository;
-    protected final IValidator<E> validator;
-    protected final IMerger<E, CV, UV> merger;
+    @Setter(onMethod_ = @Autowired)
+    protected IRepository<E, I> repository;
+    @Setter(onMethod_ = @Autowired)
+    protected CriteriaRepository criteriaRepository;
+    @Setter(onMethod_ = @Autowired)
+    protected IValidator<E> validator;
+    @Setter(onMethod_ = @Autowired)
+    protected IMerger<E, CV, UV> merger;
+
     protected final Class<E> entityClass;
     protected final Supplier<E> entitySupplier;
+
+    protected BaseCRUDService(Class<E> entityClass, Supplier<E> entitySupplier) {
+        this.entityClass = entityClass;
+        this.entitySupplier = entitySupplier;
+    }
 
     @Transactional(readOnly = true)
     public E getByIdWithoutValidation(@NonNull I id) {
