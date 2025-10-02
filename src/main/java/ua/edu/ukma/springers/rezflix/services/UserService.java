@@ -2,11 +2,16 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
+import ua.edu.ukma.springers.rezflix.controllers.*;
 import ua.edu.ukma.springers.rezflix.criteria.UserCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.mappers.UserMapper;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpdateUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
 
 import java.util.List;
 
