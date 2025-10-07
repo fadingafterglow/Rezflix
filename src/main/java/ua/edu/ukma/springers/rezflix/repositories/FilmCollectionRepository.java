@@ -9,5 +9,5 @@ public interface FilmCollectionRepository extends IRepository<FilmCollectionEnti
 
     @Override
     @EntityGraph(attributePaths = {"owner", "films"})
-    Optional<FilmCollectionEntity> findFetchAllById(Integer integer);
+    Optional<FilmCollectionEntity> findFetchAllById(Integer id);
 }
