@@ -24,11 +24,11 @@ public class FilmRatingEntity implements IGettableById<FilmRatingId> {
     @EqualsAndHashCode.Include
     private FilmRatingId id;
 
-    @MapsId("filmId")
+    @JoinColumn(name = "film_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private FilmEntity film;
 
-    @MapsId("userId")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
