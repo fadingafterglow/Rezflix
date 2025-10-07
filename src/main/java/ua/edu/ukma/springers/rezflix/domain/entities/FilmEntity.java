@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,4 +30,11 @@ public class FilmEntity implements IGettableById<Integer> {
     @NotBlank(message = "error.film.description.blank")
     @Column(name = "description", nullable = false)
     private String description;
+
+    @OneToMany(
+            mappedBy = "film",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<FilmCommentEntity> comments;
 }
