@@ -10,7 +10,7 @@
                 <constraints primaryKey="true" primaryKeyName="pk_films"/>
             </column>
             <column name="title" type="varchar(250)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true" uniqueConstraintName="ak_films_title"/>
             </column>
             <column name="description" type="varchar(5000)">
                 <constraints nullable="false"/>

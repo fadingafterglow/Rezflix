@@ -21,7 +21,7 @@ public class FilmEntity implements IGettableById<Integer> {
 
     @Size(max = 250, message = "error.film.title.size")
     @NotBlank(message = "error.film.title.blank")
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", unique = true, nullable = false)
     private String title;
 
     @Size(max = 5000, message = "error.film.description.size")

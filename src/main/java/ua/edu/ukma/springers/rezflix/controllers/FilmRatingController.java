@@ -6,25 +6,36 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmRatingControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
+import ua.edu.ukma.springers.rezflix.services.FilmRatingService;
+import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class FilmRatingController implements FilmRatingControllerApi {
-    @Override
-    public ResponseEntity<Void> deleteUserRating(Integer filmId) {
-        log.info("Delete user rating for film id {}", filmId);
-        return ResponseEntity.noContent().build();
-    }
+
+    private final FilmRatingService service;
+    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<FilmRatingDto> getUserRating(Integer filmId) {
-        return ResponseEntity.ok(new FilmRatingDto(5));
+        int userId = securityUtils.getCurrentUserId();
+        return ResponseEntity.ok(service.getUserRatingForFilm(userId, filmId));
     }
 
     @Override
     public ResponseEntity<Void> setUserRating(Integer filmId, FilmRatingDto dto) {
-        log.info("Set user rating for film id {}", filmId);
+        int userId = securityUtils.getCurrentUserId();
+        log.info("Set user {} rating {} for film {}", userId, dto, filmId);
+        service.setUserRatingForFilm(userId, filmId, dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUserRating(Integer filmId) {
+        int userId = securityUtils.getCurrentUserId();
+        log.info("Delete user {} rating for film {}", userId, filmId);
+        service.deleteUserRatingForFilm(userId, filmId);
         return ResponseEntity.noContent().build();
     }
 }

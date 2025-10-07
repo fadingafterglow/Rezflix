@@ -11,7 +11,7 @@ import ua.edu.ukma.springers.rezflix.services.FilmInfoLookupService;
 @RequiredArgsConstructor
 public class FilmInfoLookupController implements FilmInfoLookupControllerApi {
 
-    private FilmInfoLookupService service;
+    private final FilmInfoLookupService service;
 
     @Override
     public ResponseEntity<FilmInfoLookupResultDto> lookupFilmInfo(String title) {

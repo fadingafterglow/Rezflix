@@ -3,6 +3,7 @@ package ua.edu.ukma.springers.rezflix.services;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.criteria.Criteria;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
@@ -69,12 +70,19 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     @Override
     @Transactional
     public I create(@NonNull CV view) {
-        return createEntity(view).getId();
+        return createEntity(null, view).getId();
+    }
+
+    @Override
+    @Transactional
+    public I create(@Nullable I id, @NonNull CV view) {
+        return createEntity(id, view).getId();
     }
 
     @Transactional
-    public E createEntity(@NonNull CV view) {
+    public E createEntity(@Nullable I id, @NonNull CV view) {
         E entity = entitySupplier.get();
+        entity.setId(id);
         merger.mergeForCreate(entity, view);
         postCreate(entity, view);
         validator.validForCreate(entity);

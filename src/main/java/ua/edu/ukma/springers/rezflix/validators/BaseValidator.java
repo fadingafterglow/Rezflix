@@ -2,18 +2,20 @@ package ua.edu.ukma.springers.rezflix.validators;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
 import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 import java.util.List;
 import java.util.Set;
 
-@RequiredArgsConstructor
 public abstract class BaseValidator<E> implements IValidator<E> {
 
-    protected final Validator validator;
-    protected final SecurityUtils securityUtils;
+    @Setter(onMethod_ =  @Autowired)
+    protected Validator validator;
+    @Setter(onMethod_ =  @Autowired)
+    protected SecurityUtils securityUtils;
 
     @Override
     public void validForView(E entity) {}
