@@ -9,5 +9,5 @@ import java.util.Optional;
 @NoRepositoryBean
 public interface IRepository<E extends IGettableById<ID>, ID extends Comparable<ID>> extends JpaRepository<E, ID> {
 
-    Optional<E> findByIdFetchAll(ID id);
+    Optional<E> findFetchAllById(ID id);
 }

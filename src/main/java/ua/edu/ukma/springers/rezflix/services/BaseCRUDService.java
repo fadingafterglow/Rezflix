@@ -42,7 +42,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
 
     @Transactional(readOnly = true)
     public E getByIdFetchAllWithoutValidation(@NonNull I id) {
-        return repository.findByIdFetchAll(id).orElseThrow(() -> notFound(id));
+        return repository.findFetchAllById(id).orElseThrow(() -> notFound(id));
     }
 
     @Override
