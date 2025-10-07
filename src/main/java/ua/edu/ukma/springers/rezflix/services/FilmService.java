@@ -3,6 +3,7 @@ package ua.edu.ukma.springers.rezflix.services;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;
@@ -19,6 +20,11 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
     public FilmService(FilmMapper mapper) {
         super(FilmEntity.class, FilmEntity::new);
         this.mapper = mapper;
+    }
+
+    @Transactional(readOnly = true)
+    public FilmDto getResponseById(int id) {
+        return mapper.toResponse(getById(id));
     }
 
     @Transactional(readOnly = true)
