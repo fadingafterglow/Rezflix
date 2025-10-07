@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251007_2205_add_film_comments" author="Oleksandr Tkachenko">
+        <createTable tableName="film_comments">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_film_comments"/>
+            </column>
+
+            <column name="text" type="varchar(2000)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="film_id" type="int">
+                <constraints referencedTableName="films" referencedColumnNames="id" nullable="false"
+                             foreignKeyName="fk_film_comments_on_films"/>
+            </column>
+
+            <column name="author_id" type="int">
+                <constraints referencedTableName="users" referencedColumnNames="id" nullable="false"
+                             foreignKeyName="fk_film_comments_on_users"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
