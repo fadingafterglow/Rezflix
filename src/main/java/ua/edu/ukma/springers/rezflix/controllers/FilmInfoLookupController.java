@@ -1,6 +1,6 @@
 package ua.edu.ukma.springers.rezflix.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmInfoLookupControllerApi;
@@ -8,9 +8,9 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmInfoLookupResult
 import ua.edu.ukma.springers.rezflix.services.FilmInfoLookupService;
 
 @RestController
+@RequiredArgsConstructor
 public class FilmInfoLookupController implements FilmInfoLookupControllerApi {
 
-    @Autowired
     private FilmInfoLookupService service;
 
     @Override
