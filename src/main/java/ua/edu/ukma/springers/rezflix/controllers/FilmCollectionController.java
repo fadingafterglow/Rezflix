@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmCollectionControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.services.FilmCollectionService;
-
-import java.util.List;
+import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
@@ -16,55 +15,35 @@ import java.util.List;
 public class FilmCollectionController implements FilmCollectionControllerApi {
 
     private final FilmCollectionService service;
-
-    @Override
-    public ResponseEntity<Void> addFilmToCollection(Integer collectionId, Integer filmId) {
-        log.info("Adding film {} to collection {}", filmId, collectionId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> clearCollection(Integer collectionId) {
-        log.info("Clearing all films from collection {}", collectionId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    public ResponseEntity<Void> removeFilmFromCollection(Integer collectionId, Integer filmId) {
-        log.info("Removing film {} from collection {}", filmId, collectionId);
-        return ResponseEntity.noContent().build();
-    }
-
-
-    @Override
-    public ResponseEntity<Integer> createFilmCollection(UpsertFilmCollectionDto dto) {
-        log.info("Create film collection {}", dto.getName());
-        return ResponseEntity.ok(1);
-    }
+    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<FilmCollectionDto> getFilmCollection(Integer collectionId) {
-        return ResponseEntity.ok(new FilmCollectionDto("My Favorites"));
+        return ResponseEntity.ok(service.getResponseById(collectionId));
     }
 
     @Override
     public ResponseEntity<FilmCollectionListDto> getFilmCollectionsByCriteria(FilmCollectionCriteriaDto criteria) {
-        log.info("Fetching film collections by criteria: {}", criteria);
-        return ResponseEntity.ok(new FilmCollectionListDto(List.of(
-                new FilmCollectionDto("Slyga Naroda"),
-                new FilmCollectionDto("Slyga Naroda2")
-        ), 2L));
+        return ResponseEntity.ok(service.getListResponseByCriteria(criteria));
     }
 
     @Override
-    public ResponseEntity<Void> updateFilmCollection(Integer collectionId, UpsertFilmCollectionDto dto) {
-        log.info("Update film collection {} id={}", dto.getName(), collectionId);
+    public ResponseEntity<Integer> createFilmCollection(UpsertFilmCollectionDto upsertFilmCollectionDto) {
+        log.info("Create film collection {} by user {}", upsertFilmCollectionDto, securityUtils.getCurrentUserId());
+        return ResponseEntity.ok(service.create(upsertFilmCollectionDto));
+    }
+
+    @Override
+    public ResponseEntity<Void> updateFilmCollection(Integer collectionId, UpsertFilmCollectionDto upsertFilmCollectionDto) {
+        log.info("Update film collection {} {} by user {}", collectionId, upsertFilmCollectionDto, securityUtils.getCurrentUserId());
+        service.update(collectionId, upsertFilmCollectionDto);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteFilmCollection(Integer collectionId) {
-        log.info("Delete film collection {}", collectionId);
+        log.info("Delete film collection {} by user {}", collectionId, securityUtils.getCurrentUserId());
+        service.delete(collectionId);
         return ResponseEntity.noContent().build();
     }
 }

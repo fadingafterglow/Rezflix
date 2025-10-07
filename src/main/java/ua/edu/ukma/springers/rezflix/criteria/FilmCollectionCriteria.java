@@ -7,7 +7,6 @@ import jakarta.persistence.criteria.Root;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCollectionCriteriaDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmCollectionEntity;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmCollectionEntity_;
-import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity_;
 
 import java.util.List;
 
@@ -21,10 +20,14 @@ public class FilmCollectionCriteria extends Criteria<FilmCollectionEntity, FilmC
     protected <R> List<Predicate> formPredicates(Root<FilmCollectionEntity> root,
                                                  CriteriaQuery<R> query,
                                                  CriteriaBuilder cb) {
-        PredicatesBuilder<FilmCollectionEntity> builder = new PredicatesBuilder<>(root, cb);
-        builder.like(values.getQuery(), FilmCollectionEntity_.name, FilmCollectionEntity_.description);
-        builder.eq(values.getOwnerId(), FilmCollectionEntity_.owner, UserEntity_.id);
+        return new PredicatesBuilder<>(root, cb)
+                .like(values.getQuery(), FilmCollectionEntity_.name, FilmCollectionEntity_.description)
+                .eq(values.getOwnerId(), FilmCollectionEntity_.ownerId)
+                .getPredicates();
+    }
 
-        return builder.getPredicates();
+    @Override
+    protected void fetch(CriteriaBuilder cb, Root<FilmCollectionEntity> root) {
+        root.fetch(FilmCollectionEntity_.owner);
     }
 }

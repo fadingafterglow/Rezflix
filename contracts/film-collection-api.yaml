@@ -55,20 +55,22 @@ paths:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
           $ref: 'common-types.yaml#/components/responses/Unauthorized'
-        403:
-          $ref: 'common-types.yaml#/components/responses/Forbidden'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
   /api/film-collections/{collectionId}:
     parameters:
-      - $ref: '#/components/parameters/CollectionId'
+      - name: collectionId
+        in: path
+        required: true
+        schema:
+          type: integer
 
     get:
       operationId: getFilmCollection
       tags:
         - film-collection-controller
-      summary: Get a film collection by ID
+      summary: Get a film collection by id
       responses:
         200:
           description: Collection by provided id
@@ -78,6 +80,8 @@ paths:
                 $ref: '#/components/schemas/FilmCollection'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     put:
       operationId: updateFilmCollection
@@ -93,8 +97,16 @@ paths:
       responses:
         204:
           description: Updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     delete:
       operationId: deleteFilmCollection
@@ -104,81 +116,45 @@ paths:
       responses:
         204:
           description: Deleted successfully
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
-  /api/film-collections/{collectionId}/films/{filmId}:
-    parameters:
-      - $ref: '#/components/parameters/CollectionId'
-      - $ref: '#/components/parameters/FilmId'
-
-    post:
-      operationId: addFilmToCollection
-      tags:
-        - film-collection-controller
-      summary: Add a film to a collection
-      responses:
-        204:
-          description: Film added successfully
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
-
-    delete:
-      operationId: removeFilmFromCollection
-      tags:
-        - film-collection-controller
-      summary: Remove a film from a collection
-      responses:
-        204:
-          description: Film removed successfully
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
-
-  /api/film-collections/{collectionId}/films:
-    parameters:
-      - $ref: '#/components/parameters/CollectionId'
-
-    delete:
-      operationId: clearCollection
-      tags:
-        - film-collection-controller
-      summary: Remove all films from a collection
-      responses:
-        204:
-          description: All films removed successfully
-        404:
-          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
 components:
-  parameters:
-    CollectionId:
-      name: collectionId
-      in: path
-      required: true
-      schema:
-        type: integer
-    FilmId:
-      name: filmId
-      in: path
-      required: true
-      schema:
-        type: integer
-
   schemas:
-    UpsertFilmCollection:
+    BaseFilmCollection:
       type: object
       properties:
         name:
           type: string
-          maxLength: 256
+          maxLength: 250
         description:
           type: string
           maxLength: 5000
       required:
         - name
 
+    UpsertFilmCollection:
+      allOf:
+        - $ref: '#/components/schemas/BaseFilmCollection'
+        - type: object
+          properties:
+            filmIds:
+              type: array
+              items:
+                type: integer
+              maxLength: 50
+          required:
+            - filmIds
+
     FilmCollection:
       allOf:
-        - $ref: '#/components/schemas/UpsertFilmCollection'
+        - $ref: '#/components/schemas/BaseFilmCollection'
         - type: object
           properties:
             id:
@@ -186,7 +162,27 @@ components:
             films:
               type: array
               items:
-                $ref: '../contracts/film-api.yaml#/components/schemas/Film'
+                $ref: 'film-api.yaml#/components/schemas/Film'
+              maxLength: 50
+            owner:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+          required:
+            - id
+            - films
+            - owner
+
+    ShortFilmCollection:
+      allOf:
+        - $ref: '#/components/schemas/BaseFilmCollection'
+        - type: object
+          properties:
+            id:
+              type: integer
+            owner:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+          required:
+            - id
+            - owner
 
     FilmCollectionList:
       allOf:
@@ -196,7 +192,7 @@ components:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/FilmCollection'
+                $ref: '#/components/schemas/ShortFilmCollection'
           required:
             - items
 
