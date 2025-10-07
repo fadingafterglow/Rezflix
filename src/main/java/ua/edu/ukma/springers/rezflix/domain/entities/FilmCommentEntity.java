@@ -35,7 +35,7 @@ public class FilmCommentEntity implements IGettableById<Integer> {
     @JoinColumn(name = "film_id", nullable = false)
     private FilmEntity film;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 }

@@ -13,4 +13,6 @@ public interface UserMapper extends
 {
     @Mapping(target = "type", constant = "VIEWER")
     CreateUserDto toCreateUserDto(RegisterUserDto registerUserDto);
+
+    ShortUserDto toShortDto(UserEntity entity);
 }
