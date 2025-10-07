@@ -5,49 +5,34 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import org.springframework.stereotype.Service;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmRatingEntity;
 import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
-import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mappers.FilmRatingMapper;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Service
 public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRatingDto, FilmRatingDto, FilmRatingId> {
 
-    private final SecurityUtils securityUtils;
     private final FilmRatingMapper mapper;
 
-    protected FilmRatingService(SecurityUtils securityUtils, FilmRatingMapper mapper) {
+    protected FilmRatingService(FilmRatingMapper mapper) {
         super(FilmRatingEntity.class, FilmRatingEntity::new);
-        this.securityUtils = securityUtils;
         this.mapper = mapper;
     }
 
     @Transactional(readOnly = true)
-    public FilmRatingDto getCurrentUserFilmRating(int filmId) {
-        return mapper.toResponse(getById(getCurrentUserFilmRatingId(filmId)));
+    public FilmRatingDto getUserRatingForFilm(int userId, int filmId) {
+        return mapper.toResponse(getById(new FilmRatingId(filmId, userId)));
     }
 
     @Transactional
-    public FilmRatingDto setCurrentUserFilmRating(int filmId, FilmRatingDto dto) {
-        FilmRatingId id = getCurrentUserFilmRatingId(filmId);
-        FilmRatingEntity entity;
-        try {
+    public void setUserRatingForFilm(int userId, int filmId, FilmRatingDto dto) {
+        FilmRatingId id = new FilmRatingId(filmId, userId);
+        if (repository.existsById(id))
             update(id, dto);
-            entity = getById(id);
-        } catch (NotFoundException e) {
-            entity = createEntity(dto);
-            entity.setId(id);
-            repository.save(entity);
-        }
-        return mapper.toResponse(entity);
+        else
+            create(id, dto);
     }
 
     @Transactional
-    public void deleteCurrentUserFilmRating(int filmId) {
-        delete(getCurrentUserFilmRatingId(filmId));
+    public void deleteUserRatingForFilm(int userId, int filmId) {
+        delete(new FilmRatingId(filmId, userId));
     }
-
-    private FilmRatingId getCurrentUserFilmRatingId(int filmId) {
-        return new FilmRatingId(filmId, securityUtils.getCurrentUserId());
-    }
-
 }

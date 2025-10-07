@@ -1,6 +1,7 @@
 package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import ua.edu.ukma.springers.rezflix.criteria.Criteria;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
@@ -15,6 +16,8 @@ public interface ICRUDService<E extends IGettableById<I>, CV, UV, I extends Comp
     long count(@NonNull Criteria<E, ?> criteria);
 
     I create(@NonNull CV view);
+
+    I create(@Nullable I id, @NonNull CV view);
 
     boolean update(@NonNull I id, @NonNull UV view);
 
