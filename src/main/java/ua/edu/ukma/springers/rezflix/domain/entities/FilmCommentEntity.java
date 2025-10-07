@@ -9,6 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "film_comments")
 @Data
@@ -25,6 +27,9 @@ public class FilmCommentEntity implements IGettableById<Integer> {
     @Size(max = 2000, message = "error.film_comment.text.size")
     @Column(name = "text", nullable = false, length = 2000)
     private String text;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "film_id", nullable = false)
