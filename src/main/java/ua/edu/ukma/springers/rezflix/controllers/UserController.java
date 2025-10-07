@@ -12,6 +12,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
+import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
@@ -19,6 +20,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
 public class UserController implements UserControllerApi {
 
     private final UserService userService;
+    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<CurrentUserInfoDto> getCurrentUserInfo() {
@@ -38,7 +40,7 @@ public class UserController implements UserControllerApi {
 
     @Override
     public ResponseEntity<Integer> createUser(CreateUserDto dto) {
-        log.info("Create user {} of type {}", dto.getUsername(), dto.getType());
+        log.info("Create user {} of type {} by user {}", dto.getUsername(), dto.getType(), securityUtils.getCurrentUserId());
         return ResponseEntity.ok(userService.create(dto));
     }
 }

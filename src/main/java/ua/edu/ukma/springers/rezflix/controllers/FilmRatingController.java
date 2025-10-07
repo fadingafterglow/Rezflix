@@ -34,7 +34,7 @@ public class FilmRatingController implements FilmRatingControllerApi {
     @Override
     public ResponseEntity<Void> deleteUserRating(Integer filmId) {
         int userId = securityUtils.getCurrentUserId();
-        log.info("Delete user {} rating for film id {}", userId, filmId);
+        log.info("Delete user {} rating for film {}", userId, filmId);
         service.deleteUserRatingForFilm(userId, filmId);
         return ResponseEntity.noContent().build();
     }
