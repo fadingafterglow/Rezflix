@@ -1,0 +1,207 @@
+openapi: 3.0.0
+info:
+  title: Film Collection Service
+  version: '0.1'
+  description: API for managing film collections
+
+tags:
+  - name: film-collection-controller
+    description: Film Collection Controller
+
+paths:
+  /api/film-collections:
+    get:
+      operationId: getFilmCollectionsByCriteria
+      tags:
+        - film-collection-controller
+      summary: Get list of film collections filtered by criteria
+      parameters:
+        - name: criteria
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/FilmCollectionCriteria'
+      responses:
+        200:
+          description: List of collections
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmCollectionList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    post:
+      operationId: createFilmCollection
+      tags:
+        - film-collection-controller
+      summary: Create a new film collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertFilmCollection'
+      responses:
+        200:
+          description: Id of the created collection
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film-collections/{collectionId}:
+    parameters:
+      - name: collectionId
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      operationId: getFilmCollection
+      tags:
+        - film-collection-controller
+      summary: Get a film collection by id
+      responses:
+        200:
+          description: Collection by provided id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilmCollection'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateFilmCollection
+      tags:
+        - film-collection-controller
+      summary: Update a film collection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertFilmCollection'
+      responses:
+        204:
+          description: Updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteFilmCollection
+      tags:
+        - film-collection-controller
+      summary: Delete a film collection
+      responses:
+        204:
+          description: Deleted successfully
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    BaseFilmCollection:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 250
+        description:
+          type: string
+          maxLength: 5000
+      required:
+        - name
+
+    UpsertFilmCollection:
+      allOf:
+        - $ref: '#/components/schemas/BaseFilmCollection'
+        - type: object
+          properties:
+            filmIds:
+              type: array
+              items:
+                type: integer
+              maxLength: 50
+          required:
+            - filmIds
+
+    FilmCollection:
+      allOf:
+        - $ref: '#/components/schemas/BaseFilmCollection'
+        - type: object
+          properties:
+            id:
+              type: integer
+            films:
+              type: array
+              items:
+                $ref: 'film-api.yaml#/components/schemas/Film'
+              maxLength: 50
+            owner:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+          required:
+            - id
+            - films
+            - owner
+
+    ShortFilmCollection:
+      allOf:
+        - $ref: '#/components/schemas/BaseFilmCollection'
+        - type: object
+          properties:
+            id:
+              type: integer
+            owner:
+              $ref: 'user-api.yaml#/components/schemas/ShortUser'
+          required:
+            - id
+            - owner
+
+    FilmCollectionList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/ShortFilmCollection'
+          required:
+            - items
+
+    FilmCollectionCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            query:
+              type: string
+            ownerId:
+              type: integer

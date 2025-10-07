@@ -37,13 +37,18 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
 
     @Transactional(readOnly = true)
     public E getByIdWithoutValidation(@NonNull I id) {
-        return repository.findById(id).orElseThrow(() -> new NotFoundException(entityClass, "id: " + id));
+        return repository.findById(id).orElseThrow(() -> notFound(id));
+    }
+
+    @Transactional(readOnly = true)
+    public E getByIdFetchAllWithoutValidation(@NonNull I id) {
+        return repository.findByIdFetchAll(id).orElseThrow(() -> notFound(id));
     }
 
     @Override
     @Transactional(readOnly = true)
     public E getById(@NonNull I id) {
-        E entity = getByIdWithoutValidation(id);
+        E entity = getByIdFetchAllWithoutValidation(id);
         validator.validForView(entity);
         return entity;
     }
@@ -101,6 +106,10 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         E entity = getByIdWithoutValidation(id);
         validator.validForDelete(entity);
         repository.delete(entity);
+    }
+
+    protected NotFoundException notFound(I id) {
+        return new NotFoundException(entityClass, "id: " + id);
     }
 
     protected void postCreate(@NonNull E entity, @NonNull CV view) {

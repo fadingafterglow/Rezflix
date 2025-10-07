@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd">
+
+    <changeSet id="20251007_1841_add_film_collection_films" author="Stas Kulakevych">
+        <createTable tableName="film_collections">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_film_collections"/>
+            </column>
+            <column name="name" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(5000)"/>
+            <column name="owner_id" type="INT">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="fk_film_collections_on_users"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="film_collections_films">
+            <column name="collection_id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"
+                             referencedTableName="film_collections" referencedColumnNames="id"
+                             foreignKeyName="fk_flf_on_film_collections"/>
+            </column>
+            <column name="film_id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"
+                            referencedTableName="films" referencedColumnNames="id"
+                            foreignKeyName="fk_flf_on_films"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

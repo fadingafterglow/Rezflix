@@ -7,4 +7,5 @@
     <include file="db/changelog/changesets/20250920_0109_add_users.xml"/>
     <include file="db/changelog/changesets/20251007_1839_add_films.xml"/>
     <include file="db/changelog/changesets/20251007_1840_add_film_ratings.xml"/>
+    <include file="db/changelog/changesets/20251007_1841_add_film_collection_films.xml"/>
 </databaseChangeLog>
