@@ -22,15 +22,18 @@
 
         <createTable tableName="film_collections_films">
             <column name="collection_id" type="INT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"
-                             referencedTableName="film_collections" referencedColumnNames="id"
-                             foreignKeyName="fk_flf_on_film_collections"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"/>
             </column>
             <column name="film_id" type="INT">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"
-                            referencedTableName="films" referencedColumnNames="id"
-                            foreignKeyName="fk_flf_on_films"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections_films"/>
             </column>
         </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_flf_on_film_collections" onDelete="CASCADE"
+                                 baseTableName="film_collections_films" baseColumnNames="collection_id"
+                                 referencedTableName="film_collections" referencedColumnNames="id" />
+        <addForeignKeyConstraint constraintName="fk_flf_on_films" onDelete="CASCADE"
+                                 baseTableName="film_collections_films" baseColumnNames="film_id"
+                                 referencedTableName="films" referencedColumnNames="id" />
     </changeSet>
 </databaseChangeLog>
