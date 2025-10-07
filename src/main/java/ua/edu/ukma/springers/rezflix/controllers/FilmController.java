@@ -36,12 +36,14 @@ public class FilmController implements FilmControllerApi {
     @Override
     public ResponseEntity<Void> updateFilm(Integer filmId, UpsertFilmDto dto) {
         log.info("Update film {} {} by user {}", filmId, dto, securityUtils.getCurrentUserId());
+        service.update(filmId, dto);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteFilm(Integer filmId) {
         log.info("Delete film {} by user {}", filmId, securityUtils.getCurrentUserId());
+        service.delete(filmId);
         return ResponseEntity.noContent().build();
     }
 }
