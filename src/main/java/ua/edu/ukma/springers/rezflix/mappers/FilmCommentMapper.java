@@ -11,5 +11,6 @@ public interface FilmCommentMapper extends IResponseMapper<FilmCommentEntity, Co
     @Override
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "authorRating", ignore = true)
+    @Mapping(target = "filmId", source = "film.id")
     CommentDto toResponse(FilmCommentEntity entity);
 }
