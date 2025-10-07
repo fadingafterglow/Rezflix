@@ -36,6 +36,6 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
 
     @Override
     protected void postCreate(FilmCommentEntity entity, CreateCommentDto dto) {
-        entity.setUser(securityUtils.getCurrentUser());
+        entity.setAuthor(securityUtils.getCurrentUser());
     }
 }

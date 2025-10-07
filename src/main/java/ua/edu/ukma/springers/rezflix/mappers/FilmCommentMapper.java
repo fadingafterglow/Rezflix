@@ -8,9 +8,8 @@ import ua.edu.ukma.springers.rezflix.domain.entities.FilmCommentEntity;
 
 @Mapper(config = MapperConfiguration.class, uses = UserMapper.class)
 public interface FilmCommentMapper extends IResponseMapper<FilmCommentEntity, CommentDto>, IListResponseMapper<FilmCommentEntity, CommentListDto> {
+
     @Override
-    @Mapping(target = "author", ignore = true)
     @Mapping(target = "authorRating", ignore = true)
-    @Mapping(target = "filmId", source = "film.id")
     CommentDto toResponse(FilmCommentEntity entity);
 }

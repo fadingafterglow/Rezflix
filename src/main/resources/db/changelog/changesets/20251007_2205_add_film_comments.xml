@@ -23,7 +23,7 @@
                              foreignKeyName="fk_film_comments_on_films"/>
             </column>
 
-            <column name="user_id" type="int">
+            <column name="author_id" type="int">
                 <constraints referencedTableName="users" referencedColumnNames="id" nullable="false"
                              foreignKeyName="fk_film_comments_on_users"/>
             </column>

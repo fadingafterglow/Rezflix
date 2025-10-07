@@ -31,10 +31,9 @@ public class FilmEntity implements IGettableById<Integer> {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(
-            mappedBy = "film",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "film", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<FilmRatingEntity> ratings;
+
+    @OneToMany(mappedBy = "film", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FilmCommentEntity> comments;
 }

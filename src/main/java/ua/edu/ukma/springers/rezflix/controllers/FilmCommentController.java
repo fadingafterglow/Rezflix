@@ -7,18 +7,15 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmCommentControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.services.FilmCommentService;
+import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class FilmCommentController implements FilmCommentControllerApi {
-    private final FilmCommentService service;
 
-    @Override
-    public ResponseEntity<Integer> createComment(CreateCommentDto dto) {
-        log.info("Create comment for film id {}", dto.getFilmId());
-        return ResponseEntity.ok(service.create(dto));
-    }
+    private final FilmCommentService service;
+    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<CommentDto> getComment(Integer commentId) {
@@ -31,15 +28,21 @@ public class FilmCommentController implements FilmCommentControllerApi {
     }
 
     @Override
+    public ResponseEntity<Integer> createComment(CreateCommentDto dto) {
+        log.info("Create comment {} by user {}", dto, securityUtils.getCurrentUserId());
+        return ResponseEntity.ok(service.create(dto));
+    }
+
+    @Override
     public ResponseEntity<Void> updateComment(Integer commentId, UpdateCommentDto dto) {
-        log.info("Update comment by id {}", commentId);
+        log.info("Update comment {} {} by user {}", commentId, dto, securityUtils.getCurrentUserId());
         service.update(commentId, dto);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteComment(Integer commentId) {
-        log.info("Delete comment by id {}", commentId);
+        log.info("Delete comment {} by user {}", commentId, securityUtils.getCurrentUserId());
         service.delete(commentId);
         return ResponseEntity.noContent().build();
     }

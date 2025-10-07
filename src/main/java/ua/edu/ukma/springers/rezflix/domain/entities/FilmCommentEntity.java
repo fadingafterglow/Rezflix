@@ -3,21 +3,20 @@ package ua.edu.ukma.springers.rezflix.domain.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "film_comments")
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class FilmCommentEntity implements IGettableById<Integer> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -25,7 +24,7 @@ public class FilmCommentEntity implements IGettableById<Integer> {
 
     @NotBlank(message = "error.film_comment.text.blank")
     @Size(max = 2000, message = "error.film_comment.text.size")
-    @Column(name = "text", nullable = false, length = 2000)
+    @Column(name = "text", nullable = false)
     private String text;
 
     @Column(name = "created_at", nullable = false)
@@ -35,7 +34,13 @@ public class FilmCommentEntity implements IGettableById<Integer> {
     @JoinColumn(name = "film_id", nullable = false)
     private FilmEntity film;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @Column(name = "film_id", updatable = false, insertable = false)
+    private int filmId;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private UserEntity author;
+
+    @Column(name = "author_id", updatable = false, insertable = false)
+    private int authorId;
 }
