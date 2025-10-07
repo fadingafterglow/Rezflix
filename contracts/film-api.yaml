@@ -173,3 +173,7 @@ components:
     FilmCriteria:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            query:
+              type: string

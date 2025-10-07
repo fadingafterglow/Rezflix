@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251007_1840_add_film_ratings" author="Mykola Prybysh">
+        <createTable tableName="film_ratings">
+            <column name="film_id" type="int">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_ratings"
+                             referencedTableName="films" referencedColumnNames="id"
+                             foreignKeyName="fk_film_ratings_on_films" />
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_ratings"
+                             referencedTableName="users" referencedColumnNames="id"
+                             foreignKeyName="fk_film_ratings_on_users"/>
+            </column>
+            <column name="rating" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="datetime"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

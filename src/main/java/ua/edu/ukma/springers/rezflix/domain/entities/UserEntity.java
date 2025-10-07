@@ -18,7 +18,6 @@ import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 public class UserEntity implements IGettableById<Integer> {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

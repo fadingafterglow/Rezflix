@@ -6,8 +6,12 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.UserControllerApi;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.CurrentUserInfoDto;
 import ua.edu.ukma.springers.rezflix.services.UserService;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
 
 @Slf4j
 @RestController

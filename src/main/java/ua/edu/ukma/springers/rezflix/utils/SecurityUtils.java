@@ -20,4 +20,8 @@ public class SecurityUtils {
         if (!hasRole(roles))
             throw new ForbiddenException();
     }
+
+    public int getCurrentUserId() {
+        return 1;
+    }
 }
