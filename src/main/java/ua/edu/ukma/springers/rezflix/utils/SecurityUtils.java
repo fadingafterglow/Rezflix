@@ -2,6 +2,7 @@ package ua.edu.ukma.springers.rezflix.utils;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.exceptions.ForbiddenException;
 
@@ -23,5 +24,8 @@ public class SecurityUtils {
 
     public int getCurrentUserId() {
         return 1;
+    }
+    public UserEntity getCurrentUser() {
+        return null;
     }
 }

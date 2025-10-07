@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd">
+
+    <changeSet id="1759860626227-1" author="Stas Kulakevych">
+        <createTable tableName="film_collection_films">
+            <column name="collection_id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collection_films"/>
+            </column>
+            <column name="film_id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collection_films"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1759860626227-2" author="Stas Kulakevych">
+        <createTable tableName="film_collections">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_collections"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1759860626227-3" author="Stas Kulakevych">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="film_collections"
+                                 constraintName="FK_FILM_COLLECTIONS_ON_USER" referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+    <changeSet id="1759860626227-4" author="Stas Kulakevych">
+        <addForeignKeyConstraint baseColumnNames="collection_id" baseTableName="film_collection_films"
+                                 constraintName="fk_filcolfil_on_film_collection_entity" referencedColumnNames="id"
+                                 referencedTableName="film_collections"/>
+    </changeSet>
+    <changeSet id="1759860626227-5" author="Stas Kulakevych">
+        <addForeignKeyConstraint baseColumnNames="film_id" baseTableName="film_collection_films"
+                                 constraintName="fk_filcolfil_on_film_entity" referencedColumnNames="id"
+                                 referencedTableName="films"/>
+    </changeSet>
+
+</databaseChangeLog>
