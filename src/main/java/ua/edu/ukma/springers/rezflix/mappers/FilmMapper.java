@@ -7,6 +7,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmListDto;
 @Mapper(config = MapperConfiguration.class)
 public interface FilmMapper extends IResponseMapper<FilmEntity, FilmDto>, IListResponseMapper<FilmEntity, FilmListDto> {
+
     @Override
     @Mapping(target = "totalRating", ignore = true)
     @Mapping(target = "currentUserRating", ignore = true)

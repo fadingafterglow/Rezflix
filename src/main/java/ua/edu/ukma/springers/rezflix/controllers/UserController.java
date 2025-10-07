@@ -13,8 +13,6 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
 
-
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor

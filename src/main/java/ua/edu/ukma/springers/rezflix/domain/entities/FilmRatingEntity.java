@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -17,31 +17,29 @@ import java.time.OffsetDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class FilmRatingEntity implements IGettableById<FilmRatingId> {
 
     @EmbeddedId
+    @EqualsAndHashCode.Include
     private FilmRatingId id;
 
     @MapsId("filmId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "film_id", nullable = false)
     private FilmEntity film;
 
     @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @NotNull(message = "error.film_rating.null")
     @Min(value = 1, message = "error.film_rating.min")
     @Max(value = 5, message = "error.film_rating.max")
-    @Column(name = "rating")
-    private Integer rating;
+    @Column(name = "rating", nullable = false)
+    private int rating;
 
-    @NotNull(message = "error.film_rating.created_at.null")
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 }

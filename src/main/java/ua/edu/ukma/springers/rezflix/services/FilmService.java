@@ -1,12 +1,12 @@
 package ua.edu.ukma.springers.rezflix.services;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmListDto;
-import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mappers.FilmMapper;
 
 import java.util.List;
@@ -14,16 +14,18 @@ import java.util.List;
 @Service
 public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, UpsertFilmDto, Integer> {
 
-    private FilmMapper mapper;
+    private final FilmMapper mapper;
 
-    protected FilmService() {
+    public FilmService(FilmMapper mapper) {
         super(FilmEntity.class, FilmEntity::new);
+        this.mapper = mapper;
     }
 
-    @Transactional
-    public FilmListDto getFilmListByCruteria(ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto criteriaDto){
+    @Transactional(readOnly = true)
+    public FilmListDto getListResponseByCriteria(FilmCriteriaDto criteriaDto){
         FilmCriteria criteria = new FilmCriteria(criteriaDto);
         List<FilmEntity> entities = getList(criteria);
-        return mapper.toListResponse(count(criteria), entities);
+        long total = count(criteria);
+        return mapper.toListResponse(total, entities);
     }
 }
