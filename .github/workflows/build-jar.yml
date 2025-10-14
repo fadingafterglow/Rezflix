@@ -24,12 +24,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Show file content
-      run: cat ~/.m2/settings.xml
-
-    - name: show env
-      run: env
-
     - name: Package
       run: mvn -B package
 
