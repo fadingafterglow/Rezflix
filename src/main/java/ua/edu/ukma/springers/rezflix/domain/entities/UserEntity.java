@@ -25,8 +25,7 @@ public class UserEntity implements IGettableById<Integer> {
     private Integer id;
 
     @NotNull(message = "error.user.type.null")
-    //@JdbcType(PostgreSQLEnumJdbcType.class)
-    @JdbcType(EnumJdbcType.class)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "type", nullable = false)
     private UserType type;
 
