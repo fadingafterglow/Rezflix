@@ -4,6 +4,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import ua.edu.ukma.criteria.core.Criteria;
+import ua.edu.ukma.criteria.core.PredicatesBuilder;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity_;

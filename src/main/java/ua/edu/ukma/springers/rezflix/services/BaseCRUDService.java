@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ukma.springers.rezflix.criteria.Criteria;
+import ua.edu.ukma.criteria.core.Criteria;
+import ua.edu.ukma.criteria.core.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mergers.IMerger;
-import ua.edu.ukma.springers.rezflix.repositories.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.repositories.IRepository;
 import ua.edu.ukma.springers.rezflix.validators.IValidator;
 

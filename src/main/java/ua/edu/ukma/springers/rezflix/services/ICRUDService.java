@@ -2,7 +2,7 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import ua.edu.ukma.springers.rezflix.criteria.Criteria;
+import ua.edu.ukma.criteria.core.Criteria;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
 import java.util.List;

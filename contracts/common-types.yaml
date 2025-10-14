@@ -5,14 +5,14 @@ components:
       properties:
         page:
           type: integer
-          default: 0
         size:
           type: integer
-          default: 10
         orderBy:
           type: string
-        descendingOrder:
+        isDescendingOrder:
           type: boolean
+      x-implements:
+        - ua.edu.ukma.criteria.core.CriteriaRequest
 
     BaseList:
       type: object

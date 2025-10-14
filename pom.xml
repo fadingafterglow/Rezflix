@@ -35,6 +35,13 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/fadingafterglow/ukma-spring-boot-starter-criteria</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,9 +84,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>ua.edu.ukma</groupId>
+            <artifactId>ukma-spring-boot-starter-criteria</artifactId>
+            <version>0.0.1</version>
         </dependency>
 
         <dependency>

@@ -45,3 +45,7 @@ springdoc:
 
 api-keys:
     omdb: <KEY>
+
+criteria:
+    query:
+        max-page-size: 100
