@@ -6,8 +6,8 @@ spring:
         active: local
 
     datasource:
-        # url: jdbc:postgresql://localhost:5432/rezflix_db
-        url: jdbc:h2:mem:testdb;MODE=PostgreSQL;
+        url: jdbc:postgresql://localhost:5432/rezflix_db
+        # url: jdbc:h2:mem:testdb;MODE=PostgreSQL;
         username: postgres
         password: root
         hikari:
@@ -51,3 +51,7 @@ springdoc:
 
 api-keys:
     omdb: <KEY>
+
+api:
+    film-info:
+        enable: true
