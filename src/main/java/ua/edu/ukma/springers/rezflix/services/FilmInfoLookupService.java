@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -17,9 +16,8 @@ import ua.edu.ukma.springers.rezflix.mappers.FilmInfoLookupMapper;
 import java.util.List;
 import java.util.Objects;
 
-
 @Service
-@ConditionalOnProperty(name = "api-keys.omdb", matchIfMissing = false)
+@ConditionalOnProperty(name = "api-keys.omdb")
 public class FilmInfoLookupService {
 
     private final FilmInfoLookupMapper mapper;
