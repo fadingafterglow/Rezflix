@@ -26,7 +26,7 @@ public class FilmRatingController implements FilmRatingControllerApi {
     @Override
     public ResponseEntity<Void> setUserRating(Integer filmId, FilmRatingDto dto) {
         int userId = securityUtils.getCurrentUserId();
-        log.info("Set user {} rating {} for film {}", userId, dto, filmId);
+        log.info("Set user rating {} for film {}", dto, filmId);
         service.setUserRatingForFilm(userId, filmId, dto);
         return ResponseEntity.noContent().build();
     }
@@ -34,7 +34,7 @@ public class FilmRatingController implements FilmRatingControllerApi {
     @Override
     public ResponseEntity<Void> deleteUserRating(Integer filmId) {
         int userId = securityUtils.getCurrentUserId();
-        log.info("Delete user {} rating for film {}", userId, filmId);
+        log.info("Delete user rating for film {}", filmId);
         service.deleteUserRatingForFilm(userId, filmId);
         return ResponseEntity.noContent().build();
     }

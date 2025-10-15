@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.ErrorResponseDto;
 import ua.edu.ukma.springers.rezflix.exceptions.*;
+import ua.edu.ukma.springers.rezflix.logging.Markers;
 import ua.edu.ukma.springers.rezflix.utils.MessageResolver;
 
 import java.util.List;
@@ -101,11 +102,12 @@ public class ExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> internalServerError(Exception ex) {
-        log.error("Unexpected exception", ex);
+        log.error(Markers.EXCEPTION, "Unexpected exception", ex);
         return toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, responseOf("error.application.unexpected"));
     }
 
     private ResponseEntity<ErrorResponseDto> toResponseEntity(HttpStatusCode status, ErrorResponseDto body) {
+        log.warn(Markers.EXCEPTION, "Exception caused response with status {} and body {}", status.value(), body);
         return ResponseEntity.status(status)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body);

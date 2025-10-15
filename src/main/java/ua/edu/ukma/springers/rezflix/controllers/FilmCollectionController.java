@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmCollectionControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.services.FilmCollectionService;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
@@ -15,7 +14,6 @@ import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 public class FilmCollectionController implements FilmCollectionControllerApi {
 
     private final FilmCollectionService service;
-    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<FilmCollectionDto> getFilmCollection(Integer collectionId) {
@@ -29,20 +27,20 @@ public class FilmCollectionController implements FilmCollectionControllerApi {
 
     @Override
     public ResponseEntity<Integer> createFilmCollection(UpsertFilmCollectionDto upsertFilmCollectionDto) {
-        log.info("Create film collection {} by user {}", upsertFilmCollectionDto, securityUtils.getCurrentUserId());
+        log.info("Create film collection {}", upsertFilmCollectionDto);
         return ResponseEntity.ok(service.create(upsertFilmCollectionDto));
     }
 
     @Override
     public ResponseEntity<Void> updateFilmCollection(Integer collectionId, UpsertFilmCollectionDto upsertFilmCollectionDto) {
-        log.info("Update film collection {} {} by user {}", collectionId, upsertFilmCollectionDto, securityUtils.getCurrentUserId());
+        log.info("Update film collection {} {}", collectionId, upsertFilmCollectionDto);
         service.update(collectionId, upsertFilmCollectionDto);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteFilmCollection(Integer collectionId) {
-        log.info("Delete film collection {} by user {}", collectionId, securityUtils.getCurrentUserId());
+        log.info("Delete film collection {}", collectionId);
         service.delete(collectionId);
         return ResponseEntity.noContent().build();
     }

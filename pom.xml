@@ -104,6 +104,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- Use Logback since it is easier to configure, and performance improvements of Log4j2 are not required -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

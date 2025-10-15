@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.services.FilmService;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 
 @Slf4j
 @RestController
@@ -15,7 +14,6 @@ import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
 public class FilmController implements FilmControllerApi {
 
     private final FilmService service;
-    private final SecurityUtils securityUtils;
 
     @Override
     public ResponseEntity<FilmDto> getFilm(Integer filmId) {
@@ -29,20 +27,20 @@ public class FilmController implements FilmControllerApi {
 
     @Override
     public ResponseEntity<Integer> createFilm(UpsertFilmDto dto) {
-        log.info("Create film {} by user {}", dto, securityUtils.getCurrentUserId());
+        log.info("Create film {}", dto);
         return ResponseEntity.ok(service.create(dto));
     }
 
     @Override
     public ResponseEntity<Void> updateFilm(Integer filmId, UpsertFilmDto dto) {
-        log.info("Update film {} {} by user {}", filmId, dto, securityUtils.getCurrentUserId());
+        log.info("Update film {} {}", filmId, dto);
         service.update(filmId, dto);
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<Void> deleteFilm(Integer filmId) {
-        log.info("Delete film {} by user {}", filmId, securityUtils.getCurrentUserId());
+        log.info("Delete film {}", filmId);
         service.delete(filmId);
         return ResponseEntity.noContent().build();
     }

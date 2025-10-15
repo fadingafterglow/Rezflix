@@ -1,0 +1,25 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{requestId}] [%replace(userId = %X{userId:-!}){'userId = !', ''}]  %-5level %marker %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="UDP" class="ua.edu.ukma.springers.rezflix.logging.UDPAppender">
+        <port>14800</port>;
+        <host>localhost</host>
+        <layout class="ua.edu.ukma.springers.rezflix.logging.JSONLayout" />
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                <marker>LOCAL</marker>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="UDP" />
+    </root>
+</configuration>
