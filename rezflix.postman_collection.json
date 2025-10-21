@@ -1,0 +1,827 @@
+{
+	"info": {
+		"_postman_id": "48a563a4-4da3-40d3-8864-9d8b11e24a92",
+		"name": "rezflix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33337276"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"q\",\n    \"password\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/user/register",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "uk-UA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"8\",\n    \"password\": \"1\",\n    \"type\": \"MODERATOR\",\n    \"name\": \"17\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/user",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get current",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/user/curent",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"curent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by criteria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/user?size=5",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"user"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "MODERATOR",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "films",
+			"item": [
+				{
+					"name": "Create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.be.equal(200);",
+									"});",
+									"",
+									"let createdId = pm.response.text();",
+									"let postBody = JSON.parse(pm.request.body.raw);",
+									"",
+									"pm.sendRequest({",
+									"    url: pm.variables.replaceIn(\"{{base}}/api/film/\" + createdId),",
+									"    method: \"GET\",",
+									"    header: {",
+									"        \"Content-Type\": \"application/json\"",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.test(\"GET created film returns 200\", function () {",
+									"        pm.expect(res.code).to.be.equal(200);",
+									"    });",
+									"    pm.test(\"GET created film returns correct data\", function () {",
+									"        let getData = res.json();",
+									"        pm.expect(getData).to.have.property(\"title\", postBody.title);",
+									"        pm.expect(getData).to.have.property(\"description\", postBody.description);",
+									"    });",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"asds1212\",\n    \"description\": \"qwe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has JSON content type\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+									"});",
+									"",
+									"pm.test(\"Response is valid JSON\", function () {",
+									"    pm.response.to.be.json;",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an(\"object\");",
+									"});",
+									"",
+									"pm.test(\"Response has required fields\", function () {",
+									"    let jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property(\"title\");",
+									"    pm.expect(jsonData.title).to.be.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"description\");",
+									"    pm.expect(jsonData.description).to.be.a(\"string\");",
+									"    pm.expect(jsonData).to.have.property(\"totalRating\");",
+									"    pm.expect(jsonData).to.have.property(\"currentUserRating\");",
+									"});",
+									"",
+									"pm.test(\"Response time is under 100 ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by filter",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film?query=g",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "g"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"fiifififif\",\n    \"description\": \"qeqeqwe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "film ratings",
+			"item": [
+				{
+					"name": "Set",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rating\": 4\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film/2/rating",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"2",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/2/rating",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"2",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/1/rating",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"1",
+								"rating"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "film collections",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"qweqweqeqw\",\n    \"description\": \"\",\n    \"filmIds\": [2]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film-collections",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film-collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film-collections/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film-collections",
+								"2"
+							],
+							"query": [
+								{
+									"key": "requireActual",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by filter",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActual\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film-collections",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film-collections"
+							],
+							"query": [
+								{
+									"key": "ownerId",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "query",
+									"value": "eg",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"qwe\",\n    \"description\": \"qweqeqeqwe\",\n    \"filmIds\": [1, 3]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film-collections/4",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film-collections",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film-collections/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film-collections",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "film comments",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Bad bad\",\n    \"filmId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film/comment",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"comment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/comment/2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"comment",
+								"2"
+							],
+							"query": [
+								{
+									"key": "requireActual",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by filter",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isActual\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film/comment?filmId=2",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"comment"
+							],
+							"query": [
+								{
+									"key": "filmId",
+									"value": "2"
+								},
+								{
+									"key": "size",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"hahahaah\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/api/film/comment/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"comment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base}}/api/film/comment/1",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"comment",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "film lookup",
+			"item": [
+				{
+					"name": "Lookup info",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "uk-UA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"6\",\n    \"password\": \"1\",\n    \"type\": \"MODERATOR\",\n    \"name\": \"17\"\n}"
+						},
+						"url": {
+							"raw": "{{base}}/api/film/info-lookup?title=star",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"api",
+								"film",
+								"info-lookup"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "star"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5OTEzOTE2LCJleHAiOjE3NDk5MTc1MTYsInJvbGUiOiJVU0VSIn0.wRcY8621RjrGU5q3ih2YmvFRHPjO-IScV06zI7BdMErEA4kjr_cqaO9_xKrltFIYXZwGJbBzaVeR8fBZvCrFLA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
