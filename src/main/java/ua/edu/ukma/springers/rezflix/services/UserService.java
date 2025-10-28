@@ -2,16 +2,13 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ukma.springers.rezflix.controllers.*;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.criteria.UserCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
+import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.mappers.UserMapper;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpdateUserDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
 
@@ -20,11 +17,13 @@ public class UserService extends BaseCRUDService<UserEntity, CreateUserDto, Upda
 
     private final UserMapper mapper;
     private final EnumsMapper enumsMapper;
+    private final SecurityUtils securityUtils;
 
-    public UserService(UserMapper mapper, EnumsMapper enumsMapper) {
+    public UserService(UserMapper mapper, EnumsMapper enumsMapper, SecurityUtils securityUtils) {
         super(UserEntity.class, UserEntity::new);
         this.mapper = mapper;
         this.enumsMapper = enumsMapper;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional(readOnly = true)
@@ -38,5 +37,15 @@ public class UserService extends BaseCRUDService<UserEntity, CreateUserDto, Upda
     @Transactional
     public int registerUser(RegisterUserDto registerUserDto) {
         return create(mapper.toCreateUserDto(registerUserDto));
+    }
+
+    @Transactional(readOnly = true)
+    public CurrentUserInfoDto getCurrentUserInfo() {
+        UserRole role = securityUtils.getUserRole();
+        UserDto user = switch (role) {
+            case SUPER_ADMIN, ANONYMOUS -> null;
+            default -> mapper.toResponse(securityUtils.getCurrentUser());
+        };
+        return new CurrentUserInfoDto(enumsMapper.map(role), user);
     }
 }

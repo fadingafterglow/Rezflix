@@ -2,7 +2,9 @@ package ua.edu.ukma.springers.rezflix.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserRoleDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserTypeDto;
+import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
 
 @Mapper(
@@ -13,5 +15,9 @@ public interface EnumsMapper {
 
     UserTypeDto map(UserType type);
     UserType map(UserTypeDto type);
+    String mapToString(UserType type);
 
+    UserRoleDto map(UserRole role);
+    String mapToString(UserRole role);
+    UserRole mapRoleFromString(String role);
 }

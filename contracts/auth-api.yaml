@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  description: Authentication Service
+  version: '1.0'
+  title: Authentication Service
+
+tags:
+  - name: authentication-controller
+    description: Authentication Controller
+
+paths:
+  /auth/login:
+    post:
+      operationId: login
+      tags:
+        - authentication-controller
+      summary: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Access and refresh tokens
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /auth/refresh:
+    post:
+      operationId: refresh
+      tags:
+        - authentication-controller
+      summary: Refresh access token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        200:
+          description: New access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshResponse'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - accessToken
+        - refreshToken
+
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+        - refreshToken
+
+    RefreshResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+      required:
+        - accessToken

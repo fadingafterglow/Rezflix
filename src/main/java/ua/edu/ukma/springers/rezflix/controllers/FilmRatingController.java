@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmRatingControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import ua.edu.ukma.springers.rezflix.services.FilmRatingService;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 @Slf4j
 @RestController

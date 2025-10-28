@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -65,11 +64,6 @@ public class ExceptionController {
     @ExceptionHandler(UnauthenticatedException.class)
     public ResponseEntity<ErrorResponseDto> unauthorized(UnauthenticatedException ex) {
         return toResponseEntity(HttpStatus.UNAUTHORIZED, responseOf(ex));
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponseDto> unauthorized() {
-        return toResponseEntity(HttpStatus.UNAUTHORIZED, responseOf("error.application.unauthenticated"));
     }
 
     @ExceptionHandler(ForbiddenException.class)

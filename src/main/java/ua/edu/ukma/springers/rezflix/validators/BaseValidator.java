@@ -5,7 +5,7 @@ import jakarta.validation.Validator;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
 import java.util.Set;

@@ -35,9 +35,16 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
-    # Temporarily disabled
-    autoconfigure:
-        exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+security:
+    token:
+        secret: "!s)Mk#8}#5t9DTv<;hg^"
+        access-expiration: 10M
+        refresh-expiration: 3D
+    super-admin:
+        login: admin
+        password-hash: $2a$10$PhFxeCUPjTgR2n23s9/Z0udFk.CUtF2cOd.AnXq/ld0hSfsxz8FqG
+    cors:
+        frontend-origin: http://localhost:3000
 
 springdoc:
     swagger-ui:

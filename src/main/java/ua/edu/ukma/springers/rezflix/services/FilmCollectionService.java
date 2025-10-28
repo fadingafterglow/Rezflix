@@ -9,7 +9,7 @@ import ua.edu.ukma.springers.rezflix.domain.entities.FilmCollectionEntity;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmCollectionDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCollectionListDto;
 import ua.edu.ukma.springers.rezflix.mappers.FilmCollectionMapper;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
 

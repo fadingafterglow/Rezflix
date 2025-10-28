@@ -2,7 +2,6 @@ package ua.edu.ukma.springers.rezflix.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.UserControllerApi;
@@ -22,7 +21,7 @@ public class UserController implements UserControllerApi {
 
     @Override
     public ResponseEntity<CurrentUserInfoDto> getCurrentUserInfo() {
-        throw new NotImplementedException();
+        return ResponseEntity.ok(userService.getCurrentUserInfo());
     }
 
     @Override

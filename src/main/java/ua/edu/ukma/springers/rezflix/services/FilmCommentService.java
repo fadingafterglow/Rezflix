@@ -6,7 +6,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCommentCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmCommentEntity;
 import ua.edu.ukma.springers.rezflix.mappers.FilmCommentMapper;
-import ua.edu.ukma.springers.rezflix.utils.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
 

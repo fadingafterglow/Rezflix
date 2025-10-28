@@ -104,6 +104,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
         <!-- Use Logback since it is easier to configure, and performance improvements of Log4j2 are not required -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
