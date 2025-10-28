@@ -7,6 +7,101 @@
 	},
 	"item": [
 		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login as admin",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auth/login",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"8\",\n    \"password\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auth/login",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"refreshToken\": \"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzYxNjcyMjgyLCJleHAiOjE3NjE5MzE0ODJ9.cTMjhLiERYvpx-Pj--HFEgkDQ_S2w-NwovdWJCFlMp1QStAQhmnnQY2ne4kO3u-55FheL8Cq2XxTnpTzug585Q\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base}}/auth/refresh",
+							"host": [
+								"{{base}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "user",
 			"item": [
 				{
@@ -19,7 +114,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"q\",\n    \"password\": \"1\"\n}",
+							"raw": "{\n    \"username\": \"qq\",\n    \"password\": \"1\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -56,7 +151,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"8\",\n    \"password\": \"1\",\n    \"type\": \"MODERATOR\",\n    \"name\": \"17\"\n}",
+							"raw": "{\n    \"username\": \"c\",\n    \"password\": \"1\",\n    \"type\": \"CONTENT_MANAGER\",\n    \"about\": \"17\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -290,7 +385,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base}}/api/film?query=g",
+							"raw": "{{base}}/api/film",
 							"host": [
 								"{{base}}"
 							],
@@ -301,7 +396,8 @@
 							"query": [
 								{
 									"key": "query",
-									"value": "g"
+									"value": "g/",
+									"disabled": true
 								}
 							]
 						}
@@ -594,7 +690,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"text\": \"Bad bad\",\n    \"filmId\": 2\n}",
+							"raw": "{\n    \"text\": \"Bad bad\",\n    \"filmId\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -621,7 +717,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base}}/api/film/comment/2",
+							"raw": "{{base}}/api/film/comment/1",
 							"host": [
 								"{{base}}"
 							],
@@ -629,7 +725,7 @@
 								"api",
 								"film",
 								"comment",
-								"2"
+								"1"
 							],
 							"query": [
 								{
@@ -666,7 +762,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{base}}/api/film/comment?filmId=2",
+							"raw": "{{base}}/api/film/comment",
 							"host": [
 								"{{base}}"
 							],
@@ -678,7 +774,8 @@
 							"query": [
 								{
 									"key": "filmId",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								},
 								{
 									"key": "size",
@@ -697,7 +794,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"text\": \"hahahaah\"\n}",
+							"raw": "{\n    \"text\": \"[redacted]\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -790,7 +887,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ5OTEzOTE2LCJleHAiOjE3NDk5MTc1MTYsInJvbGUiOiJVU0VSIn0.wRcY8621RjrGU5q3ih2YmvFRHPjO-IScV06zI7BdMErEA4kjr_cqaO9_xKrltFIYXZwGJbBzaVeR8fBZvCrFLA",
+				"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzYxNjgxNzEyLCJleHAiOjE3NjE3NjgxMTIsInJvbGUiOiJNT0RFUkFUT1IifQ.3r80Y1cb0CS9tL9Us5norc8f2reE1iqP4Aj4HOkUyEfH6J9wYdFxoy2C-lHxsZOPNvQwIEGRLqLTRsmhOr2nfQ",
 				"type": "string"
 			}
 		]
@@ -801,6 +898,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -811,6 +909,7 @@
 			"script": {
 				"type": "text/javascript",
 				"packages": {},
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -820,8 +919,7 @@
 	"variable": [
 		{
 			"key": "base",
-			"value": "localhost:8080",
-			"type": "string"
+			"value": "localhost:8080"
 		}
 	]
 }
