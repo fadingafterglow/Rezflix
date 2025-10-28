@@ -15,9 +15,6 @@ public interface EnumsMapper {
 
     UserTypeDto map(UserType type);
     UserType map(UserTypeDto type);
-    String mapToString(UserType type);
 
     UserRoleDto map(UserRole role);
-    String mapToString(UserRole role);
-    UserRole mapRoleFromString(String role);
 }

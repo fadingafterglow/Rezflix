@@ -5,7 +5,6 @@ import jakarta.validation.Validator;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
-import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -14,8 +13,6 @@ public abstract class BaseValidator<E> implements IValidator<E> {
 
     @Setter(onMethod_ =  @Autowired)
     protected Validator validator;
-    @Setter(onMethod_ =  @Autowired)
-    protected SecurityUtils securityUtils;
 
     @Override
     public void validForView(E entity) {}
@@ -28,20 +25,16 @@ public abstract class BaseValidator<E> implements IValidator<E> {
 
     @Override
     public void validForCreate(E entity) {
-        securityUtils.authenticated();
         validateData(entity);
     }
 
     @Override
     public void validForUpdate(E entity) {
-        securityUtils.authenticated();
         validateData(entity);
     }
 
     @Override
-    public void validForDelete(E entity) {
-        securityUtils.authenticated();
-    }
+    public void validForDelete(E entity) {}
 
     protected void validateData(E entity) {
         Set<ConstraintViolation<E>> violations = validator.validate(entity);

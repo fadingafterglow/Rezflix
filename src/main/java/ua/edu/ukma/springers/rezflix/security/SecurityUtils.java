@@ -10,7 +10,6 @@ import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.exceptions.ForbiddenException;
 import ua.edu.ukma.springers.rezflix.exceptions.UnauthenticatedException;
-import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
 
 @Component
@@ -19,7 +18,6 @@ import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
 public class SecurityUtils {
 
     private final UserRepository userRepository;
-    private final EnumsMapper enumsMapper;
 
     private UserRole userRole;
     private UserEntity user;
@@ -43,7 +41,7 @@ public class SecurityUtils {
     private UserRole loadRole() {
         if (isAuthenticated()) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            return enumsMapper.mapRoleFromString(auth.getAuthorities().iterator().next().getAuthority());
+            return UserRole.valueOf(auth.getAuthorities().iterator().next().getAuthority());
         }
         return UserRole.ANONYMOUS;
     }

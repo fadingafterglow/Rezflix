@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
-import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final SuperAdminProperties superAdminProperties;
-    private final EnumsMapper enumsMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserDetails getSuperAdminDetails() {
         return new User(
             superAdminProperties.getLogin(), superAdminProperties.getPasswordHash(),
-            List.of(new SimpleGrantedAuthority(enumsMapper.mapToString(UserRole.SUPER_ADMIN)))
+            List.of(new SimpleGrantedAuthority(UserRole.SUPER_ADMIN.name()))
         );
     }
 
@@ -41,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserEntity user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
         return new User(
             user.getUsername(), user.getPasswordHash(),
-            List.of(new SimpleGrantedAuthority(enumsMapper.mapToString(user.getType())))
+            List.of(new SimpleGrantedAuthority(user.getType().name()))
         );
     }
 }

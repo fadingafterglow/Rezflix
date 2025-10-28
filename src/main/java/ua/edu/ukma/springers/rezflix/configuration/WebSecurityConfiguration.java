@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,9 +33,14 @@ import ua.edu.ukma.springers.rezflix.utils.MessageResolver;
 
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.*;
+import static ua.edu.ukma.springers.rezflix.domain.enums.UserRole.*;
+
 @Configuration
 @EnableConfigurationProperties({JWTTokenProperties.class, SuperAdminProperties.class})
 public class WebSecurityConfiguration {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger("SecurityLogger");
 
     public static final String LOGIN_URL = "/auth/login";
     public static final String REFRESH_URL = "/auth/refresh";
@@ -42,32 +48,69 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, @Value("${springdoc.swagger-ui.path}") String swaggerUiPath,
                                            AuthenticationManager authenticationManager, AuthenticationEntryPoint authenticationEntryPoint,
-                                           JWTService jwtService, UserDetailsService userDetailsService,
+                                           AccessDeniedHandler accessDeniedHandler, JWTService jwtService, UserDetailsService userDetailsService,
                                            ObjectMapper objectMapper) throws Exception
     {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(c -> c.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(c ->
+                        c.authenticationEntryPoint(authenticationEntryPoint)
+                         .accessDeniedHandler(accessDeniedHandler)
+                )
                 .addFilterAfter(new LoginFilter(LOGIN_URL, objectMapper, jwtService, authenticationManager), ExceptionTranslationFilter.class)
                 .addFilterAfter(new RefreshFilter(REFRESH_URL, objectMapper, jwtService, userDetailsService), LoginFilter.class)
                 .addFilterAfter(new JWTAuthenticationFilter(authenticationManager), RefreshFilter.class)
                 .authorizeHttpRequests(r ->
-                    r.requestMatchers(swaggerUiPath, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs*/**").permitAll()
-                     .requestMatchers(LOGIN_URL, REFRESH_URL).permitAll()
-                     .anyRequest().permitAll()
+                    r
+                     // swagger
+                     .requestMatchers(GET, swaggerUiPath, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs*/**").permitAll()
+                     // auth-api
+                     .requestMatchers(POST, LOGIN_URL, REFRESH_URL).permitAll()
+                     // user-api
+                     .requestMatchers(POST, "/api/user").hasAuthority(SUPER_ADMIN.name())
+                     .requestMatchers("/api/user", "/api/user/*").permitAll()
+                     // film-content-api
+                     .requestMatchers(GET, "/api/film/*/content").permitAll()
+                     .requestMatchers("/api/film/*/content").hasAuthority(CONTENT_MANAGER.name())
+                     // film-rating-api
+                     .requestMatchers("/api/film/*/rating").hasAuthority(VIEWER.name())
+                     // film-comment-api
+                     .requestMatchers(GET, "/api/film/comment", "/api/film/comment/*").permitAll()
+                     .requestMatchers(POST, "/api/film/comment").hasAuthority(VIEWER.name())
+                     .requestMatchers("/api/film/comment/*").hasAnyAuthority(VIEWER.name(), MODERATOR.name())
+                     // film-collection-api
+                     .requestMatchers(POST, "/api/film-collections").hasAnyAuthority(VIEWER.name())
+                     .requestMatchers("/api/film-collections", "/api/film-collections/*").hasAnyAuthority(VIEWER.name(), MODERATOR.name())
+                     // film-info-lookup-api
+                     .requestMatchers(GET, "/api/film/info-lookup").hasAuthority(CONTENT_MANAGER.name())
+                     // film-api
+                     .requestMatchers(GET, "/api/film", "/api/film/*").permitAll()
+                     .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
+                     // other
+                     .anyRequest().denyAll()
                 )
                 .build();
     }
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper, MessageResolver messageResolver) {
-        Logger logger = LoggerFactory.getLogger("AuthenticationLogger");
         return (request, response, authException) -> {
-            logger.warn(Markers.EXCEPTION, "Authentication failure from host {}: {}", request.getRemoteHost(), authException.getMessage());
+            LOGGER.warn(Markers.EXCEPTION, "Authentication failure from host {}: {}", request.getRemoteHost(), authException.getMessage());
             ErrorResponseDto errorResponseBody = new ErrorResponseDto(messageResolver.resolve("error.application.unauthenticated"), List.of());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            objectMapper.writeValue(response.getOutputStream(), errorResponseBody);
+        };
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(SecurityUtils securityUtils, ObjectMapper objectMapper, MessageResolver messageResolver) {
+        return (request, response, authException) -> {
+            LOGGER.warn(Markers.EXCEPTION, "Authorization failure from user {}: {}", securityUtils.getCurrentUserId(), authException.getMessage());
+            ErrorResponseDto errorResponseBody = new ErrorResponseDto(messageResolver.resolve("error.application.forbidden"), List.of());
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(response.getOutputStream(), errorResponseBody);
         };

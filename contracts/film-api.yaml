@@ -153,10 +153,14 @@ components:
         - $ref: '#/components/schemas/UpsertFilm'
         - type: object
           properties:
+            id:
+              type: integer
             totalRating:
               $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
             currentUserRating:
               $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
+          required:
+            - id
 
     FilmList:
       allOf:

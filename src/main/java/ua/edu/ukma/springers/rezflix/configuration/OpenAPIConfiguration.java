@@ -39,6 +39,7 @@ public class OpenAPIConfiguration {
             "refresh",
             "registerUser",
             "getUsersByCriteria",
+            "getCurrentUserInfo",
             "getFilm",
             "getFilmsByCriteria",
             "getFilmContentUrl",
