@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{ui.login.title}">Login</title>
+    </head>
+    <body>
+        <script th:src="@{/js/auth-worker-registration.js}"></script>
+
+        <form id="login-form">
+            <h2 th:text="#{ui.login.title}">Login</h2>
+            <div>
+                <input type="text" id="username" th:placeholder="#{ui.login.username}" required>
+            </div>
+            <div>
+                <input type="password" id="password" th:placeholder="#{ui.login.password}" required>
+            </div>
+            <div>
+                <button type="submit" th:text="#{ui.login.sign-in}">Sign In</button>
+            </div>
+        </form>
+
+        <script>
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                try {
+                    const response = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({username, password}),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const accessToken = data.accessToken;
+
+                        localStorage.setItem('jwt', accessToken);
+                        setToken(accessToken);
+
+                        setTimeout(() => {window.location.href = '/profile';}, 10) // Ensure token is updated
+                    } else if (response.status === 401) {
+                        alert('Invalid username or password');
+                    } else {
+                        alert('Server error, please try again later');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Network error');
+                }
+            });
+        </script>
+    </body>
+</html>

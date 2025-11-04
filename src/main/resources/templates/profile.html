@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="#{ui.profile.title}">Profile</title>
+    </head>
+    <body>
+        <script th:src="@{/js/auth-worker-registration.js}"></script>
+
+        <div th:switch="${user.getRole().name()}">
+            <div th:case="'SUPER_ADMIN'">
+                <p th:text="#{ui.profile.welcome-superadmin}">Welcome, superadmin!</p>
+            </div>
+            <div th:case="'ANONYMOUS'">
+                <p th:text="#{ui.profile.welcome-anonymous}">Welcome, anonymous!</p>
+            </div>
+            <div th:case="*">
+                <p th:text="#{ui.profile.welcome-user(${user.getInfo().getUsername()})}">Welcome, user!</p>
+            </div>
+        </div>
+    </body>
+</html>

@@ -88,8 +88,10 @@ public class WebSecurityConfiguration {
                      // film-api
                      .requestMatchers(GET, "/api/film", "/api/film/*").permitAll()
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
-                     // other
-                     .anyRequest().denyAll()
+                     // deny other api requests
+                     .requestMatchers("/api/**").denyAll()
+                     // allow request to static resources and ui pages
+                     .requestMatchers("/**").permitAll()
                 )
                 .build();
     }

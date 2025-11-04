@@ -9,13 +9,13 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import java.util.Locale;
 
 @Configuration
-@ConditionalOnResource(resources = "classpath:messages/errors.properties")
+@ConditionalOnResource(resources = "classpath:messages/messages.properties")
 public class MessageSourceConfiguration {
 
     @Bean
     public MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages/errors");
+        messageSource.setBasename("messages/messages");
         messageSource.setDefaultLocale(Locale.ROOT);
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(true);
