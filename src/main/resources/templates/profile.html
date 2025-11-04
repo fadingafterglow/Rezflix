@@ -9,6 +9,9 @@
         label { display: inline-block; width: 100px; }
         input[type="text"], textarea { width: 300px; padding: 5px; }
         textarea { height: 100px; }
+
+        .film-success { color: green; border: 1px solid green; padding: 10px; margin-bottom: 15px; }
+        .film-error { color: red; border: 1px solid red; padding: 10px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -18,12 +21,19 @@
 
     <div th:case="'SUPER_ADMIN'">
         <p th:text="#{ui.profile.welcome-superadmin}">Welcome, superadmin!</p>
-
         <hr>
+
+        <div th:if="${filmAddedSuccess}" class="film-success">
+            <p th:text="#{ui.film.form.success}">Фільм успішно додано!</p>
+        </div>
+        <div th:if="${filmAddedError}" class="film-error">
+            <p th:text="${filmAddedError}">Помилка: Не вдалося додати фільм.</p>
+        </div>
+
 
         <h3 th:text="#{ui.film.form.heading}">Add a new film</h3>
 
-        <form id="add-film-form" action="#" method="post">
+        <form th:action="@{/profile}" method="post">
             <div>
                 <label for="title" th:text="#{ui.film.form.title}">Title</label><br>
                 <input type="text"
@@ -32,7 +42,6 @@
                        required
                        maxlength="256">
             </div>
-
             <div>
                 <label for="description" th:text="#{ui.film.form.description}">Description</label><br>
                 <textarea id="description"
@@ -40,7 +49,6 @@
                           required
                           maxlength="5000"></textarea>
             </div>
-
             <div>
                 <button type="submit" th:text="#{ui.film.form.submit}">Add Film</button>
             </div>
@@ -55,8 +63,6 @@
         <p th:text="#{ui.profile.welcome-user(${user.getInfo().getUsername()})}">Welcome, user!</p>
     </div>
 </div>
-
-<script th:src="@{/js/profile.js}"></script>
 
 </body>
 </html>
