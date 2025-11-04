@@ -5,9 +5,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import ua.edu.ukma.springers.rezflix.services.FilmService;
 import ua.edu.ukma.springers.rezflix.services.UserService;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
+import org.springframework.web.bind.annotation.PostMapping;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;
 
 @Controller
@@ -28,6 +29,15 @@ public class UiPagesController {
         return "profile";
     }
 
+
+    @GetMapping("/")
+    public String getLandingPage(Model model) {
+        var films = filmService.getListResponseByCriteria(new FilmCriteriaDto());
+        model.addAttribute("films", films.getItems());
+        model.addAttribute("user", userService.getCurrentUserInfo());
+        return "landing";
+    }
+  
     @PostMapping("/profile")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public String createFilm(UpsertFilmDto filmDto, Model model) {
