@@ -122,18 +122,17 @@
     </style>
 </head>
 <body>
+<script th:src="@{/js/auth-worker-registration.js}"></script>
 <header>
     <h1>Rezflix</h1>
 
     <div th:switch="${user.role.name()}">
-        <!-- Show login if anonymous -->
-        <a th:case="'ANONYMOUS'" href="/login" class="btn" th:text="#{ui.login.title}">Login</a>
+        <a th:case="'ANONYMOUS'" th:href="@{/login}" class="btn" th:text="#{ui.login.title}">Login</a>
 
-        <!-- Show combined Profile/Logout dropdown if logged in -->
         <div th:case="*" class="dropdown" id="profileDropdown">
             <button class="btn" id="profileBtn" th:text="#{ui.profile.title}">Profile</button>
             <div class="dropdown-content">
-                <a href="/profile" th:text="#{ui.profile.title}">Profile</a>
+                <a th:href="@{/profile}" th:text="#{ui.profile.title}">Profile</a>
                 <button id="logoutBtn" th:text="#{ui.logout.title}">Logout</button>
             </div>
         </div>
@@ -171,35 +170,8 @@
 
         if (logoutBtn) {
             logoutBtn.addEventListener("click", async () => {
-                try {
-                    localStorage.removeItem("jwt");
-                    localStorage.removeItem("authToken");
-                    localStorage.removeItem("token");
-                } catch (e) {
-                    console.warn("localStorage clear failed:", e);
-                }
-
-                const postClearToSW = (sw) => {
-                    try {
-                        sw.postMessage({ type: "SET_TOKEN", token: null });
-                    } catch (err) {
-                        console.warn("failed to postMessage to service worker:", err);
-                    }
-                };
-
-                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                    postClearToSW(navigator.serviceWorker.controller);
-                } else if (navigator.serviceWorker && navigator.serviceWorker.ready) {
-                    try {
-                        const reg = await navigator.serviceWorker.ready;
-                        if (reg && reg.active) {
-                            postClearToSW(reg.active);
-                        }
-                    } catch (err) {
-                        console.warn("serviceWorker.ready failed:", err);
-                    }
-                }
-
+                localStorage.removeItem("jwt");
+                setToken(null);
                 window.location.href = "/";
             });
         }

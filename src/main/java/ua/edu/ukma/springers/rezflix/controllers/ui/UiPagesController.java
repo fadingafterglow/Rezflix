@@ -29,7 +29,6 @@ public class UiPagesController {
         return "profile";
     }
 
-
     @GetMapping("/")
     public String getLandingPage(Model model) {
         var films = filmService.getListResponseByCriteria(new FilmCriteriaDto());
@@ -39,14 +38,14 @@ public class UiPagesController {
     }
   
     @PostMapping("/profile")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
     public String createFilm(UpsertFilmDto filmDto, Model model) {
 
         try {
             filmService.create(filmDto);
             model.addAttribute("filmAddedSuccess", true);
         } catch (Exception e) {
-            model.addAttribute("filmAddedError", "Помилка додавання: " + e.getMessage());
+            model.addAttribute("filmAddedError", e.getMessage());
         }
 
         model.addAttribute("user", userService.getCurrentUserInfo());

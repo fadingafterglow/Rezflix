@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,6 +38,7 @@ import static org.springframework.http.HttpMethod.*;
 import static ua.edu.ukma.springers.rezflix.domain.enums.UserRole.*;
 
 @Configuration
+@EnableMethodSecurity
 @EnableConfigurationProperties({JWTTokenProperties.class, SuperAdminProperties.class})
 public class WebSecurityConfiguration {
 

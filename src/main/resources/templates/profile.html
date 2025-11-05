@@ -27,7 +27,7 @@
             <p th:text="#{ui.film.form.success}">Фільм успішно додано!</p>
         </div>
         <div th:if="${filmAddedError}" class="film-error">
-            <p th:text="${filmAddedError}">Помилка: Не вдалося додати фільм.</p>
+            <p th:text="#{${filmAddedError}}">Помилка: Не вдалося додати фільм.</p>
         </div>
 
 
