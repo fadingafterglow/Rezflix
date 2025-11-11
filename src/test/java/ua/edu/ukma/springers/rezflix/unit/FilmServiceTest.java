@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix;
+package ua.edu.ukma.springers.rezflix.unit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +51,23 @@ public class FilmServiceTest {
         filmService.setCriteriaRepository(criteriaRepository);
         filmService.setValidator(validator);
         filmService.setMerger(merger);
+    }
+
+    @Test
+    void getByIdTest() {
+        Integer filmId = 1;
+        FilmEntity mockFilm = new FilmEntity();
+        mockFilm.setId(filmId);
+
+        when(filmRepository.findFetchAllById(filmId)).thenReturn(Optional.of(mockFilm));
+        doNothing().when(validator).validForView(mockFilm);
+
+        FilmEntity result = filmService.getById(filmId);
+
+        assertNotNull(result);
+        assertEquals(filmId, result.getId());
+        verify(filmRepository, times(1)).findFetchAllById(filmId);
+        verify(validator, times(1)).validForView(mockFilm);
     }
 
     @Test
@@ -147,23 +164,6 @@ public class FilmServiceTest {
         verify(merger, times(1)).mergeForCreate(any(FilmEntity.class), eq(createDto));
         verify(validator, times(1)).validForCreate(any(FilmEntity.class));
         verify(filmRepository, times(1)).save(any(FilmEntity.class));
-    }
-
-    @Test
-    void getByIdTest() {
-        Integer filmId = 1;
-        FilmEntity mockFilm = new FilmEntity();
-        mockFilm.setId(filmId);
-
-        when(filmRepository.findFetchAllById(filmId)).thenReturn(Optional.of(mockFilm));
-        doNothing().when(validator).validForView(mockFilm);
-
-        FilmEntity result = filmService.getById(filmId);
-
-        assertNotNull(result);
-        assertEquals(filmId, result.getId());
-        verify(filmRepository, times(1)).findFetchAllById(filmId);
-        verify(validator, times(1)).validForView(mockFilm);
     }
 
     @Test
