@@ -2,9 +2,7 @@ package ua.edu.ukma.springers.rezflix.utils;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 
 import static ua.edu.ukma.springers.rezflix.utils.ApiPaths.USER_API.*;
 
@@ -20,5 +18,17 @@ public class UserRequests {
 
     public UserListDto getUsersByCriteria(UserCriteriaDto criteria) {
         return generalRequests.getByCriteria(BASE, criteria, "", UserListDto.class);
+    }
+
+    public Integer createUser(CreateUserDto dto, String authToken) {
+        return generalRequests.create(dto, BASE, authToken, Integer.class);
+    }
+
+    public void createUserFail(CreateUserDto dto, String authToken, int expectedStatus) {
+        generalRequests.createFail(dto, BASE, authToken, expectedStatus);
+    }
+
+    public CurrentUserInfoDto getCurrentUserInfo(String authToken) {
+        return generalRequests.get(BASE + CURRENT, authToken, CurrentUserInfoDto.class);
     }
 }

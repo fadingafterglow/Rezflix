@@ -177,14 +177,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base}}/api/user/curent",
+							"raw": "{{base}}/api/user/current",
 							"host": [
 								"{{base}}"
 							],
 							"path": [
 								"api",
 								"user",
-								"curent"
+								"current"
 							]
 						}
 					},

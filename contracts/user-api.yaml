@@ -33,7 +33,7 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
-  /api/user/curent:
+  /api/user/current:
     get:
       operationId: getCurrentUserInfo
       tags:
