@@ -3,10 +3,13 @@ package ua.edu.ukma.springers.rezflix.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.BaseCriteriaDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.LoginRequestDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.LoginResponseDto;
 
 import java.util.Map;
 
@@ -14,23 +17,41 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 @Component
-@RequiredArgsConstructor
 public class GeneralRequests {
 
     private final ObjectMapper mapper;
 
-    public String getAuthToken(String login, String password) {
-        // TODO: implement token retrieval
-        return "token";
+    @Getter
+    private final String superAdminLogin;
+    @Getter
+    private final String superAdminPassword;
+
+
+    public GeneralRequests(ObjectMapper mapper,
+                           @Value("${security.super-admin.login}") String superAdminLogin,
+                           @Value("${security.super-admin.password}") String superAdminPassword
+    ) {
+        this.mapper = mapper;
+        this.superAdminLogin = superAdminLogin;
+        this.superAdminPassword = superAdminPassword;
     }
 
-    public void getAuthTokenFail(String login, String password) {
-        // TODO: implement token retrieval
+    public String getAuthToken(String login, String password) {
+        LoginResponseDto responseDto = given()
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .body(new LoginRequestDto(login, password))
+                .expect()
+                .statusCode(HttpServletResponse.SC_OK)
+                .body(notNullValue())
+                .when()
+                .post(ApiPaths.AUTH_API.BASE + ApiPaths.AUTH_API.LOGIN)
+                .as(LoginResponseDto.class);
+        return responseDto.getAccessToken();
     }
 
     public String getSuperAdminAuthToken() {
-        // TODO: implement token retrieval
-        return "super_admin_token";
+        return getAuthToken(superAdminLogin, superAdminPassword);
     }
 
     public <View, Id> Id create(View dto, String apiPath, String authToken, Class<Id> idClass) {

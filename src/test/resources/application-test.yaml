@@ -1,0 +1,5 @@
+security:
+  super-admin:
+    login: admin
+    password: admin
+    password-hash: $2a$10$PhFxeCUPjTgR2n23s9/Z0udFk.CUtF2cOd.AnXq/ld0hSfsxz8FqG
