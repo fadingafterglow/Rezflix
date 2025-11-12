@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix;
+package ua.edu.ukma.springers.rezflix.film;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
 import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRepository;
 import ua.edu.ukma.springers.rezflix.validators.FilmValidator;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,9 +28,6 @@ class FilmValidatorTest {
     @Mock
     private Validator validator;
 
-    @Mock
-    private Set<ConstraintViolation> violations;
-
     @InjectMocks
     private FilmValidator filmValidator;
 
@@ -46,17 +41,15 @@ class FilmValidatorTest {
         FilmEntity film = new FilmEntity();
         film.setTitle("ChainsawMan");
 
-        when(validator.validate(film)).thenReturn(Collections.emptySet());
-
-        when(filmRepository.findIdByTitle("ChainsawMan")).thenReturn(Optional.of(99));
+        when(validator.validate(film)).thenReturn(Set.of());
+        when(filmRepository.findIdByTitle(film.getTitle())).thenReturn(Optional.of(99));
 
         ValidationException ex = assertThrows(
                 ValidationException.class,
                 () -> filmValidator.validForCreate(film)
         );
-
         assertEquals("error.film.title.duplicate", ex.getMessage());
-        verify(filmRepository, times(1)).findIdByTitle("ChainsawMan");
+        verify(filmRepository, times(1)).findIdByTitle(film.getTitle());
     }
 
     @Test
@@ -64,27 +57,38 @@ class FilmValidatorTest {
         FilmEntity film = new FilmEntity();
         film.setTitle("Fight club");
 
-        when(validator.validate(film)).thenReturn(Collections.emptySet());
-
-        when(filmRepository.findIdByTitle("Fight club")).thenReturn(Optional.empty());
+        when(validator.validate(film)).thenReturn(Set.of());
+        when(filmRepository.findIdByTitle(film.getTitle())).thenReturn(Optional.empty());
 
         assertDoesNotThrow(() -> filmValidator.validForCreate(film));
-        verify(filmRepository, times(1)).findIdByTitle("Fight club");
+        verify(filmRepository, times(1)).findIdByTitle(film.getTitle());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void validForCreate_shouldReturnConstraintViolation() {
+    void validForCreate_shouldThrowException_whenConstraintIsViolated() {
         FilmEntity film = new FilmEntity();
         film.setTitle("Sayonara no Asa ni Yakusoku no Hana wo Kazarou");
 
-        when(validator.validate(film)).thenReturn(Set.of(Mockito.mock(ConstraintViolation.class)));
+        when(validator.validate(film)).thenReturn(Set.of(mock(ConstraintViolation.class)));
 
         assertThrows(
                 ValidationException.class,
                 () -> filmValidator.validForCreate(film)
         );
+        verify(filmRepository, never()).findIdByTitle(film.getTitle());
+    }
 
-        verify(filmRepository, never()).findIdByTitle("Sayonara no Asa ni Yakusoku no Hana wo Kazarou");
+    @Test
+    void validForUpdate_shouldNotThrow_whenTitleIsNotChanged() {
+        FilmEntity film = new FilmEntity();
+        film.setId(42);
+        film.setTitle("Sayonara no Asa ni Yakusoku no Hana wo Kazarou");
+
+        when(validator.validate(film)).thenReturn(Set.of());
+        when(filmRepository.findIdByTitle(film.getTitle())).thenReturn(Optional.of(film.getId()));
+
+        assertDoesNotThrow(() -> filmValidator.validForUpdate(film));
+        verify(filmRepository, times(1)).findIdByTitle(film.getTitle());
     }
 }

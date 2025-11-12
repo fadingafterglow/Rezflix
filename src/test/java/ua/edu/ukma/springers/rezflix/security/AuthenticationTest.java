@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     WebSecurityConfiguration.class, CustomUserDetailsService.class, JWTService.class, SecurityUtils.class,
     DefaultMessageResolver.class
 })
-public class AuthenticationTest {
+class AuthenticationTest {
 
     @MockitoBean
     private UserRepository userRepository;
