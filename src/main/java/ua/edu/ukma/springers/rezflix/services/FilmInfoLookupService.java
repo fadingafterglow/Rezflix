@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+import ua.edu.ukma.springers.rezflix.aspects.retry.Retryable;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmInfoLookupResultDto;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mappers.FilmInfoLookupMapper;
@@ -40,6 +42,7 @@ public class FilmInfoLookupService {
             .build();
     }
 
+    @Retryable(retryFor = ResourceAccessException.class, attempts = 5, delayMs = 1000)
     public FilmInfoLookupResultDto lookupFilmInfo(String title) {
         FilmInfoLookupApiResponse apiResponse = restClient.get()
             .uri("http://www.omdbapi.com/?apikey={apiKey}&t={title}", apiKey, title)

@@ -94,6 +94,11 @@ public class ExceptionController {
         return toResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, responseOf("error.application.method-not-allowed"));
     }
 
+    @ExceptionHandler(AllRetryAttemptsUsedException.class)
+    public ResponseEntity<ErrorResponseDto> serviceUnavailable(AllRetryAttemptsUsedException ex) {
+        return toResponseEntity(HttpStatus.SERVICE_UNAVAILABLE, responseOf(ex));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> internalServerError(Exception ex) {
         log.error(Markers.EXCEPTION, "Unexpected exception", ex);
