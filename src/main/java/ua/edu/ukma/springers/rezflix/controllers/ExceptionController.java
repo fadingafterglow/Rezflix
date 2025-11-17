@@ -99,6 +99,11 @@ public class ExceptionController {
         return toResponseEntity(HttpStatus.SERVICE_UNAVAILABLE, responseOf(ex));
     }
 
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ErrorResponseDto> rateLimitExceeded(RateLimitExceededException ex) {
+        return toResponseEntity(HttpStatus.TOO_MANY_REQUESTS, responseOf(ex));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> internalServerError(Exception ex) {
         log.error(Markers.EXCEPTION, "Unexpected exception", ex);

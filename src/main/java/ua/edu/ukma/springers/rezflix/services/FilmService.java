@@ -2,6 +2,7 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.springers.rezflix.aspects.limit.RateLimited;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCriteria;
@@ -22,6 +23,7 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
         this.mapper = mapper;
     }
 
+    @RateLimited(limitPerMinute = 5)
     @Transactional(readOnly = true)
     public FilmDto getResponseById(int id) {
         return mapper.toResponse(getById(id));
