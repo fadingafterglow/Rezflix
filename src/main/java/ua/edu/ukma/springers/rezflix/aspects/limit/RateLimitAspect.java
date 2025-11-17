@@ -1,66 +1,65 @@
 package ua.edu.ukma.springers.rezflix.aspects.limit;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.data.redis.core.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ua.edu.ukma.springers.rezflix.exceptions.RateLimitExceededException;
 
-import java.time.Duration;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Slf4j
 @Aspect
 @Component
-@Slf4j
 public class RateLimitAspect {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final Map<String, Map<String, Queue<Long>>> calls = new ConcurrentHashMap<>();
 
-    public RateLimitAspect(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    private final HttpServletRequest request;
+
+    public RateLimitAspect(HttpServletRequest request) {
+        this.request = request;
     }
 
-    @Around("@annotation(rateLimited)")
-    public Object enforceLimit(ProceedingJoinPoint pjp, RateLimited rateLimited) throws Throwable {
+    @Pointcut("@annotation(rateLimited)")
+    public void annotatedWithRateLimit(RateLimited rateLimited) {
+    }
 
-        String userId = getCurrentUserId();
-        if (userId == null) {
-            throw new IllegalStateException("User ID is null - cannot apply rate limiting");
-        }
+    @Before("annotatedWithRateLimit(rateLimited)")
+    public void enforceLimit(JoinPoint jp, RateLimited rateLimited) {
+        String clientKey = getClientIp();
+        String methodKey = jp.getSignature().toLongString();
 
-        String methodKey = pjp.getSignature().toLongString();
         int limit = rateLimited.limitPerMinute();
-
         long now = System.currentTimeMillis();
         long oneMinuteAgo = now - 60_000;
 
-        String redisKey = "rate-limit:" + userId + ":" + methodKey;
+        Map<String, Queue<Long>> clientMap =
+                calls.computeIfAbsent(clientKey, key -> new ConcurrentHashMap<>());
 
-        ZSetOperations<String, String> zset = redisTemplate.opsForZSet();
+        Queue<Long> timestamps =
+                clientMap.computeIfAbsent(methodKey, key -> new ConcurrentLinkedQueue<>());
 
-        // Remove requests older than 1 minute
-        zset.removeRangeByScore(redisKey, 0, oneMinuteAgo);
+        while (true) {
+            Long head = timestamps.peek();
+            if (head == null || head >= oneMinuteAgo) break;
+            timestamps.poll();
+        }
 
-        Long count = zset.count(redisKey, oneMinuteAgo, now);
-        if (count == null) count = 0L;
-
-        if (count >= limit) {
+        if (timestamps.size() >= limit) {
             throw new RateLimitExceededException();
         }
 
-        zset.add(redisKey, String.valueOf(now), now);
-
-        // clear redis
-        redisTemplate.expire(redisKey, Duration.ofMinutes(2));
-
-        return pjp.proceed();
+        timestamps.add(now);
     }
 
-    private String getCurrentUserId() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) return null;
-        return auth.getName();
+    private String getClientIp() {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isBlank()) return ip.split(",")[0];
+        return request.getRemoteAddr();
     }
 }
