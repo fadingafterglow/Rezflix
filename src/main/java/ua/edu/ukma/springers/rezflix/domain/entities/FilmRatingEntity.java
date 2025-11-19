@@ -3,13 +3,11 @@ package ua.edu.ukma.springers.rezflix.domain.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "film_ratings")

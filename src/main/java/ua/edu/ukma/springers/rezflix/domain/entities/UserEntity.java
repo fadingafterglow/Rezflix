@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
-import org.hibernate.type.descriptor.jdbc.EnumJdbcType;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 

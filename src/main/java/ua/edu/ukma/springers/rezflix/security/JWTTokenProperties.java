@@ -10,8 +10,8 @@ import java.time.Duration;
 @RequiredArgsConstructor
 @ConfigurationProperties(prefix = "security.token")
 public class JWTTokenProperties {
-    public final static String PREFIX = "Bearer ";
-    public final static String ROLE_CLAIM = "role";
+    public static final String PREFIX = "Bearer ";
+    public static final String ROLE_CLAIM = "role";
 
     private final String secret;
     private final Duration accessExpiration;

@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
@@ -35,7 +36,7 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
     }
 
     @Override
-    protected void postCreate(FilmCommentEntity entity, CreateCommentDto dto) {
+    protected void postCreate(@NonNull FilmCommentEntity entity, @NonNull CreateCommentDto dto) {
         entity.setAuthor(securityUtils.getCurrentUser());
     }
 }

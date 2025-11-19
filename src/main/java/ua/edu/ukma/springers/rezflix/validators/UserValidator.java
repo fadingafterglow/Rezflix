@@ -2,8 +2,6 @@ package ua.edu.ukma.springers.rezflix.validators;
 
 import org.springframework.stereotype.Component;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
-import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
-import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
 import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
 import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
 

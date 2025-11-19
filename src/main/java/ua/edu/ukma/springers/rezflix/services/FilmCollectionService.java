@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCollectionCriteriaDto;
@@ -39,7 +40,7 @@ public class FilmCollectionService extends BaseCRUDService<FilmCollectionEntity,
     }
 
     @Override
-    protected void postCreate(FilmCollectionEntity entity, UpsertFilmCollectionDto view) {
+    protected void postCreate(@NonNull FilmCollectionEntity entity, @NonNull UpsertFilmCollectionDto view) {
         entity.setOwner(securityUtils.getCurrentUser());
     }
 }
