@@ -11,10 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class LogServiceExceptionAspect {
-    @Pointcut("execution(* ua.edu.ukma.springers.rezflix.services..*(..))")
+    @Pointcut("within(ua.edu.ukma.springers.rezflix.services..*)")
     public void serviceMethod() {}
 
-    @AfterThrowing(pointcut = "serviceMethod()", throwing = "ex")
+    @Pointcut("execution(public * *(..))")
+    public void publicMethod() {}
+
+    @AfterThrowing(pointcut = "serviceMethod() && publicMethod()", throwing = "ex")
     public void logException(JoinPoint joinPoint, Throwable ex) {
         log.error("Exception in {}: {}", joinPoint.getSignature().toShortString(), ex.getMessage());
     }
