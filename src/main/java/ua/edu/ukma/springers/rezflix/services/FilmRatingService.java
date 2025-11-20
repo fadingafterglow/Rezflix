@@ -35,4 +35,9 @@ public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRat
     public void deleteUserRatingForFilm(int userId, int filmId) {
         delete(new FilmRatingId(filmId, userId));
     }
+
+    @Override
+    public String getCacheName() {
+        return "filmRating";
+    }
 }

@@ -39,4 +39,9 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
     protected void postCreate(@NonNull FilmCommentEntity entity, @NonNull CreateCommentDto dto) {
         entity.setAuthor(securityUtils.getCurrentUser());
     }
+
+    @Override
+    public String getCacheName() {
+        return "filmComment";
+    }
 }

@@ -90,6 +90,7 @@ public class WebSecurityConfiguration {
                      // film-api
                      .requestMatchers(GET, "/api/film", "/api/film/*").permitAll()
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
+                     .requestMatchers("/api/cache/*").hasAuthority(SUPER_ADMIN.name())
                      // deny other api requests
                      .requestMatchers("/api/**").denyAll()
                      // allow request to static resources and ui pages

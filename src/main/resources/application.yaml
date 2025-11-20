@@ -35,6 +35,9 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
+    cache:
+        cache-names: "user,film,filmRating,filmComment,filmCollection"
+
 security:
     token:
         secret: "!s)Mk#8}#5t9DTv<;hg^"

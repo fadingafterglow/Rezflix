@@ -48,4 +48,9 @@ public class UserService extends BaseCRUDService<UserEntity, CreateUserDto, Upda
         };
         return new CurrentUserInfoDto(enumsMapper.map(role), user);
     }
+
+    @Override
+    public String getCacheName() {
+        return "user";
+    }
 }

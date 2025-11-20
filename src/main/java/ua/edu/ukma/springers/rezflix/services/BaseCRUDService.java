@@ -2,6 +2,8 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,8 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     protected IValidator<E> validator;
     @Setter(onMethod_ = @Autowired)
     protected IMerger<E, CV, UV> merger;
+    @Setter(onMethod_ = @Autowired)
+    protected CacheManager cacheManager;
 
     protected final Class<E> entityClass;
     protected final Supplier<E> entitySupplier;
@@ -48,9 +52,11 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     @Override
     @Transactional(readOnly = true)
     public E getById(@NonNull I id) {
-        E entity = getByIdFetchAllWithoutValidation(id);
-        validator.validForView(entity);
-        return entity;
+        return getCache().get(id, () -> {
+            E entity = getByIdFetchAllWithoutValidation(id);
+            validator.validForView(entity);
+            return entity;
+        });
     }
 
     @Override
@@ -97,6 +103,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         postUpdate(entity, view);
         validator.validForUpdate(entity);
         repository.save(entity);
+        getCache().evict(id);
         return true;
     }
 
@@ -106,6 +113,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         E entity = getByIdWithoutValidation(id);
         validator.validForDelete(entity);
         repository.delete(entity);
+        getCache().evict(id);
     }
 
     protected NotFoundException notFound(I id) {
@@ -116,5 +124,11 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     }
 
     protected void postUpdate(@NonNull E entity, @NonNull UV view) {
+    }
+
+    protected abstract String getCacheName();
+
+    protected Cache getCache() {
+        return cacheManager.getCache(getCacheName());
     }
 }
