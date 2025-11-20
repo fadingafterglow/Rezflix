@@ -43,4 +43,9 @@ public class FilmCollectionService extends BaseCRUDService<FilmCollectionEntity,
     protected void postCreate(@NonNull FilmCollectionEntity entity, @NonNull UpsertFilmCollectionDto view) {
         entity.setOwner(securityUtils.getCurrentUser());
     }
+
+    @Override
+    public String getCacheName() {
+        return "filmCollection";
+    }
 }

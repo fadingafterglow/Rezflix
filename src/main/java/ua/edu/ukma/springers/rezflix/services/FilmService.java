@@ -36,4 +36,9 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
         long total = count(criteria);
         return mapper.toListResponse(total, entities);
     }
+
+    @Override
+    public String getCacheName() {
+        return "film";
+    }
 }
