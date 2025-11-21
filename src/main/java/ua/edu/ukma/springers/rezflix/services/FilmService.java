@@ -5,12 +5,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.aspects.limit.RateLimited;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmListDto;
+import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mappers.FilmMapper;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRepository;
 
@@ -22,17 +20,36 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
 
     private final FilmMapper mapper;
     private final FilmRepository filmRepository;
+    private final UserService userService;
+    private final FilmRatingService filmRatingService;
 
-    public FilmService(FilmMapper mapper, FilmRepository filmRepository) {
+    public FilmService(FilmMapper mapper, FilmRepository filmRepository, UserService userService, FilmRatingService filmRatingService) {
         super(FilmEntity.class, FilmEntity::new);
         this.mapper = mapper;
         this.filmRepository = filmRepository;
+        this.userService = userService;
+        this.filmRatingService = filmRatingService;
     }
 
     @RateLimited(limitPerMinute = 5)
     @Transactional(readOnly = true)
     public FilmDto getResponseById(int id) {
-        return mapper.toResponse(getById(id));
+        FilmDto result = mapper.toResponse(getById(id));
+
+        UserDto curUser = userService.getCurrentUserInfo().getInfo();
+        if(curUser == null) {
+            return result;
+        }
+
+        int userId = curUser.getId();
+        try {
+            FilmRatingDto rating = filmRatingService.getUserRatingForFilm(userId, id);
+            result.setCurrentUserRating(rating);
+        } catch (NotFoundException ex) {
+            // Ignore, current user hasn't rated this film yet.
+        }
+
+        return result;
     }
 
     @Transactional(readOnly = true)
