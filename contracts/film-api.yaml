@@ -156,7 +156,8 @@ components:
             id:
               type: integer
             totalRating:
-              $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
+              type: number
+              format: double
             currentUserRating:
               $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
           required:
