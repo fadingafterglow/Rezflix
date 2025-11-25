@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,7 @@ public class FilmInfoLookupService {
             .build();
     }
 
+    @Cacheable("omdbApi")
     @Retryable(retryFor = ResourceAccessException.class, attempts = 5, delayMs = 1000)
     public FilmInfoLookupResultDto lookupFilmInfo(String title) {
         FilmInfoLookupApiResponse apiResponse = callOmdbApi(title);

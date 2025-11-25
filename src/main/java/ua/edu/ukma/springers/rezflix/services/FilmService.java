@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.List;
 @Service
 public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, UpsertFilmDto, Integer> {
 
+    private static final String CACHE_NAME = "film";
+
     private final FilmMapper mapper;
     private final FilmRepository filmRepository;
     private final FilmRatingService filmRatingService;
@@ -28,6 +31,7 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
         this.filmRatingService = filmRatingService;
     }
 
+    @Cacheable(CACHE_NAME)
     @RateLimited
     @Transactional(readOnly = true)
     public FilmDto getResponseById(int id) {
@@ -50,5 +54,10 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
         log.info("Started recalculateTotalRatings");
         filmRepository.recalculateTotalRatings();
         log.info("Finished recalculateTotalRatings");
+    }
+
+    @Override
+    public String getCacheName() {
+        return CACHE_NAME;
     }
 }

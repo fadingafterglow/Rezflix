@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  description: Cache Service
+  version: '1.0'
+  title: Cache Service
+
+tags:
+  - name: cache-controller
+    description: Cache Controller
+
+paths:
+  /api/cache/{cacheName}:
+    parameters:
+      - in: path
+        name: cacheName
+        required: true
+        schema:
+          type: string
+
+    delete:
+      operationId: clearCache
+      tags:
+        - cache-controller
+      summary: Clear cache by name
+      responses:
+        204:
+          description: Cache was cleared
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'

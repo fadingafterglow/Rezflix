@@ -2,6 +2,7 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import ua.edu.ukma.springers.rezflix.repositories.IRepository;
 import ua.edu.ukma.springers.rezflix.validators.IValidator;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I extends Comparable<I>> implements ICRUDService<E, CV, UV, I> {
@@ -26,6 +28,8 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     protected IValidator<E> validator;
     @Setter(onMethod_ = @Autowired)
     protected IMerger<E, CV, UV> merger;
+    @Setter(onMethod_ = @Autowired)
+    protected CacheManager cacheManager;
 
     protected final Class<E> entityClass;
     protected final Supplier<E> entitySupplier;
@@ -97,6 +101,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         postUpdate(entity, view);
         validator.validForUpdate(entity);
         repository.save(entity);
+        evictIfCached(id);
         return true;
     }
 
@@ -106,6 +111,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         E entity = getByIdWithoutValidation(id);
         validator.validForDelete(entity);
         repository.delete(entity);
+        evictIfCached(id);
     }
 
     protected NotFoundException notFound(I id) {
@@ -116,5 +122,17 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     }
 
     protected void postUpdate(@NonNull E entity, @NonNull UV view) {
+    }
+
+    @Nullable
+    protected String getCacheName() {
+        return null;
+    }
+
+    protected void evictIfCached(@NonNull I id) {
+        Optional
+                .ofNullable(getCacheName())
+                .map(cacheManager::getCache)
+                .ifPresent(cache -> cache.evict(id));
     }
 }
