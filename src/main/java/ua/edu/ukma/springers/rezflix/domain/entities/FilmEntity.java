@@ -32,7 +32,7 @@ public class FilmEntity implements IGettableById<Integer> {
     private String description;
 
     @Column(name = "total_rating", nullable = false)
-    private Double totalRating = 0D;
+    private double totalRating;
 
     @OneToMany(mappedBy = "film", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FilmRatingEntity> ratings;

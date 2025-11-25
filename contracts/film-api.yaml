@@ -162,6 +162,7 @@ components:
               $ref: 'film-rating-api.yaml#/components/schemas/FilmRating'
           required:
             - id
+            - totalRating
 
     FilmList:
       allOf:
