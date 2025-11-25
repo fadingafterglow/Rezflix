@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,9 @@ import java.util.List;
 
 @Service
 public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, CreateCommentDto, UpdateCommentDto, Integer> {
+
+    private static final String CACHE_NAME = "filmComment";
+
     private final FilmCommentMapper mapper;
     private final SecurityUtils securityUtils;
 
@@ -22,6 +26,7 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
         this.securityUtils = securityUtils;
     }
 
+    @Cacheable(CACHE_NAME)
     @Transactional(readOnly = true)
     public CommentDto getResponseById(int id) {
         return mapper.toResponse(getById(id));
@@ -42,6 +47,6 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
 
     @Override
     public String getCacheName() {
-        return "filmComment";
+        return CACHE_NAME;
     }
 }

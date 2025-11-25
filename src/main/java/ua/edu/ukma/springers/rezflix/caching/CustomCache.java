@@ -33,6 +33,7 @@ public class CustomCache extends AbstractValueAdaptingCache {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T get(@NonNull Object key, @NonNull Callable<T> valueLoader) {
         ValueWrapper wrapper = get(key);
         if(wrapper != null) {

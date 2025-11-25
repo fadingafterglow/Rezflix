@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,8 @@ import ua.edu.ukma.springers.rezflix.mappers.FilmRatingMapper;
 @Service
 public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRatingDto, FilmRatingDto, FilmRatingId> {
 
+    private static final String CACHE_NAME = "filmRating";
+
     private final FilmRatingMapper mapper;
 
     protected FilmRatingService(FilmRatingMapper mapper) {
@@ -17,6 +20,7 @@ public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRat
         this.mapper = mapper;
     }
 
+    @Cacheable(value = CACHE_NAME, key = "new ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId(#filmId, #userId)")
     @Transactional(readOnly = true)
     public FilmRatingDto getUserRatingForFilm(int userId, int filmId) {
         return mapper.toResponse(getById(new FilmRatingId(filmId, userId)));
@@ -38,6 +42,6 @@ public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRat
 
     @Override
     public String getCacheName() {
-        return "filmRating";
+        return CACHE_NAME;
     }
 }

@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.aspects.limit.RateLimited;
@@ -16,6 +17,8 @@ import java.util.List;
 @Service
 public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, UpsertFilmDto, Integer> {
 
+    private static final String CACHE_NAME = "film";
+
     private final FilmMapper mapper;
 
     public FilmService(FilmMapper mapper) {
@@ -23,6 +26,7 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
         this.mapper = mapper;
     }
 
+    @Cacheable(CACHE_NAME)
     @RateLimited(limitPerMinute = 5)
     @Transactional(readOnly = true)
     public FilmDto getResponseById(int id) {
@@ -39,6 +43,6 @@ public class FilmService extends BaseCRUDService<FilmEntity, UpsertFilmDto, Upse
 
     @Override
     public String getCacheName() {
-        return "film";
+        return CACHE_NAME;
     }
 }

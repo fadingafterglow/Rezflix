@@ -2,7 +2,6 @@ package ua.edu.ukma.springers.rezflix.services;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -16,6 +15,7 @@ import ua.edu.ukma.springers.rezflix.repositories.IRepository;
 import ua.edu.ukma.springers.rezflix.validators.IValidator;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I extends Comparable<I>> implements ICRUDService<E, CV, UV, I> {
@@ -52,11 +52,9 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     @Override
     @Transactional(readOnly = true)
     public E getById(@NonNull I id) {
-        return getCache().get(id, () -> {
-            E entity = getByIdFetchAllWithoutValidation(id);
-            validator.validForView(entity);
-            return entity;
-        });
+        E entity = getByIdFetchAllWithoutValidation(id);
+        validator.validForView(entity);
+        return entity;
     }
 
     @Override
@@ -103,7 +101,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         postUpdate(entity, view);
         validator.validForUpdate(entity);
         repository.save(entity);
-        getCache().evict(id);
+        evictIfCached(id);
         return true;
     }
 
@@ -113,7 +111,7 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
         E entity = getByIdWithoutValidation(id);
         validator.validForDelete(entity);
         repository.delete(entity);
-        getCache().evict(id);
+        evictIfCached(id);
     }
 
     protected NotFoundException notFound(I id) {
@@ -126,9 +124,15 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     protected void postUpdate(@NonNull E entity, @NonNull UV view) {
     }
 
-    protected abstract String getCacheName();
+    @Nullable
+    protected String getCacheName() {
+        return null;
+    }
 
-    protected Cache getCache() {
-        return cacheManager.getCache(getCacheName());
+    protected void evictIfCached(@NonNull I id) {
+        Optional
+                .ofNullable(getCacheName())
+                .map(cacheManager::getCache)
+                .ifPresent(cache -> cache.evict(id));
     }
 }

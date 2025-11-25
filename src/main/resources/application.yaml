@@ -36,7 +36,7 @@ spring:
         change-log: db/changelog/db.changelog-master.xml
 
     cache:
-        cache-names: "user,film,filmRating,filmComment,filmCollection"
+        cache-names: film,filmRating,filmComment,omdbApi
 
 security:
     token:
