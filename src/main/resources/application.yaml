@@ -35,6 +35,11 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
+    task:
+        scheduling:
+            pool:
+                size: 3
+
 security:
     token:
         secret: "!s)Mk#8}#5t9DTv<;hg^"
