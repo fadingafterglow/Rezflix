@@ -31,6 +31,9 @@ public class FilmEntity implements IGettableById<Integer> {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "total_rating", nullable = false)
+    private double totalRating;
+
     @OneToMany(mappedBy = "film", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<FilmRatingEntity> ratings;
 
