@@ -1,9 +1,6 @@
 package ua.edu.ukma.springers.rezflix.criteria;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import ua.edu.ukma.criteria.core.Criteria;
 import ua.edu.ukma.criteria.core.PredicatesBuilder;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CommentCriteriaDto;
@@ -28,5 +25,6 @@ public class FilmCommentCriteria extends Criteria<FilmCommentEntity, CommentCrit
     @Override
     protected void fetch(CriteriaBuilder cb, Root<FilmCommentEntity> root) {
         root.fetch(FilmCommentEntity_.author);
+        root.fetch(FilmCommentEntity_.authorRating, JoinType.LEFT);
     }
 }
