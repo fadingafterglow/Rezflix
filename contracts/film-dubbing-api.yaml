@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Film Dubbing Service
+  version: '0.1'
+  description: Film Dubbing Service
+
+tags:
+  - name: film-dubbing-controller
+    description: Film Dubbing Controller
+
+paths:
+  /api/film/dubbing:
+    get:
+      operationId: getDubbingsByCriteria
+      tags:
+        - film-dubbing-controller
+      summary: Get dubbings matching the criteria
+      parameters:
+        - name: criteria
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/DubbingCriteria'
+      responses:
+        200:
+          description: List of dubbings matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DubbingList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    post:
+      operationId: createDubbing
+      tags:
+        - film-dubbing-controller
+      summary: Create a new dubbing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDubbing'
+      responses:
+        200:
+          description: Id of the created dubbing
+          content:
+            application/json:
+              schema:
+                type: integer
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film/dubbing/{dubbingId}:
+    parameters:
+      - name: dubbingId
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      operationId: getDubbing
+      tags:
+        - film-dubbing-controller
+      summary: Get a single dubbing by id
+      responses:
+        200:
+          description: The requested dubbing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dubbing'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateDubbing
+      tags:
+        - film-dubbing-controller
+      summary: Edit a dubbing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDubbing'
+      responses:
+        204:
+          description: Dubbing updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteDubbing
+      tags:
+        - film-dubbing-controller
+      summary: Delete a dubbing
+      responses:
+        204:
+          description: Dubbing deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    UpdateDubbing:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 250
+      required:
+        - name
+
+    CreateDubbing:
+      allOf:
+        - $ref: '#/components/schemas/UpdateDubbing'
+        - type: object
+          properties:
+            filmId:
+              type: integer
+          required:
+            - filmId
+
+    Dubbing:
+      allOf:
+        - $ref: '#/components/schemas/CreateDubbing'
+        - type: object
+          properties:
+            id:
+              type: integer
+          required:
+            - id
+
+    DubbingList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Dubbing'
+          required:
+            - items
+
+    DubbingCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            filmId:
+              type: integer
+            query:
+              type: string

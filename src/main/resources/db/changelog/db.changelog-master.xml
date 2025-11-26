@@ -10,4 +10,5 @@
     <include file="db/changelog/changesets/20251007_1841_add_film_collection_films.xml"/>
     <include file="db/changelog/changesets/20251007_2205_add_film_comments.xml"/>
     <include file="db/changelog/changesets/20251121_0139_update_films_add_total_rating_column.xml"/>
+    <include file="/db/changelog/changesets/20251126_add_film_dubbings.xml"/>
 </databaseChangeLog>

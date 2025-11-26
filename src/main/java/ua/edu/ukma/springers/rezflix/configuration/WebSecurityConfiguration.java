@@ -73,11 +73,11 @@ public class WebSecurityConfiguration {
                      // user-api
                      .requestMatchers(POST, "/api/user").hasAuthority(SUPER_ADMIN.name())
                      .requestMatchers("/api/user", "/api/user/*").permitAll()
-                     // film-content-api
-                     .requestMatchers(GET, "/api/film/*/content").permitAll()
-                     .requestMatchers("/api/film/*/content").hasAuthority(CONTENT_MANAGER.name())
                      // film-rating-api
                      .requestMatchers("/api/film/*/rating").hasAuthority(VIEWER.name())
+                     // film-dubbing-api
+                     .requestMatchers(GET, "/api/film/dubbing", "/api/film/dubbing/*").permitAll()
+                     .requestMatchers("/api/film/dubbing", "/api/film/dubbing/*").hasAuthority(CONTENT_MANAGER.name())
                      // film-comment-api
                      .requestMatchers(GET, "/api/film/comment", "/api/film/comment/*").permitAll()
                      .requestMatchers(POST, "/api/film/comment").hasAuthority(VIEWER.name())
