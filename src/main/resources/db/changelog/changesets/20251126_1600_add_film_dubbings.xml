@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="20251126_add_film_dubbings" author="Mykola Prybysh">
+    <changeSet id="20251126_1600_add_film_dubbings" author="Mykola Prybysh">
         <createTable tableName="film_dubbings">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="pk_film_dubbings"/>
@@ -18,7 +18,7 @@
         </createTable>
 
         <addUniqueConstraint tableName="film_dubbings" columnNames="film_id, name"
-                             constraintName="uk_film_dubbings_film_id_name"/>
+                             constraintName="ak_film_dubbings_film_id_name"/>
     </changeSet>
 
 </databaseChangeLog>
