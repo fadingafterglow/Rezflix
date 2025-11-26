@@ -92,10 +92,8 @@ public class WebSecurityConfiguration {
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
                      // cache-api
                      .requestMatchers("/api/cache/*").hasAuthority(SUPER_ADMIN.name())
-                     // deny other api requests
-                     .requestMatchers("/api/**").denyAll()
-                     // allow request to static resources and ui pages
-                     .requestMatchers("/**").permitAll()
+                     // deny other requests
+                     .requestMatchers("/**").denyAll()
                 )
                 .build();
     }
