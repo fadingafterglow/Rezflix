@@ -177,6 +177,12 @@
                         <skipDefaultInterface>true</skipDefaultInterface>
                         <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
                     </configOptions>
+                    <typeMappings>
+                        <typeMapping>string+byte=stream</typeMapping>
+                    </typeMappings>
+                    <schemaMappings>
+                        <schemaMapping>stream=org.springframework.core.io.InputStreamResource</schemaMapping>
+                    </schemaMappings>
                 </configuration>
             </plugin>
 

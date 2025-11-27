@@ -1,56 +1,67 @@
 openapi: 3.0.0
 info:
-  title: Film Dubbing Service
+  title: Film Episode Service
   version: '0.1'
-  description: Film Dubbing Service
+  description: Film Episode Service
 
 tags:
-  - name: film-dubbing-controller
-    description: Film Dubbing Controller
+  - name: film-episode-controller
+    description: Film Episode Controller
 
 paths:
-  /api/film/dubbing:
+  /api/film/dubbing/{dubbingId}/episodes:
+    parameters:
+      - $ref: 'film-dubbing-api.yaml#/components/parameters/DubbingId'
+
     get:
-      operationId: getDubbingsByCriteria
+      operationId: getEpisodesByCriteria
       tags:
-        - film-dubbing-controller
-      summary: Get dubbings matching the criteria
+        - film-episode-controller
+      summary: Get episodes matching the criteria
       parameters:
         - name: criteria
           in: query
           required: true
           schema:
-            $ref: '#/components/schemas/DubbingCriteria'
+            $ref: '#/components/schemas/EpisodeCriteria'
       responses:
         200:
-          description: List of dubbings matching the criteria
+          description: List of episodes matching the criteria
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DubbingList'
+                $ref: '#/components/schemas/EpisodeList'
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     post:
-      operationId: createDubbing
+      operationId: createEpisode
       tags:
-        - film-dubbing-controller
-      summary: Create a new dubbing
+        - film-episode-controller
+      summary: Create a new episode
+      parameters:
+        - in: query
+          name: metadata
+          required: true
+          schema:
+            $ref: '#/components/schemas/UpdateEpisode'
       requestBody:
         required: true
         content:
-          application/json:
+          application/octet-stream:
             schema:
-              $ref: '#/components/schemas/CreateDubbing'
+              type: string
+              format: byte
       responses:
         200:
-          description: Id of the created dubbing
+          description: Id of the created episode
           content:
             application/json:
               schema:
-                type: integer
+                type: string
+                format: uuid
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
@@ -60,41 +71,46 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
-  /api/film/dubbing/{dubbingId}:
+  /api/film/episode/{episodeId}:
     parameters:
-      - $ref: '#/components/parameters/DubbingId'
-
+      - name: episodeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        
     get:
-      operationId: getDubbing
+      operationId: getEpisode
       tags:
-        - film-dubbing-controller
-      summary: Get a single dubbing by id
+        - film-episode-controller
+      summary: Get a single episode by id
       responses:
         200:
-          description: The requested dubbing
+          description: The requested episode
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dubbing'
+                $ref: '#/components/schemas/Episode'
         404:
           $ref: 'common-types.yaml#/components/responses/NotFound'
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     put:
-      operationId: updateDubbing
+      operationId: updateEpisodeMetadata
       tags:
-        - film-dubbing-controller
-      summary: Edit a dubbing
+        - film-episode-controller
+      summary: Edit an episode metadata
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateDubbing'
+              $ref: '#/components/schemas/UpdateEpisode'
       responses:
         204:
-          description: Dubbing updated successfully
+          description: Episode metadata updated successfully
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
@@ -107,13 +123,13 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
     delete:
-      operationId: deleteDubbing
+      operationId: deleteEpisode
       tags:
-        - film-dubbing-controller
-      summary: Delete a dubbing
+        - film-episode-controller
+      summary: Delete an episode
       responses:
         204:
-          description: Dubbing deleted successfully
+          description: Episode deleted successfully
         400:
           $ref: 'common-types.yaml#/components/responses/BadRequest'
         401:
@@ -126,45 +142,45 @@ paths:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
 components:
-  parameters:
-    DubbingId:
-      name: dubbingId
-      in: path
-      required: true
-      schema:
-        type: integer
-
   schemas:
-    UpdateDubbing:
+    EpisodeStatus:
+      type: string
+      enum:
+        - BEING_RENDERED
+        - RENDERED
+        - RENDERING_FAILED
+
+    UpdateEpisode:
       type: object
       properties:
-        name:
+        watchOrder:
+          type: integer
+          default: 0
+          minimum: 0
+        title:
           type: string
           maxLength: 250
       required:
-        - name
+        - watchOrder
 
-    CreateDubbing:
+    Episode:
       allOf:
-        - $ref: '#/components/schemas/UpdateDubbing'
-        - type: object
-          properties:
-            filmId:
-              type: integer
-          required:
-            - filmId
-
-    Dubbing:
-      allOf:
-        - $ref: '#/components/schemas/CreateDubbing'
+        - $ref: '#/components/schemas/UpdateEpisode'
         - type: object
           properties:
             id:
-              type: integer
+              type: string
+              format: uuid
+            status:
+              $ref: '#/components/schemas/EpisodeStatus'
+            hlsLink:
+              type: string
+              format: uri
           required:
             - id
+            - status
 
-    DubbingList:
+    EpisodeList:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseList'
         - type: object
@@ -172,16 +188,21 @@ components:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/Dubbing'
+                $ref: '#/components/schemas/Episode'
           required:
             - items
 
-    DubbingCriteria:
+    EpisodeCriteria:
       allOf:
         - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
         - type: object
           properties:
-            filmId:
+            minWatchOrder:
+              type: integer
+            maxWatchOrder:
               type: integer
             query:
               type: string
+            # Has effect only for privileged users
+            status:
+              $ref: '#/components/schemas/EpisodeStatus'

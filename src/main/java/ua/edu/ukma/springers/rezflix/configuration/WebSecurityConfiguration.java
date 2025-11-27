@@ -78,6 +78,9 @@ public class WebSecurityConfiguration {
                      // film-dubbing-api
                      .requestMatchers(GET, "/api/film/dubbing", "/api/film/dubbing/*").permitAll()
                      .requestMatchers("/api/film/dubbing", "/api/film/dubbing/*").hasAuthority(CONTENT_MANAGER.name())
+                     // film-episode-api
+                     .requestMatchers(GET, "/api/film/dubbing/*/episodes", "/api/film/episode/*").permitAll()
+                     .requestMatchers("/api/film/dubbing/*/episodes", "/api/film/episode/*").hasAuthority(CONTENT_MANAGER.name())
                      // film-comment-api
                      .requestMatchers(GET, "/api/film/comment", "/api/film/comment/*").permitAll()
                      .requestMatchers(POST, "/api/film/comment").hasAuthority(VIEWER.name())

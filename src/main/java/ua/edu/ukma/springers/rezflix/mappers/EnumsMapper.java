@@ -2,8 +2,10 @@ package ua.edu.ukma.springers.rezflix.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.EpisodeStatusDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserRoleDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserTypeDto;
+import ua.edu.ukma.springers.rezflix.domain.enums.FilmEpisodeStatus;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
 
@@ -17,4 +19,7 @@ public interface EnumsMapper {
     UserType map(UserTypeDto type);
 
     UserRoleDto map(UserRole role);
+
+    FilmEpisodeStatus map(EpisodeStatusDto status);
+    EpisodeStatusDto map(FilmEpisodeStatus status);
 }

@@ -20,7 +20,7 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
     private final FilmCommentMapper mapper;
     private final SecurityUtils securityUtils;
 
-    protected FilmCommentService(FilmCommentMapper mapper, SecurityUtils securityUtils) {
+    public FilmCommentService(FilmCommentMapper mapper, SecurityUtils securityUtils) {
         super(FilmCommentEntity.class, FilmCommentEntity::new);
         this.mapper = mapper;
         this.securityUtils = securityUtils;

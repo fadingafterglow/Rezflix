@@ -17,7 +17,7 @@ public class FilmDubbingService extends BaseCRUDService<FilmDubbingEntity, Creat
 
     private final FilmDubbingMapper mapper;
 
-    protected FilmDubbingService(FilmDubbingMapper mapper) {
+    public FilmDubbingService(FilmDubbingMapper mapper) {
         super(FilmDubbingEntity.class, FilmDubbingEntity::new);
         this.mapper = mapper;
     }

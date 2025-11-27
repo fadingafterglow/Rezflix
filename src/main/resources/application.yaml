@@ -46,6 +46,12 @@ security:
     cors:
         frontend-origin: http://localhost:3000
 
+storage:
+    root-path: ./target/storage
+    unrendered-episodes:
+        path: ${storage.root-path}/unrendered-episodes
+        max-size: 5GB
+
 springdoc:
     swagger-ui:
         path: /api

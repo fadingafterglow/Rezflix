@@ -22,7 +22,7 @@ public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRat
     private final FilmRatingMapper mapper;
     private final SecurityUtils securityUtils;
 
-    protected FilmRatingService(FilmRatingMapper mapper, SecurityUtils securityUtils) {
+    public FilmRatingService(FilmRatingMapper mapper, SecurityUtils securityUtils) {
         super(FilmRatingEntity.class, FilmRatingEntity::new);
         this.mapper = mapper;
         this.securityUtils = securityUtils;
