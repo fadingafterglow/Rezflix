@@ -35,6 +35,12 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
+    batch:
+        job:
+            enabled: false
+        jdbc:
+            initialize-schema: always
+
 security:
     token:
         secret: "!s)Mk#8}#5t9DTv<;hg^"
@@ -51,6 +57,11 @@ storage:
     unrendered-episodes:
         path: ${storage.root-path}/unrendered-episodes
         max-size: 5GB
+    rendered-episodes:
+        path: ${storage.root-path}/rendered-episodes
+
+rendering:
+    timeout: 3H
 
 springdoc:
     swagger-ui:

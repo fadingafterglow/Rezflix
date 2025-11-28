@@ -14,6 +14,7 @@ import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.mappers.FilmEpisodeMapper;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.services.rendering.RenderingService;
 import ua.edu.ukma.springers.rezflix.utils.FileUtils;
 
 import java.nio.file.Files;
@@ -26,6 +27,7 @@ public class FilmEpisodeService extends BaseCRUDService<FilmEpisodeEntity, Creat
 
     private final FilmEpisodeMapper mapper;
     private final EnumsMapper enumsMapper;
+    private final RenderingService renderingService;
     private final SecurityUtils securityUtils;
 
     private final Path unrenderedEpisodesDir;
@@ -33,6 +35,7 @@ public class FilmEpisodeService extends BaseCRUDService<FilmEpisodeEntity, Creat
 
     @SneakyThrows
     public FilmEpisodeService(FilmEpisodeMapper mapper, EnumsMapper enumsMapper, SecurityUtils securityUtils,
+                              RenderingService renderingService,
                               @Value("${storage.unrendered-episodes.path}") Path unrenderedEpisodesDir,
                               @Value("${storage.unrendered-episodes.max-size}") DataSize unrenderedEpisodeMaxSize
     ) {
@@ -40,6 +43,7 @@ public class FilmEpisodeService extends BaseCRUDService<FilmEpisodeEntity, Creat
         this.mapper = mapper;
         this.enumsMapper = enumsMapper;
         this.securityUtils = securityUtils;
+        this.renderingService = renderingService;
         this.unrenderedEpisodesDir = unrenderedEpisodesDir;
         this.unrenderedEpisodeMaxSize = unrenderedEpisodeMaxSize;
         Files.createDirectories(unrenderedEpisodesDir);
@@ -65,11 +69,19 @@ public class FilmEpisodeService extends BaseCRUDService<FilmEpisodeEntity, Creat
         FilmEpisodeEntity episode = super.createEntity(id, view);
         Path episodePath = unrenderedEpisodesDir.resolve(episode.getId().toString());
         FileUtils.transferWithLimit(view.getFile().getInputStream(), episodePath, unrenderedEpisodeMaxSize);
+        renderingService.launchRenderingJob(episode.getId(), episodePath);
         return episode;
     }
 
     @Override
     protected void postCreate(@NonNull FilmEpisodeEntity entity, @NonNull CreateEpisodeDto view) {
         entity.setStatus(FilmEpisodeStatus.BEING_RENDERED);
+    }
+
+    @Override
+    @Transactional
+    public void delete(@NonNull UUID id) {
+        super.delete(id);
+        renderingService.cleanupRenderingFiles(id);
     }
 }
