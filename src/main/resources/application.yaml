@@ -44,7 +44,7 @@ security:
         login: admin
         password-hash: $2a$10$PhFxeCUPjTgR2n23s9/Z0udFk.CUtF2cOd.AnXq/ld0hSfsxz8FqG
     cors:
-        frontend-origin: http://localhost:3000
+        frontend-origins: http://localhost, http://127.0.0.1
 
 storage:
     root-path: ./target/storage

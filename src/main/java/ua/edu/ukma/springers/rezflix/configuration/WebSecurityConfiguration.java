@@ -137,9 +137,9 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${security.cors.frontend-origin}") String allowedOrigin) {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${security.cors.frontend-origins:}") List<String> allowedOrigins) {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin(allowedOrigin);
+        corsConfiguration.setAllowedOrigins(allowedOrigins);
         corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
         corsConfiguration.addAllowedMethod(CorsConfiguration.ALL);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
