@@ -15,17 +15,20 @@ services:
     depends_on:
       - postgres
     image: ghcr.io/fadingafterglow/rezflix:main
+    pull_policy: "always"
     ports:
       - "127.0.0.1:8080:8080"
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/rezflix_db'
+      SECURITY_CORS_FRONTEND_ORIGIN: 'http://127.0.0.1'
 
   angular:
     depends_on:
       - spring
     image: ghcr.io/otipz19/rezflix-frontend:latest
+    pull_policy: "always"
     ports:
-      - "3000:3000"
+      - "127.0.0.1:80:80"
 
 volumes:
   rezflix_db:
