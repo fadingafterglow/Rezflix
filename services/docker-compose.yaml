@@ -20,6 +20,13 @@ services:
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/rezflix_db'
 
+  angular:
+    depends_on:
+      - spring
+    image: ghcr.io/otipz19/rezflix-frontend:latest
+    ports:
+      - "3000:3000"
+
 volumes:
   rezflix_db:
     external: true
