@@ -53,7 +53,7 @@ security:
         frontend-origins: http://localhost, http://127.0.0.1
 
 storage:
-    root-path: ./target/storage
+    root-path: ./storage
     unrendered-episodes:
         path: ${storage.root-path}/unrendered-episodes
         max-size: 5GB
