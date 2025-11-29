@@ -88,8 +88,6 @@ public class WebSecurityConfiguration {
                      // film-collection-api
                      .requestMatchers(POST, "/api/film-collections").hasAnyAuthority(VIEWER.name())
                      .requestMatchers("/api/film-collections", "/api/film-collections/*").hasAnyAuthority(VIEWER.name(), MODERATOR.name())
-                     // film-info-lookup-api
-                     .requestMatchers(GET, "/api/film/info-lookup").hasAuthority(CONTENT_MANAGER.name())
                      // film-api
                      .requestMatchers(GET, "/api/film", "/api/film/*").permitAll()
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
