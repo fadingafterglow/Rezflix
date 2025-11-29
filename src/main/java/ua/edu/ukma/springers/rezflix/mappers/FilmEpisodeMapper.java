@@ -5,11 +5,20 @@ import org.mapstruct.Mapping;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.EpisodeDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.EpisodeListDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEpisodeEntity;
+import ua.edu.ukma.springers.rezflix.domain.enums.FilmEpisodeStatus;
+
+import java.net.URI;
 
 @Mapper(config = MapperConfiguration.class)
 public interface FilmEpisodeMapper extends IResponseMapper<FilmEpisodeEntity, EpisodeDto>, IListResponseMapper<FilmEpisodeEntity, EpisodeListDto> {
 
     @Override
-    @Mapping(target = "hlsLink", ignore = true)
+    @Mapping(target = "hlsLink", expression = "java(generateHlsLink(entity))")
     EpisodeDto toResponse(FilmEpisodeEntity entity);
+
+    default URI generateHlsLink(FilmEpisodeEntity entity) {
+        return entity.getStatus() == FilmEpisodeStatus.RENDERED
+            ? URI.create("/video/" + entity.getId() + "/master.m3u8")
+            : null;
+    }
 }
