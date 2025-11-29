@@ -62,6 +62,8 @@ storage:
 
 rendering:
     timeout: 3H
+    repair-interval: 30M
+    max-attempts: 3
 
 springdoc:
     swagger-ui:
