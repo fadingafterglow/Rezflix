@@ -1,12 +1,16 @@
 package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.criteria.FilmDubbingCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmDubbingEntity;
+import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.mappers.FilmDubbingMapper;
+import ua.edu.ukma.springers.rezflix.repositories.FilmDubbingRepository;
 
 import java.util.List;
 
@@ -39,5 +43,10 @@ public class FilmDubbingService extends BaseCRUDService<FilmDubbingEntity, Creat
     @Override
     public String getCacheName() {
         return CACHE_NAME;
+    }
+
+    @EventListener
+    public void clearDubbings(DeleteEntityEvent<? extends FilmEntity, Integer> deleteEvent) {
+        ((FilmDubbingRepository) repository).findAllByFilmId(deleteEvent.getId()).forEach(this::deleteEntity);
     }
 }
