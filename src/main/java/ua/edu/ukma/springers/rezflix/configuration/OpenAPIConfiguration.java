@@ -42,9 +42,14 @@ public class OpenAPIConfiguration {
             "getCurrentUserInfo",
             "getFilm",
             "getFilmsByCriteria",
-            "getFilmContentUrl",
             "getComment",
-            "getCommentsByCriteria"
+            "getCommentsByCriteria",
+            "getDubbing",
+            "getDubbingsByCriteria",
+            "getEpisode",
+            "getEpisodesByCriteria",
+            "getFile",
+            "getEntitiesFilesInfo"
     );
 
     static {
