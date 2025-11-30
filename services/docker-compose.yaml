@@ -18,8 +18,11 @@ services:
     pull_policy: always
     ports:
       - "127.0.0.1:8080:8080"
+    volumes:
+      - rezflix_storage:/storage
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rezflix_db
+      STORAGE_ROOT_PATH: /storage
 
   angular:
     depends_on:
@@ -31,4 +34,7 @@ services:
 
 volumes:
   rezflix_db:
+    external: true
+
+  rezflix_storage:
     external: true
