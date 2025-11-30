@@ -35,6 +35,10 @@ spring:
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
+    servlet:
+        multipart:
+            max-file-size: 5MB
+
     batch:
         job:
             enabled: false
@@ -59,6 +63,8 @@ storage:
         max-size: 5GB
     rendered-episodes:
         path: ${storage.root-path}/rendered-episodes
+    files:
+        path: ${storage.root-path}/files
 
 rendering:
     timeout: 3H

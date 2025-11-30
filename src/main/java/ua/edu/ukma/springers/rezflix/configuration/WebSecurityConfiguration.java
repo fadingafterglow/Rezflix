@@ -93,6 +93,9 @@ public class WebSecurityConfiguration {
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
                      // cache-api
                      .requestMatchers("/api/cache/*").hasAuthority(SUPER_ADMIN.name())
+                     // file-api
+                     .requestMatchers(GET, "/api/file", "/api/file/*").permitAll()
+                     .requestMatchers("/api/file", "/api/file/*").authenticated()
                      // video resources
                      .requestMatchers(GET, "/video/**").permitAll()
                      // deny other requests
