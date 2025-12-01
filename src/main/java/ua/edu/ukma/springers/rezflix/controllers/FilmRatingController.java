@@ -8,9 +8,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmRatingControllerAp
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import ua.edu.ukma.springers.rezflix.services.FilmRatingService;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
-import ua.edu.ukma.springers.rezflix.services.RecommendationService;
-
-import java.util.concurrent.CompletableFuture;
+import ua.edu.ukma.springers.rezflix.services.FilmRecommendationsService;
 
 @Slf4j
 @RestController
@@ -19,7 +17,7 @@ public class FilmRatingController implements FilmRatingControllerApi {
 
     private final FilmRatingService service;
     private final SecurityUtils securityUtils;
-    private final RecommendationService recommendationService;
+    private final FilmRecommendationsService recommendationService;
 
     @Override
     public ResponseEntity<FilmRatingDto> getUserRating(Integer filmId) {

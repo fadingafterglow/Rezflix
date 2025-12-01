@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="20251128_1000_add_film_recommendations" author="stasp ">
+    <changeSet id="20251128_1000_add_film_recommendations" author="Stas Kulakevych">
         <createTable tableName="film_recommendations">
             <column name="user_id" type="int">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_film_recommendations"

@@ -1,7 +1,7 @@
 package ua.edu.ukma.springers.rezflix.repositories;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmRatingEntity;
 import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
 
@@ -13,17 +13,19 @@ public interface FilmRatingRepository extends IRepository<FilmRatingEntity, Film
 
     List<FilmRatingEntity> findByUserIdAndFilmIdIn(int userId, Collection<Integer> filmIds);
 
+    @EntityGraph(attributePaths = "film")
     @Query("""
         SELECT fr FROM FilmRatingEntity fr
         WHERE fr.user.id = :userId
         ORDER BY fr.createdAt DESC
     """)
-    List<FilmRatingEntity> findLastRatings(@Param("userId") Integer userId, Pageable pageable);
+    List<FilmRatingEntity> findLastRatingsFetchFilm(int userId, Pageable pageable);
 
     @Query("""
-        SELECT COUNT(fr) > 0 FROM FilmRatingEntity fr
-        WHERE fr.user.id = :userId AND fr.film.id = :filmId
+        SELECT EXISTS (
+            SELECT 1 FROM FilmRatingEntity fr
+            WHERE fr.user.id = :userId AND fr.film.id = :filmId
+        )
     """)
-    boolean existsByUserIdAndFilmId(@Param("userId") Integer userId,
-                                    @Param("filmId") Integer filmId);
+    boolean existsByUserIdAndFilmId(int userId, int filmId);
 }
