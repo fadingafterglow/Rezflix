@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251202_1432_add_indexes_on_foreign_keys" author="Mykola Prybysh">
+
+        <createIndex tableName="film_comments" indexName="idx_film_comments_on_film_id" unique="false">
+            <column name="film_id"/>
+        </createIndex>
+
+        <createIndex tableName="film_collections" indexName="idx_film_collections_on_owner_id" unique="false">
+            <column name="owner_id"/>
+        </createIndex>
+
+        <createIndex tableName="film_collections_films" indexName="idx_film_collections_films_on_collection_id" unique="false">
+            <column name="collection_id"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>
+

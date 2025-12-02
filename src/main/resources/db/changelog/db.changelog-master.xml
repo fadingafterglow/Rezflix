@@ -14,4 +14,5 @@
     <include file="db/changelog/changesets/20251126_1937_add_film_episodes.xml"/>
     <include file="db/changelog/changesets/20251130_1616_add_files_info.xml"/>
     <include file="db/changelog/changesets/20251128_1000_add_film_recommendations.xml"/>
+    <include file="db/changelog/changesets/20251202_1432_add_indexes_on_foreign_keys.xml"/>
 </databaseChangeLog>
