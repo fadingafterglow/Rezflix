@@ -45,6 +45,9 @@ spring:
                     max-idle: 8
                     min-idle: 4
 
+    cache:
+        type: simple
+        
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
