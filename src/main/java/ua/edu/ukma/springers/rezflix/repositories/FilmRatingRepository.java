@@ -1,6 +1,7 @@
 package ua.edu.ukma.springers.rezflix.repositories;
 
 import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmRatingEntity;
 import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
@@ -28,4 +29,8 @@ public interface FilmRatingRepository extends IRepository<FilmRatingEntity, Film
         )
     """)
     boolean existsByUserIdAndFilmId(int userId, int filmId);
+
+    @Modifying
+    @Query("DELETE FROM FilmRatingEntity fr WHERE fr.user.id = :userId")
+    void deleteAllByUserId(int userId);
 }

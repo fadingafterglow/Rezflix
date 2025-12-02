@@ -100,6 +100,30 @@ paths:
         500:
           $ref: 'common-types.yaml#/components/responses/InternalServerError'
 
+  /api/user/{id}:
+    delete:
+      operationId: deleteUser
+      tags:
+        - user-controller
+      summary: Delete a user by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: User was deleted
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
 components:
   schemas:
     UserType:

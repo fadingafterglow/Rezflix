@@ -1,11 +1,14 @@
 package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import org.springframework.stereotype.Service;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmRatingEntity;
 import ua.edu.ukma.springers.rezflix.domain.embeddables.FilmRatingId;
+import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.mappers.FilmRatingMapper;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRatingRepository;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
@@ -70,5 +73,10 @@ public class FilmRatingService extends BaseCRUDService<FilmRatingEntity, FilmRat
     @Override
     public String getCacheName() {
         return CACHE_NAME;
+    }
+
+    @EventListener
+    public void clearRatings(DeleteEntityEvent<? extends UserEntity, Integer> event) {
+        ((FilmRatingRepository) repository).deleteAllByUserId(event.getId());
     }
 }

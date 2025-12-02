@@ -74,6 +74,7 @@ public class WebSecurityConfiguration {
                      .requestMatchers(POST, LOGIN_URL, REFRESH_URL).permitAll()
                      // user-api
                      .requestMatchers(POST, "/api/user").hasAuthority(SUPER_ADMIN.name())
+                     .requestMatchers(DELETE, "/api/user/*").hasAuthority(SUPER_ADMIN.name())
                      .requestMatchers("/api/user", "/api/user/*").permitAll()
                      // film-rating-api
                      .requestMatchers("/api/film/*/rating").hasAuthority(VIEWER.name())
