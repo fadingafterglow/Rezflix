@@ -43,4 +43,9 @@ public class FilmCommentEntity implements IGettableById<Integer> {
 
     @Column(name = "author_id", updatable = false, insertable = false)
     private int authorId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "film_id", referencedColumnName = "film_id", insertable = false, updatable = false)
+    @JoinColumn(name = "author_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private FilmRatingEntity authorRating;
 }

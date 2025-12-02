@@ -3,12 +3,14 @@ package ua.edu.ukma.springers.rezflix.services;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.criteria.core.Criteria;
 import ua.edu.ukma.criteria.core.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mergers.IMerger;
 import ua.edu.ukma.springers.rezflix.repositories.IRepository;
@@ -28,8 +30,11 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     protected IValidator<E> validator;
     @Setter(onMethod_ = @Autowired)
     protected IMerger<E, CV, UV> merger;
+
     @Setter(onMethod_ = @Autowired)
     protected CacheManager cacheManager;
+    @Setter(onMethod_ = @Autowired)
+    protected ApplicationEventPublisher eventPublisher;
 
     protected final Class<E> entityClass;
     protected final Supplier<E> entitySupplier;
@@ -108,10 +113,15 @@ public abstract class BaseCRUDService<E extends IGettableById<I>, CV, UV, I exte
     @Override
     @Transactional
     public void delete(@NonNull I id) {
-        E entity = getByIdWithoutValidation(id);
+        deleteEntity(getByIdWithoutValidation(id));
+    }
+
+    @Transactional
+    public void deleteEntity(@NonNull E entity) {
         validator.validForDelete(entity);
+        eventPublisher.publishEvent(new DeleteEntityEvent<>(entity));
         repository.delete(entity);
-        evictIfCached(id);
+        evictIfCached(entity.getId());
     }
 
     protected NotFoundException notFound(I id) {

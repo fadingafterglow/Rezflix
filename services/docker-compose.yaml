@@ -11,15 +11,38 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: rezflix_db
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: ["redis-server", "--requirepass", "root", "--databases", "1"]
+
   spring:
     depends_on:
       - postgres
+      - redis
     image: ghcr.io/fadingafterglow/rezflix:main
+    pull_policy: always
     ports:
       - "127.0.0.1:8080:8080"
+    volumes:
+      - rezflix_storage:/storage
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/rezflix_db'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rezflix_db
+      STORAGE_ROOT_PATH: /storage
+      SPRING_DATA_REDIS_HOST: redis
+
+  angular:
+    depends_on:
+      - spring
+    image: ghcr.io/otipz19/rezflix-frontend:latest
+    pull_policy: always
+    ports:
+      - "127.0.0.1:80:80"
 
 volumes:
   rezflix_db:
+    external: true
+
+  rezflix_storage:
     external: true

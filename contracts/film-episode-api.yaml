@@ -1,0 +1,208 @@
+openapi: 3.0.0
+info:
+  title: Film Episode Service
+  version: '0.1'
+  description: Film Episode Service
+
+tags:
+  - name: film-episode-controller
+    description: Film Episode Controller
+
+paths:
+  /api/film/dubbing/{dubbingId}/episodes:
+    parameters:
+      - $ref: 'film-dubbing-api.yaml#/components/parameters/DubbingId'
+
+    get:
+      operationId: getEpisodesByCriteria
+      tags:
+        - film-episode-controller
+      summary: Get episodes matching the criteria
+      parameters:
+        - name: criteria
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/EpisodeCriteria'
+      responses:
+        200:
+          description: List of episodes matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EpisodeList'
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    post:
+      operationId: createEpisode
+      tags:
+        - film-episode-controller
+      summary: Create a new episode
+      parameters:
+        - in: query
+          name: metadata
+          required: true
+          schema:
+            $ref: '#/components/schemas/UpdateEpisode'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: byte
+      responses:
+        200:
+          description: Id of the created episode
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/film/episode/{episodeId}:
+    parameters:
+      - name: episodeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        
+    get:
+      operationId: getEpisode
+      tags:
+        - film-episode-controller
+      summary: Get a single episode by id
+      responses:
+        200:
+          description: The requested episode
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Episode'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    put:
+      operationId: updateEpisodeMetadata
+      tags:
+        - film-episode-controller
+      summary: Edit an episode metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEpisode'
+      responses:
+        204:
+          description: Episode metadata updated successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteEpisode
+      tags:
+        - film-episode-controller
+      summary: Delete an episode
+      responses:
+        204:
+          description: Episode deleted successfully
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    EpisodeStatus:
+      type: string
+      enum:
+        - BEING_RENDERED
+        - RENDERED
+        - RENDERING_FAILED
+
+    UpdateEpisode:
+      type: object
+      properties:
+        watchOrder:
+          type: integer
+          default: 0
+          minimum: 0
+        title:
+          type: string
+          maxLength: 250
+      required:
+        - watchOrder
+
+    Episode:
+      allOf:
+        - $ref: '#/components/schemas/UpdateEpisode'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            status:
+              $ref: '#/components/schemas/EpisodeStatus'
+            hlsLink:
+              type: string
+              format: uri
+          required:
+            - id
+            - status
+
+    EpisodeList:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseList'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Episode'
+          required:
+            - items
+
+    EpisodeCriteria:
+      allOf:
+        - $ref: 'common-types.yaml#/components/schemas/BaseCriteria'
+        - type: object
+          properties:
+            minWatchOrder:
+              type: integer
+            maxWatchOrder:
+              type: integer
+            query:
+              type: string
+            # Has effect only for privileged users
+            status:
+              $ref: '#/components/schemas/EpisodeStatus'

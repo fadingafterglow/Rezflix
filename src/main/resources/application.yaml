@@ -32,11 +32,43 @@ spring:
                 order_inserts: true
                 order_updates: true
 
+    data:
+        redis:
+            host: localhost
+            port: 6379
+            password: root
+            database: 0
+            timeout: 2s
+            lettuce:
+                pool:
+                    max-active: 16
+                    max-idle: 8
+                    min-idle: 4
+
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
-    cache:
-        cache-names: film,filmRating,filmComment,omdbApi
+    servlet:
+        multipart:
+            max-file-size: 5MB
+
+    batch:
+        job:
+            enabled: false
+        jdbc:
+            initialize-schema: always
+
+    ai:
+        model:
+            chat: google-genai
+
+        google:
+            genai:
+                api-key: <KEY>
+                chat:
+                    options:
+                        model: gemini-2.5-flash-lite
+                        temperature: 0.7
 
 security:
     token:
@@ -47,14 +79,29 @@ security:
         login: admin
         password-hash: $2a$10$PhFxeCUPjTgR2n23s9/Z0udFk.CUtF2cOd.AnXq/ld0hSfsxz8FqG
     cors:
-        frontend-origin: http://localhost:3000
+        frontend-origins: http://localhost, http://127.0.0.1
+
+storage:
+    root-path: ./storage
+    unrendered-episodes:
+        path: ${storage.root-path}/unrendered-episodes
+        max-size: 5GB
+    rendered-episodes:
+        path: ${storage.root-path}/rendered-episodes
+    files:
+        path: ${storage.root-path}/files
+
+rendering:
+    timeout: 3H
+    repair-interval: 30M
+    max-attempts: 3
+
+watch-room:
+    ttl: 30M
 
 springdoc:
     swagger-ui:
         path: /api
-
-api-keys:
-    omdb: <KEY>
 
 criteria:
     query:

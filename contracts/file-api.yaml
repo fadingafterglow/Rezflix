@@ -1,0 +1,157 @@
+openapi: 3.0.0
+info:
+  title: File Service
+  version: '1.0'
+  description: File Service
+
+tags:
+  - name: file-controller
+    description: File controller
+
+paths:
+  /api/file/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getFile
+      tags:
+        - file-controller
+      summary: Get file by id
+      responses:
+        200:
+          description: File with corresponding id
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        304:
+          $ref: 'common-types.yaml#/components/responses/NotModified'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    delete:
+      operationId: deleteFile
+      tags:
+        - file-controller
+      summary: Delete file by id
+      responses:
+        204:
+          description: File was deleted
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        404:
+          $ref: 'common-types.yaml#/components/responses/NotFound'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+  /api/file:
+    get:
+      operationId: getEntitiesFilesInfo
+      tags:
+        - file-controller
+      summary: Get entities files info
+      parameters:
+        - in: query
+          name: fileType
+          required: true
+          schema:
+            $ref: '#/components/schemas/FileType'
+        - in: query
+          name: entitiesIds
+          required: true
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: integer
+      responses:
+        200:
+          description: Entities files info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EntityFilesInfo'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+    post:
+      operationId: uploadFile
+      tags:
+        - file-controller
+      summary: Upload file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FileUpload'
+      responses:
+        200:
+          description: Id of the uploaded file
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    FileType:
+      type: string
+      enum:
+        - USER_AVATAR
+        - FILM_POSTER
+
+    FileUpload:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+        fileType:
+          $ref: '#/components/schemas/FileType'
+        boundEntityId:
+          type: integer
+      required:
+        - file
+        - fileType
+        - boundEntityId
+
+    EntityFilesInfo:
+      type: object
+      properties:
+        entityId:
+          type: integer
+        filesIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - entityId
+        - filesIds

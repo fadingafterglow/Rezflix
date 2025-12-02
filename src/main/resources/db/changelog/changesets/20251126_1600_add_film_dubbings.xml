@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251126_1600_add_film_dubbings" author="Mykola Prybysh">
+        <createTable tableName="film_dubbings">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_film_dubbings"/>
+            </column>
+            <column name="film_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_film_dubbings_on_films" referencedTableName="films" referencedColumnNames="id"/>
+            </column>
+            <column name="name" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="film_dubbings" columnNames="film_id, name"
+                             constraintName="ak_film_dubbings_film_id_name"/>
+    </changeSet>
+
+</databaseChangeLog>

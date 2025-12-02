@@ -837,49 +837,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "film lookup",
-			"item": [
-				{
-					"name": "Lookup info",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept-Language",
-								"value": "uk-UA",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"username\": \"6\",\n    \"password\": \"1\",\n    \"type\": \"MODERATOR\",\n    \"name\": \"17\"\n}"
-						},
-						"url": {
-							"raw": "{{base}}/api/film/info-lookup?title=star",
-							"host": [
-								"{{base}}"
-							],
-							"path": [
-								"api",
-								"film",
-								"info-lookup"
-							],
-							"query": [
-								{
-									"key": "title",
-									"value": "star"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
 		}
 	],
 	"auth": {

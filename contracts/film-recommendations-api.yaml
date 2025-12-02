@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: Film Recommendations Service
+  version: '0.1'
+  description: Service for generating AI-based film recommendations
+
+tags:
+  - name: film-recommendations-controller
+    description: Film Recommendations Controller
+
+paths:
+  /api/film/recommendations:
+    get:
+      operationId: getRecommendations
+      tags:
+        - film-recommendations-controller
+      summary: Get film recommendations for the current user
+      description: Generates a list of recommended films based on the user's recent rating history using AI analysis.
+      responses:
+        200:
+          description: List of recommended films
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'film-api.yaml#/components/schemas/Film'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'

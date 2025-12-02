@@ -183,3 +183,7 @@ components:
           properties:
             query:
               type: string
+            ratedByUser:
+              type: integer
+            notRatedByUser:
+              type: integer

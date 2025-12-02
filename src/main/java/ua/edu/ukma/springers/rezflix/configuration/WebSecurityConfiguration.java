@@ -9,17 +9,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -38,7 +41,6 @@ import static org.springframework.http.HttpMethod.*;
 import static ua.edu.ukma.springers.rezflix.domain.enums.UserRole.*;
 
 @Configuration
-@EnableMethodSecurity
 @EnableConfigurationProperties({JWTTokenProperties.class, SuperAdminProperties.class})
 public class WebSecurityConfiguration {
 
@@ -73,30 +75,54 @@ public class WebSecurityConfiguration {
                      // user-api
                      .requestMatchers(POST, "/api/user").hasAuthority(SUPER_ADMIN.name())
                      .requestMatchers("/api/user", "/api/user/*").permitAll()
-                     // film-content-api
-                     .requestMatchers(GET, "/api/film/*/content").permitAll()
-                     .requestMatchers("/api/film/*/content").hasAuthority(CONTENT_MANAGER.name())
                      // film-rating-api
                      .requestMatchers("/api/film/*/rating").hasAuthority(VIEWER.name())
+                     // film-dubbing-api
+                     .requestMatchers(GET, "/api/film/dubbing", "/api/film/dubbing/*").permitAll()
+                     .requestMatchers("/api/film/dubbing", "/api/film/dubbing/*").hasAuthority(CONTENT_MANAGER.name())
+                     // film-episode-api
+                     .requestMatchers(GET, "/api/film/dubbing/*/episodes", "/api/film/episode/*").permitAll()
+                     .requestMatchers("/api/film/dubbing/*/episodes", "/api/film/episode/*").hasAuthority(CONTENT_MANAGER.name())
                      // film-comment-api
                      .requestMatchers(GET, "/api/film/comment", "/api/film/comment/*").permitAll()
                      .requestMatchers(POST, "/api/film/comment").hasAuthority(VIEWER.name())
                      .requestMatchers("/api/film/comment/*").hasAnyAuthority(VIEWER.name(), MODERATOR.name())
                      // film-collection-api
-                     .requestMatchers(POST, "/api/film-collections").hasAnyAuthority(VIEWER.name())
+                     .requestMatchers(POST, "/api/film-collections").hasAuthority(VIEWER.name())
                      .requestMatchers("/api/film-collections", "/api/film-collections/*").hasAnyAuthority(VIEWER.name(), MODERATOR.name())
-                     // film-info-lookup-api
-                     .requestMatchers(GET, "/api/film/info-lookup").hasAuthority(CONTENT_MANAGER.name())
+                     // film-recommendations-api
+                     .requestMatchers(GET, "/api/film/recommendations").hasAuthority(VIEWER.name())
                      // film-api
                      .requestMatchers(GET, "/api/film", "/api/film/*").permitAll()
                      .requestMatchers("/api/film", "/api/film/*").hasAuthority(CONTENT_MANAGER.name())
                      // cache-api
                      .requestMatchers("/api/cache/*").hasAuthority(SUPER_ADMIN.name())
-                     // deny other api requests
-                     .requestMatchers("/api/**").denyAll()
-                     // allow request to static resources and ui pages
-                     .requestMatchers("/**").permitAll()
+                     // file-api
+                     .requestMatchers(GET, "/api/file", "/api/file/*").permitAll()
+                     .requestMatchers("/api/file", "/api/file/*").authenticated()
+                     // watch-room-api
+                     .requestMatchers(POST, "/api/watch-room").hasAuthority(VIEWER.name())
+                     // video resources
+                     .requestMatchers(GET, "/video/**").permitAll()
+                     // deny other requests
+                     .requestMatchers("/**").denyAll()
                 )
+                .build();
+    }
+
+    @Bean
+    @SuppressWarnings("java:S1452")
+    public AuthorizationManager<Message<?>> messageAuthorizationManager() {
+        MessageMatcherDelegatingAuthorizationManager.Builder builder = MessageMatcherDelegatingAuthorizationManager.builder();
+        var isWatchRoomHost = new IsWatchRoomHost();
+        var isWatchRoomMember = new IsWatchRoomMember();
+        return builder
+                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).permitAll()
+                .simpSubscribeDestMatchers("/rezflix/watch-room/{roomId}/init").access(isWatchRoomMember)
+                .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/sync").access(isWatchRoomHost)
+                .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/chat").access(isWatchRoomMember)
+                .simpSubscribeDestMatchers("/topic/watch-room/{roomId}/*").access(isWatchRoomMember)
+                .anyMessage().denyAll()
                 .build();
     }
 
@@ -136,9 +162,9 @@ public class WebSecurityConfiguration {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(@Value("${security.cors.frontend-origin}") String allowedOrigin) {
+    public CorsConfigurationSource corsConfigurationSource(@Value("${security.cors.frontend-origins:}") List<String> allowedOrigins) {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin(allowedOrigin);
+        corsConfiguration.setAllowedOrigins(allowedOrigins);
         corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
         corsConfiguration.addAllowedMethod(CorsConfiguration.ALL);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -22,6 +22,7 @@ public class FilmCommentMerger implements IMerger<FilmCommentEntity, CreateComme
             view.getFilmId(), filmRepo, entity::setFilm,
             () -> new ValidationException("error.film_comment.film.not_existent")
         );
+        entity.setFilmId(view.getFilmId());
         entity.setText(view.getText());
         entity.setCreatedAt(TimeUtils.getCurrentDateTimeUTC());
     }

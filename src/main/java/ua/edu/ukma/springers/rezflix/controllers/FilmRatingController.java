@@ -8,6 +8,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.api.FilmRatingControllerAp
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
 import ua.edu.ukma.springers.rezflix.services.FilmRatingService;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
+import ua.edu.ukma.springers.rezflix.services.FilmRecommendationsService;
 
 @Slf4j
 @RestController
@@ -16,6 +17,7 @@ public class FilmRatingController implements FilmRatingControllerApi {
 
     private final FilmRatingService service;
     private final SecurityUtils securityUtils;
+    private final FilmRecommendationsService recommendationService;
 
     @Override
     public ResponseEntity<FilmRatingDto> getUserRating(Integer filmId) {
@@ -28,6 +30,9 @@ public class FilmRatingController implements FilmRatingControllerApi {
         int userId = securityUtils.getCurrentUserId();
         log.info("Set user rating {} for film {}", dto, filmId);
         service.setUserRatingForFilm(userId, filmId, dto);
+
+        recommendationService.generateRecommendationsAsync(userId);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -36,6 +41,9 @@ public class FilmRatingController implements FilmRatingControllerApi {
         int userId = securityUtils.getCurrentUserId();
         log.info("Delete user rating for film {}", filmId);
         service.deleteUserRatingForFilm(userId, filmId);
+
+        recommendationService.generateRecommendationsAsync(userId);
+
         return ResponseEntity.noContent().build();
     }
 }

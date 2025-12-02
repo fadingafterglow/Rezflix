@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface FilmCommentRepository extends IRepository<FilmCommentEntity, Integer> {
 
     @Override
-    @EntityGraph(attributePaths = "author")
+    @EntityGraph(attributePaths = {"author", "authorRating"})
     Optional<FilmCommentEntity> findFetchAllById(Integer integer);
 }
