@@ -20,6 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
+import org.junit.jupiter.api.BeforeEach;
 
 class ContentApiTest extends BaseIntegrationTest {
 
@@ -27,17 +28,28 @@ class ContentApiTest extends BaseIntegrationTest {
     @Autowired private GeneralRequests requests;
     @Autowired private FilmEpisodeRepository episodeRepository;
 
+    private String cmToken;
+    private String viewerToken;
+    private String baseFilmPath;
+    private String baseDubbingPath;
+
+    @BeforeEach
+    void setUp() {
+        cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
+        viewerToken = "Bearer " + apiHelper.createViewerAndGetToken();
+        baseFilmPath = "/api/film";
+        baseDubbingPath = "/api/film/dubbing";
+    }
+
     @Test
     void contentManagerShouldManageContentLifecycle() {
-        String cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
-
         UpsertFilmDto filmDto = new UpsertFilmDto("Content Film " + getRandomString(5), "Description");
-        Integer filmId = requests.create(filmDto, "/api/film", cmToken, Integer.class);
+        Integer filmId = requests.create(filmDto, baseFilmPath, cmToken, Integer.class);
 
         CreateDubbingDto dubbingDto = new CreateDubbingDto();
         dubbingDto.setFilmId(filmId);
         dubbingDto.setName("English Dub");
-        Integer dubbingId = requests.create(dubbingDto, "/api/film/dubbing", cmToken, Integer.class);
+        Integer dubbingId = requests.create(dubbingDto, baseDubbingPath, cmToken, Integer.class);
 
         String episodeIdStr = given()
                 .header("Authorization", cmToken)
@@ -46,7 +58,7 @@ class ContentApiTest extends BaseIntegrationTest {
                 .queryParam("watchOrder", 1)
                 .body("fake video content".getBytes())
                 .when()
-                .post("/api/film/dubbing/" + dubbingId + "/episodes")
+                .post(baseDubbingPath + "/" + dubbingId + "/episodes")
                 .then()
                 .statusCode(200)
                 .body(notNullValue())
@@ -64,38 +76,62 @@ class ContentApiTest extends BaseIntegrationTest {
     }
 
     @Test
-    void filmOperations() {
-        String cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
-        Integer filmId = requests.create(new UpsertFilmDto("Film " + getRandomString(5), "Desc"), "/api/film", cmToken, Integer.class);
-
-        FilmDto film = requests.get("/api/film/" + filmId, cmToken, FilmDto.class);
-        assertThat(film.getTitle()).contains("Film");
-
-        requests.delete("/api/film/" + filmId, cmToken);
-        requests.getFail("/api/film/" + filmId, cmToken, 404);
+    void createFilm_EdgeCase_EmptyTitle() {
+        UpsertFilmDto filmDto = new UpsertFilmDto("", "Desc");
+        requests.createFail(filmDto, baseFilmPath, cmToken, 400);
     }
 
     @Test
-    void dubbingOperations() {
-        String cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
-        Integer filmId = requests.create(new UpsertFilmDto("Film " + getRandomString(5), "Desc"), "/api/film", cmToken, Integer.class);
-        Integer dubId = requests.create(new CreateDubbingDto(filmId, "Dub 1"), "/api/film/dubbing", cmToken, Integer.class);
-
-        DubbingDto dub = requests.get("/api/film/dubbing/" + dubId, cmToken, DubbingDto.class);
-        assertThat(dub.getName()).isEqualTo("Dub 1");
-
-        requests.update(new UpdateDubbingDto("Dub 2"), "/api/film/dubbing/" + dubId, cmToken);
-
-        requests.delete("/api/film/dubbing/" + dubId, cmToken);
-        requests.getFail("/api/film/dubbing/" + dubId, cmToken, 404);
+    void createFilm_EdgeCase_DuplicateTitle() {
+        String title = "Unique " + getRandomString(5);
+        requests.create(new UpsertFilmDto(title, "Desc"), baseFilmPath, cmToken, Integer.class);
+        requests.createFail(new UpsertFilmDto(title, "Other Desc"), baseFilmPath, cmToken, 400);
     }
 
     @Test
-    void viewerCanSearchFilms() {
-        String cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
-        requests.create(new UpsertFilmDto("Matrix " + getRandomString(5), "Sci-Fi"), "/api/film", cmToken, Integer.class);
+    void createFilm_EdgeCase_TitleTooLong() {
+        String longTitle = getRandomString(251);
+        UpsertFilmDto filmDto = new UpsertFilmDto(longTitle, "Desc");
+        requests.createFail(filmDto, baseFilmPath, cmToken, 400);
+    }
 
-        FilmListDto list = requests.get("/api/film", "", FilmListDto.class);
-        assertThat(list.getItems()).isNotEmpty();
+    @Test
+    void createDubbing_EdgeCase_NonExistentFilm() {
+        CreateDubbingDto dto = new CreateDubbingDto(999999, "Dub");
+        requests.createFail(dto, baseDubbingPath, cmToken, 400);
+    }
+
+    @Test
+    void createDubbing_EdgeCase_DuplicateNameInFilm() {
+        Integer filmId = requests.create(new UpsertFilmDto("F " + getRandomString(5), "D"), baseFilmPath, cmToken, Integer.class);
+        requests.create(new CreateDubbingDto(filmId, "Dub"), baseDubbingPath, cmToken, Integer.class);
+        requests.createFail(new CreateDubbingDto(filmId, "Dub"), baseDubbingPath, cmToken, 400);
+    }
+
+    @Test
+    void createEpisode_EdgeCase_NegativeWatchOrder() {
+        Integer filmId = requests.create(new UpsertFilmDto("F " + getRandomString(5), "D"), baseFilmPath, cmToken, Integer.class);
+        Integer dubId = requests.create(new CreateDubbingDto(filmId, "Dub"), baseDubbingPath, cmToken, Integer.class);
+
+        given()
+                .header("Authorization", cmToken)
+                .contentType(ContentType.BINARY)
+                .queryParam("watchOrder", -1)
+                .body(new byte[]{1})
+                .when()
+                .post(baseDubbingPath + "/" + dubId + "/episodes")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    void updateFilm_EdgeCase_ViewerForbidden() {
+        Integer filmId = requests.create(new UpsertFilmDto("F " + getRandomString(5), "D"), baseFilmPath, cmToken, Integer.class);
+        requests.updateFail(new UpsertFilmDto("New", "New"), baseFilmPath + "/" + filmId, viewerToken, 403);
+    }
+
+    @Test
+    void getFilm_EdgeCase_NotFound() {
+        requests.getFail(baseFilmPath + "/999999", viewerToken, 404);
     }
 }

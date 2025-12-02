@@ -69,6 +69,28 @@ class FilmRatingServiceTest extends BaseServiceTest<FilmRatingService, FilmRatin
     }
 
     @Test
+    @DisplayName("Should create new rating if it does not exist")
+    void setUserRatingForFilm_Create() {
+        when(repository.existsById(ratingId)).thenReturn(false);
+        when(repository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        service.setUserRatingForFilm(USER_ID, FILM_ID, ratingDto);
+
+        verify(merger).mergeForCreate(any(FilmRatingEntity.class), eq(ratingDto));
+        verify(validator).validForCreate(any(FilmRatingEntity.class));
+        verify(repository).save(any(FilmRatingEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should return empty map when user is anonymous")
+    void getCurrentUserRatingForFilms_Anonymous() {
+        when(securityUtils.getCurrentUserId()).thenReturn(null);
+        Map<Integer, FilmRatingDto> result = service.getCurrentUserRatingForFilms(List.of(1));
+        assertTrue(result.isEmpty());
+        verify(filmRatingRepository, never()).findByUserIdAndFilmIdIn(anyInt(), any());
+    }
+
+    @Test
     @DisplayName("Should delete rating and evict cache")
     void deleteUserRatingForFilm() {
         when(repository.findById(ratingId)).thenReturn(Optional.of(ratingEntity));

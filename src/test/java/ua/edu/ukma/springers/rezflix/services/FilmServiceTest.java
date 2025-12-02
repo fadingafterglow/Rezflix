@@ -4,15 +4,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmListDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmRatingDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
+import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
+import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
 import ua.edu.ukma.springers.rezflix.mappers.FilmMapper;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -72,5 +78,29 @@ class FilmServiceTest extends BaseServiceTest<FilmService, FilmEntity, UpsertFil
     @DisplayName("Should return correct cache name")
     void getCacheName() {
         assertEquals("film", service.getCacheName());
+    }
+
+    @Test
+    @DisplayName("Should propagate ValidationException when creating duplicate film")
+    void create_ShouldThrow_WhenValidatorFails() {
+        UpsertFilmDto dto = new UpsertFilmDto();
+        doThrow(new ValidationException("duplicate")).when(validator).validForCreate(any());
+
+        assertThrows(ValidationException.class, () -> service.create(dto));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw NotFoundException when getting non-existent film")
+    void getResponseById_ShouldThrow_WhenNotFound() {
+        when(repository.findFetchAllById(999)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> service.getResponseById(999));
+    }
+
+    @Test
+    @DisplayName("Should throw NotFoundException when deleting non-existent film")
+    void delete_ShouldThrow_WhenNotFound() {
+        when(repository.findById(999)).thenReturn(Optional.empty());
+        assertThrows(NotFoundException.class, () -> service.delete(999));
     }
 }

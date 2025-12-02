@@ -4,16 +4,27 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.CurrentUserInfoDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpdateUserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserCriteriaDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserListDto;
+import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserRoleDto;
 import ua.edu.ukma.springers.rezflix.criteria.UserCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
+import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
+import ua.edu.ukma.springers.rezflix.exceptions.ValidationException;
 import ua.edu.ukma.springers.rezflix.mappers.EnumsMapper;
 import ua.edu.ukma.springers.rezflix.mappers.UserMapper;
 import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -100,5 +111,31 @@ class UserServiceTest extends BaseServiceTest<UserService, UserEntity, CreateUse
         assertEquals(roleDto, result.getRole());
         assertNull(result.getInfo());
         verify(securityUtils, never()).getCurrentUser();
+    }
+
+    @Test
+    @DisplayName("Should throw ValidationException when validator fails during creation")
+    void create_ShouldThrow_WhenValidatorFails() {
+        CreateUserDto dto = new CreateUserDto();
+        doThrow(new ValidationException("invalid")).when(validator).validForCreate(any());
+
+        assertThrows(ValidationException.class, () -> service.create(dto));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should throw NotFoundException when updating non-existent user")
+    void update_ShouldThrow_WhenUserNotFound() {
+        UpdateUserDto dto = new UpdateUserDto();
+        when(repository.findById(999)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> service.update(999, dto));
+        verify(merger, never()).mergeForUpdate(any(), any());
+    }
+
+    @Test
+    @DisplayName("Should throw NullPointerException when create DTO is null")
+    void create_ShouldThrow_WhenDtoIsNull() {
+        assertThrows(NullPointerException.class, () -> service.create(null));
     }
 }

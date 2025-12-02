@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.api_tests;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
@@ -10,15 +11,54 @@ class SystemApiTest extends BaseIntegrationTest {
     @Autowired private ApiTestHelper apiHelper;
     @Autowired private GeneralRequests requests;
 
-    @Test
-    void superAdminCanClearCache() {
-        String adminToken = apiHelper.getSuperAdminToken();
-        requests.delete("/api/cache/film", adminToken);
+    private String adminToken;
+    private String baseCachePath;
+
+    @BeforeEach
+    void setUp() {
+        adminToken = apiHelper.getSuperAdminToken();
+        baseCachePath = "/api/cache";
     }
 
     @Test
-    void regularUserCannotClearCache() {
+    void superAdminCanClearCache() {
+        requests.delete(baseCachePath + "/film", adminToken);
+    }
+
+    @Test
+    void clearCache_EdgeCase_RegularUserForbidden() {
         String userToken = "Bearer " + apiHelper.createViewerAndGetToken();
-        requests.deleteFail("/api/cache/film", userToken, 403);
+        requests.deleteFail(baseCachePath + "/film", userToken, 403);
+    }
+
+    @Test
+    void clearCache_EdgeCase_ContentManagerForbidden() {
+        String cmToken = "Bearer " + apiHelper.createContentManagerAndGetToken();
+        requests.deleteFail(baseCachePath + "/film", cmToken, 403);
+    }
+
+    @Test
+    void clearCache_EdgeCase_AnonymousUnauthorized() {
+        requests.deleteFail(baseCachePath + "/film", "", 401);
+    }
+
+    @Test
+    void clearCache_EdgeCase_NonExistentCacheName() {
+        requests.deleteFail(baseCachePath + "/non_existent_cache", adminToken, 404);
+    }
+
+    @Test
+    void clearCache_EdgeCase_EmptyCacheName() {
+        requests.deleteFail(baseCachePath + "/ ", adminToken, 404);
+    }
+
+    @Test
+    void clearCache_EdgeCase_SpecialCharactersInName() {
+        requests.deleteFail(baseCachePath + "/$#@!", adminToken, 404);
+    }
+
+    @Test
+    void clearCache_EdgeCase_MethodNotAllowed() {
+        requests.getFail(baseCachePath + "/film", adminToken, 405);
     }
 }
