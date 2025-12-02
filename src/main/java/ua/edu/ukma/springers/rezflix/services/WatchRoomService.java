@@ -3,6 +3,7 @@ package ua.edu.ukma.springers.rezflix.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateWatchRoomDto;
+import ua.edu.ukma.springers.rezflix.controllers.websocket.model.WatchRoomDto;
 import ua.edu.ukma.springers.rezflix.controllers.websocket.model.WatchRoomStateDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.WatchRoomEntity;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
@@ -22,7 +23,7 @@ public class WatchRoomService {
     private final WatchRoomValidator validator;
     private final WatchRoomMapper mapper;
 
-    public WatchRoomStateDto getWatchRoomState(UUID roomId) {
+    public WatchRoomDto getWatchRoomInfo(UUID roomId) {
         return mapper.toResponse(getOrThrowNotFound(roomId));
     }
 
@@ -36,7 +37,7 @@ public class WatchRoomService {
     public WatchRoomStateDto syncWatchRoomState(UUID roomId, WatchRoomStateDto watchRoomStateDto) {
         WatchRoomEntity entity = getOrThrowNotFound(roomId);
         merger.mergeForUpdate(entity, watchRoomStateDto);
-        return mapper.toResponse(repository.save(entity));
+        return mapper.toShortResponse(repository.save(entity));
     }
 
     private WatchRoomEntity getOrThrowNotFound(UUID roomId) {

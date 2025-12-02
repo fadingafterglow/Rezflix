@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.api.WatchRoomControllerApi;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateWatchRoomDto;
 import ua.edu.ukma.springers.rezflix.controllers.websocket.model.ChatMessageDto;
+import ua.edu.ukma.springers.rezflix.controllers.websocket.model.WatchRoomDto;
 import ua.edu.ukma.springers.rezflix.controllers.websocket.model.WatchRoomStateDto;
 import ua.edu.ukma.springers.rezflix.security.WatchRoomAuthentication;
 import ua.edu.ukma.springers.rezflix.services.WatchRoomService;
@@ -33,8 +34,8 @@ public class WatchRoomController implements WatchRoomControllerApi {
     }
 
     @SubscribeMapping("/watch-room/{roomId}/init")
-    public WatchRoomStateDto getInitSate(@DestinationVariable UUID roomId) {
-        return service.getWatchRoomState(roomId);
+    public WatchRoomDto getRoomInfo(@DestinationVariable UUID roomId) {
+        return service.getWatchRoomInfo(roomId);
     }
 
     @MessageMapping("/watch-room/{roomId}/sync")
