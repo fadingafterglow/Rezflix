@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import ua.edu.ukma.criteria.core.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
 import ua.edu.ukma.springers.rezflix.mergers.IMerger;
@@ -20,6 +21,7 @@ public abstract class BaseServiceTest<S extends BaseCRUDService<E, CV, UV, I>, E
     @Mock protected IMerger<E, CV, UV> merger;
     @Mock protected CacheManager cacheManager;
     @Mock protected Cache cache;
+    @Mock protected ApplicationEventPublisher eventPublisher;
     protected S service;
 
     @BeforeEach
@@ -30,6 +32,7 @@ public abstract class BaseServiceTest<S extends BaseCRUDService<E, CV, UV, I>, E
         service.setValidator(validator);
         service.setMerger(merger);
         service.setCacheManager(cacheManager);
+        service.setEventPublisher(eventPublisher);
     }
 
     protected abstract S createService();

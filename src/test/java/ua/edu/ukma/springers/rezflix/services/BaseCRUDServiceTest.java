@@ -7,9 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationEventPublisher;
 import ua.edu.ukma.criteria.core.Criteria;
 import ua.edu.ukma.criteria.core.CriteriaRepository;
 import ua.edu.ukma.springers.rezflix.domain.interfaces.IGettableById;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.exceptions.NotFoundException;
 import ua.edu.ukma.springers.rezflix.mergers.IMerger;
 import ua.edu.ukma.springers.rezflix.repositories.IRepository;
@@ -33,6 +35,7 @@ class BaseCRUDServiceTest {
     @Mock IMerger<TestEntity, TestDto, TestDto> merger;
     @Mock CacheManager cacheManager;
     @Mock Cache cache;
+    @Mock ApplicationEventPublisher eventPublisher;
 
     private static final int EXISTING_ID = 1;
     private static final int MISSING_ID = 999;
@@ -48,6 +51,8 @@ class BaseCRUDServiceTest {
         service.setValidator(validator);
         service.setMerger(merger);
         service.setCacheManager(cacheManager);
+        service.setEventPublisher(eventPublisher);
+
         existingEntity = new TestEntity(EXISTING_ID, "test");
         lenient().when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(existingEntity));
         lenient().when(repository.findFetchAllById(EXISTING_ID)).thenReturn(Optional.of(existingEntity));
@@ -146,6 +151,7 @@ class BaseCRUDServiceTest {
         when(repository.findById(EXISTING_ID)).thenReturn(Optional.of(existingEntity));
         service.delete(EXISTING_ID);
         verify(validator).validForDelete(existingEntity);
+        verify(eventPublisher).publishEvent(any(DeleteEntityEvent.class));
         verify(repository).delete(existingEntity);
         verify(cache).evict(EXISTING_ID);
     }
