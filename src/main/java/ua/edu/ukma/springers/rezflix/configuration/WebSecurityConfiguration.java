@@ -103,6 +103,7 @@ public class WebSecurityConfiguration {
                      .requestMatchers("/api/file", "/api/file/*").authenticated()
                      // watch-room-api
                      .requestMatchers(POST, "/api/watch-room").hasAuthority(VIEWER.name())
+                     .requestMatchers("/watch-room-ws").permitAll()
                      // video resources
                      .requestMatchers(GET, "/video/**").permitAll()
                      // deny other requests
