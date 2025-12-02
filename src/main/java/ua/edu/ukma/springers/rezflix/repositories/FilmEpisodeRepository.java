@@ -19,4 +19,6 @@ public interface FilmEpisodeRepository extends IRepository<FilmEpisodeEntity, UU
     void updateEpisodeStatus(UUID episodeId, FilmEpisodeStatus status);
 
     List<FilmEpisodeEntity> findAllByFilmDubbingId(int filmDubbingId);
+
+    boolean existsByIdAndStatus(UUID episodeId, FilmEpisodeStatus status);
 }

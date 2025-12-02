@@ -32,6 +32,19 @@ spring:
                 order_inserts: true
                 order_updates: true
 
+    data:
+        redis:
+            host: localhost
+            port: 6379
+            password: root
+            database: 0
+            timeout: 2s
+            lettuce:
+                pool:
+                    max-active: 16
+                    max-idle: 8
+                    min-idle: 4
+
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
@@ -82,6 +95,9 @@ rendering:
     timeout: 3H
     repair-interval: 30M
     max-attempts: 3
+
+watch-room:
+    ttl: 30M
 
 springdoc:
     swagger-ui:

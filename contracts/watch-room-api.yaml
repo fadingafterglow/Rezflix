@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  description: Watch Room Service
+  version: '1.0'
+  title: Watch Room Service
+
+tags:
+  - name: watch-room-controller
+    description: Watch Room Controller
+
+paths:
+  /api/watch-room:
+    post:
+      operationId: createWatchRoom
+      tags:
+        - watch-room-controller
+      summary: Create new watch room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWatchRoom'
+      responses:
+        200:
+          description: Id of the created watch room
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        400:
+          $ref: 'common-types.yaml#/components/responses/BadRequest'
+        401:
+          $ref: 'common-types.yaml#/components/responses/Unauthorized'
+        403:
+          $ref: 'common-types.yaml#/components/responses/Forbidden'
+        500:
+          $ref: 'common-types.yaml#/components/responses/InternalServerError'
+
+components:
+  schemas:
+    CreateWatchRoom:
+      type: object
+      properties:
+        password:
+          type: string
+        episodeId:
+          type: string
+          format: uuid
+      required:
+        - episodeId

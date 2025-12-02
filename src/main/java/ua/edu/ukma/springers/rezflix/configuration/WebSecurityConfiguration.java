@@ -9,17 +9,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -38,7 +41,6 @@ import static org.springframework.http.HttpMethod.*;
 import static ua.edu.ukma.springers.rezflix.domain.enums.UserRole.*;
 
 @Configuration
-@EnableMethodSecurity
 @EnableConfigurationProperties({JWTTokenProperties.class, SuperAdminProperties.class})
 public class WebSecurityConfiguration {
 
@@ -98,11 +100,29 @@ public class WebSecurityConfiguration {
                      // file-api
                      .requestMatchers(GET, "/api/file", "/api/file/*").permitAll()
                      .requestMatchers("/api/file", "/api/file/*").authenticated()
+                     // watch-room-api
+                     .requestMatchers(POST, "/api/watch-room").hasAuthority(VIEWER.name())
                      // video resources
                      .requestMatchers(GET, "/video/**").permitAll()
                      // deny other requests
                      .requestMatchers("/**").denyAll()
                 )
+                .build();
+    }
+
+    @Bean
+    @SuppressWarnings("java:S1452")
+    public AuthorizationManager<Message<?>> messageAuthorizationManager() {
+        MessageMatcherDelegatingAuthorizationManager.Builder builder = MessageMatcherDelegatingAuthorizationManager.builder();
+        var isWatchRoomHost = new IsWatchRoomHost();
+        var isWatchRoomMember = new IsWatchRoomMember();
+        return builder
+                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).permitAll()
+                .simpSubscribeDestMatchers("/rezflix/watch-room/{roomId}/init").access(isWatchRoomMember)
+                .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/sync").access(isWatchRoomHost)
+                .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/chat").access(isWatchRoomMember)
+                .simpSubscribeDestMatchers("/topic/watch-room/{roomId}/*").access(isWatchRoomMember)
+                .anyMessage().denyAll()
                 .build();
     }
 
