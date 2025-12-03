@@ -3,7 +3,9 @@ package ua.edu.ukma.springers.rezflix.integration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CommentDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateCommentDto;
@@ -45,6 +47,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     @Autowired private FilmRatingRepository ratingRepository;
     @Autowired private FilmRecommendationsRepository recommendationRepository;
     @Autowired private FileInfoRepository fileInfoRepository;
+    @MockitoBean private ChatModel chatModel;
 
     private String viewerToken;
     private Integer filmId;
