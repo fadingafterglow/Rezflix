@@ -1,28 +1,15 @@
 package ua.edu.ukma.springers.rezflix.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.edu.ukma.springers.rezflix.configuration.WebSecurityConfiguration;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.LoginRequestDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
-import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
-import ua.edu.ukma.springers.rezflix.security.CustomUserDetailsService;
-import ua.edu.ukma.springers.rezflix.security.JWTService;
-import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 import ua.edu.ukma.springers.rezflix.utils.ApiPaths;
-import ua.edu.ukma.springers.rezflix.utils.DefaultMessageResolver;
 
 import java.util.Optional;
 
@@ -32,22 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthenticationController.class)
-@ActiveProfiles("test")
-@Import({
-    WebSecurityConfiguration.class, CustomUserDetailsService.class, JWTService.class, SecurityUtils.class,
-    DefaultMessageResolver.class
-})
-class AuthenticationControllerTest {
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+class AuthenticationControllerTest extends BaseControllerTest {
 
     @Value("${security.super-admin.login}")
     private String superAdminLogin;

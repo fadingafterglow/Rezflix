@@ -1,28 +1,16 @@
 package ua.edu.ukma.springers.rezflix.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.edu.ukma.springers.rezflix.configuration.WebSecurityConfiguration;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
-import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
-import ua.edu.ukma.springers.rezflix.security.CustomUserDetailsService;
-import ua.edu.ukma.springers.rezflix.security.JWTService;
-import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 import ua.edu.ukma.springers.rezflix.services.FilmRecommendationsService;
 import ua.edu.ukma.springers.rezflix.utils.ApiPaths;
-import ua.edu.ukma.springers.rezflix.utils.DefaultMessageResolver;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,27 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(FilmRecommendationsController.class)
-@ActiveProfiles("test")
-@Import({
-        WebSecurityConfiguration.class,
-        CustomUserDetailsService.class,
-        JWTService.class,
-        SecurityUtils.class,
-        DefaultMessageResolver.class
-})
-class FilmRecommendationsControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private JWTService jwtService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+class FilmRecommendationsControllerTest extends BaseControllerTest {
 
     @MockitoBean
     private FilmRecommendationsService recommendationService;
-    @MockitoBean
-    private UserRepository userRepository;
 
     private String viewerToken;
     private final int VIEWER_ID = 10;

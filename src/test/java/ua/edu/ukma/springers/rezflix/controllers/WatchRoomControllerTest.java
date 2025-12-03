@@ -1,29 +1,17 @@
 package ua.edu.ukma.springers.rezflix.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import ua.edu.ukma.springers.rezflix.configuration.WebSecurityConfiguration;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateWatchRoomDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserRole;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
-import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
-import ua.edu.ukma.springers.rezflix.security.CustomUserDetailsService;
-import ua.edu.ukma.springers.rezflix.security.JWTService;
-import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 import ua.edu.ukma.springers.rezflix.services.WatchRoomService;
 import ua.edu.ukma.springers.rezflix.utils.ApiPaths;
-import ua.edu.ukma.springers.rezflix.utils.DefaultMessageResolver;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,29 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WatchRoomController.class)
-@ActiveProfiles("test")
-@Import({
-        WebSecurityConfiguration.class,
-        CustomUserDetailsService.class,
-        JWTService.class,
-        SecurityUtils.class,
-        DefaultMessageResolver.class
-})
-class WatchRoomControllerTest {
-
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private JWTService jwtService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+class WatchRoomControllerTest extends BaseControllerTest {
 
     @MockitoBean
     private WatchRoomService watchRoomService;
-    @MockitoBean
-    private UserRepository userRepository;
 
     private String viewerToken;
 
