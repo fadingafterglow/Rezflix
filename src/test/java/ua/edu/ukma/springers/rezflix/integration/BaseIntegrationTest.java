@@ -41,6 +41,7 @@ public abstract class BaseIntegrationTest {
         registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
 
         registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+        registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379));
     }
 
     @LocalServerPort
