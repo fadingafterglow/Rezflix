@@ -63,7 +63,7 @@ class ContentApiIntegrationTest extends BaseIntegrationTest {
         UUID episodeId = UUID.fromString(episodeIdStr);
         assertThat(episodeRepository.findById(episodeId)).isPresent();
 
-        FilmEpisodeEntity episode = episodeRepository.findById(episodeId).get();
+        FilmEpisodeEntity episode = episodeRepository.findById(episodeId).orElseThrow();
         assertThat(episode.getStatus()).isEqualTo(FilmEpisodeStatus.BEING_RENDERED);
 
         requests.update(new UpdateEpisodeDto(2, "Renamed"), "/api/film/episode/" + episodeId, cmToken);
@@ -72,12 +72,14 @@ class ContentApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createFilm_EdgeCase_EmptyTitle() {
         UpsertFilmDto filmDto = new UpsertFilmDto("", "Desc");
         requests.createFail(filmDto, baseFilmPath, cmToken, 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createFilm_EdgeCase_DuplicateTitle() {
         String title = "Unique " + getRandomString(5);
         requests.create(new UpsertFilmDto(title, "Desc"), baseFilmPath, cmToken, Integer.class);
@@ -85,6 +87,7 @@ class ContentApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createFilm_EdgeCase_TitleTooLong() {
         String longTitle = getRandomString(251);
         UpsertFilmDto filmDto = new UpsertFilmDto(longTitle, "Desc");
@@ -92,12 +95,14 @@ class ContentApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createDubbing_EdgeCase_NonExistentFilm() {
         CreateDubbingDto dto = new CreateDubbingDto(999999, "Dub");
         requests.createFail(dto, baseDubbingPath, cmToken, 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createDubbing_EdgeCase_DuplicateNameInFilm() {
         Integer filmId = requests.create(new UpsertFilmDto("F " + getRandomString(5), "D"), baseFilmPath, cmToken, Integer.class);
         requests.create(new CreateDubbingDto(filmId, "Dub"), baseDubbingPath, cmToken, Integer.class);
@@ -121,12 +126,14 @@ class ContentApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void updateFilm_EdgeCase_ViewerForbidden() {
         Integer filmId = requests.create(new UpsertFilmDto("F " + getRandomString(5), "D"), baseFilmPath, cmToken, Integer.class);
         requests.updateFail(new UpsertFilmDto("New", "New"), baseFilmPath + "/" + filmId, viewerToken, 403);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void getFilm_EdgeCase_NotFound() {
         requests.getFail(baseFilmPath + "/999999", viewerToken, 404);
     }

@@ -15,6 +15,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserTypeDto;
 import ua.edu.ukma.springers.rezflix.utils.GeneralRequests;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UserRoleDto;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -64,23 +65,27 @@ class AuthAndUserApiIntegrationTest extends BaseIntegrationTest {
 
         String newToken = requests.getAuthToken(createDto.getUsername(), "pass");
         CurrentUserInfoDto current = requests.get(baseUserPath + "/current", "Bearer " + newToken, CurrentUserInfoDto.class);
+        assertNotNull(current.getInfo());
         assertThat(current.getInfo().getId()).isEqualTo(newId);
         assertThat(current.getRole()).isEqualTo(UserRoleDto.CONTENT_MANAGER);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void registerUser_EdgeCase_EmptyUsername() {
         RegisterUserDto dto = new RegisterUserDto("", "pass");
         requests.createFail(dto, baseUserPath + "/register", "", 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void registerUser_EdgeCase_NullPassword() {
         RegisterUserDto dto = new RegisterUserDto("validUser", null);
         requests.createFail(dto, baseUserPath + "/register", "", 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void registerUser_EdgeCase_DuplicateUsername() {
         String username = "dup_" + getRandomString(5);
         RegisterUserDto dto = new RegisterUserDto(username, "pass");
@@ -89,6 +94,7 @@ class AuthAndUserApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void registerUser_EdgeCase_UsernameTooLong() {
         String longUsername = getRandomString(65);
         RegisterUserDto dto = new RegisterUserDto(longUsername, "pass");
@@ -96,6 +102,7 @@ class AuthAndUserApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void login_EdgeCase_WrongPassword() {
         String username = "log_" + getRandomString(5);
         requests.create(new RegisterUserDto(username, "correct"), baseUserPath + "/register", "", Integer.class);
@@ -105,18 +112,21 @@ class AuthAndUserApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void login_EdgeCase_NonExistentUser() {
         LoginRequestDto loginDto = new LoginRequestDto("ghost_user", "pass");
         requests.createFail(loginDto, baseAuthPath + "/login", "", 401);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void refresh_EdgeCase_InvalidToken() {
         RefreshRequestDto dto = new RefreshRequestDto("invalid.jwt.token");
         requests.createFail(dto, baseAuthPath + "/refresh", "", 401);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void createUser_EdgeCase_ViewerCannotCreateUser() {
         String viewerToken = "Bearer " + apiHelper.createViewerAndGetToken();
         CreateUserDto dto = new CreateUserDto(UserTypeDto.VIEWER, "new_" + getRandomString(5), "pass");

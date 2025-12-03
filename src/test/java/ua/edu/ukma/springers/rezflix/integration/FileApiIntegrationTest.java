@@ -8,6 +8,7 @@ import ua.edu.ukma.springers.rezflix.controllers.rest.model.EntityFilesInfoDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FileTypeDto;
 import ua.edu.ukma.springers.rezflix.utils.GeneralRequests;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeEach;
 
 class FileApiIntegrationTest extends BaseIntegrationTest {
@@ -30,6 +33,7 @@ class FileApiIntegrationTest extends BaseIntegrationTest {
     void setUp() {
         token = "Bearer " + apiHelper.createViewerAndGetToken();
         CurrentUserInfoDto user = requests.get("/api/user/current", token, CurrentUserInfoDto.class);
+        assertNotNull(user.getInfo());
         userId = user.getInfo().getId();
         baseFilePath = "/api/file";
     }
@@ -51,7 +55,7 @@ class FileApiIntegrationTest extends BaseIntegrationTest {
 
         UUID fileId = UUID.fromString(fileIdStr);
 
-        List<EntityFilesInfoDto> info = requests.get(baseFilePath, "", Map.of("fileType", "USER_AVATAR", "entitiesIds", userId), List.class);
+        List<EntityFilesInfoDto> info = Arrays.asList(requests.get(baseFilePath, "", Map.of("fileType", "USER_AVATAR", "entitiesIds", userId), EntityFilesInfoDto[].class));
         assertThat(info).isNotNull();
 
         byte[] downloaded = given()
@@ -111,11 +115,13 @@ class FileApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void delete_EdgeCase_NonExistentFile() {
         requests.deleteFail(baseFilePath + "/" + UUID.randomUUID(), token, 404);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void delete_EdgeCase_NotOwnerForbidden() {
         String otherUserToken = "Bearer " + apiHelper.createViewerAndGetToken();
 
@@ -147,6 +153,7 @@ class FileApiIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void getFile_EdgeCase_InvalidUUIDFormat() {
         requests.getFail(baseFilePath + "/invalid-uuid-string", token, 400);
     }

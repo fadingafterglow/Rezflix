@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
 
 
@@ -94,16 +95,19 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void rating_EdgeCase_InvalidScoreTooLow() {
         requests.updateFail(new FilmRatingDto(0), baseFilmPath + "/" + filmId + "/rating", viewerToken, 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void rating_EdgeCase_InvalidScoreTooHigh() {
         requests.updateFail(new FilmRatingDto(6), baseFilmPath + "/" + filmId + "/rating", viewerToken, 400);
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void rating_EdgeCase_NonExistentFilm() {
         requests.updateFail(new FilmRatingDto(5), baseFilmPath + "/999999/rating", viewerToken, 400);
     }
@@ -125,6 +129,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void comment_EdgeCase_EmptyText() {
         CreateCommentDto dto = new CreateCommentDto();
         dto.setFilmId(filmId);
@@ -133,6 +138,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void comment_EdgeCase_TextTooLong() {
         CreateCommentDto dto = new CreateCommentDto();
         dto.setFilmId(filmId);
@@ -141,6 +147,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void comment_EdgeCase_NonExistentFilm() {
         CreateCommentDto dto = new CreateCommentDto();
         dto.setFilmId(999999);
@@ -149,6 +156,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void comment_EdgeCase_UpdateOtherUserComment() {
         CreateCommentDto dto = new CreateCommentDto();
         dto.setFilmId(filmId);
@@ -170,6 +178,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
         assertThat(fetched.getFilms()).hasSize(1);
 
         CurrentUserInfoDto currentUser = requests.get("/api/user/current", viewerToken, CurrentUserInfoDto.class);
+        assertNotNull(currentUser.getInfo());
         FilmCollectionListDto list = requests.get(baseCollectionPath, viewerToken, Map.of("ownerId", currentUser.getInfo().getId()), FilmCollectionListDto.class);
         assertThat(list.getItems()).isNotEmpty();
 
@@ -178,6 +187,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void collection_EdgeCase_EmptyName() {
         UpsertFilmCollectionDto dto = new UpsertFilmCollectionDto();
         dto.setName("");
@@ -186,6 +196,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void collection_EdgeCase_NonExistentFilmId() {
         UpsertFilmCollectionDto dto = new UpsertFilmCollectionDto();
         dto.setName("List");
@@ -194,6 +205,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void collection_EdgeCase_UpdateOtherUserCollection() {
         UpsertFilmCollectionDto dto = new UpsertFilmCollectionDto();
         dto.setName("My List");
@@ -205,6 +217,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void collection_EdgeCase_NonExistentCollection() {
         requests.getFail(baseCollectionPath + "/999999", viewerToken, 404);
     }
@@ -223,6 +236,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void watchRoom_EdgeCase_EpisodeNotRendered() {
         FilmEpisodeEntity episode = createRenderedEpisode();
         episode.setStatus(FilmEpisodeStatus.BEING_RENDERED);
@@ -234,6 +248,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void watchRoom_EdgeCase_NonExistentEpisode() {
         CreateWatchRoomDto roomDto = new CreateWatchRoomDto();
         roomDto.setEpisodeId(UUID.randomUUID());
@@ -241,6 +256,7 @@ class UserFunctionsIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void watchRoom_EdgeCase_NullEpisodeId() {
         CreateWatchRoomDto roomDto = new CreateWatchRoomDto();
         requests.createFail(roomDto, baseWatchRoomPath, viewerToken, 400);
