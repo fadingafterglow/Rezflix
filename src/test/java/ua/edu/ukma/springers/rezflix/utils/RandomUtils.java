@@ -36,15 +36,15 @@ public class RandomUtils {
     }
 
     public static int getRandomInt(int min, int max) {
-        return RANDOM.nextInt(max - min + 1) + min;
+        return RANDOM.nextInt(min, max);
     }
 
     public static long getRandomLong(long min, long max) {
-        return min + (long) (RANDOM.nextDouble() * (max - min));
+        return RANDOM.nextLong(min, max);
     }
 
     public static double getRandomDouble(double min, double max) {
-        return min + (max - min) * RANDOM.nextDouble();
+        return RANDOM.nextDouble(min ,max);
     }
 
     public static boolean getRandomBoolean() {
