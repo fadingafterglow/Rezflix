@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.user;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
@@ -20,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.*;
 
-class UserIntegrationTest extends BaseIntegrationTest {
+class UserApiIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRequests userRequests;

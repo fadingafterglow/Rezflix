@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException; // Added import
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.ErrorResponseDto;
 import ua.edu.ukma.springers.rezflix.exceptions.*;
@@ -55,7 +56,8 @@ public class ExceptionController {
 
     @ExceptionHandler({
             HttpMessageConversionException.class,
-            MissingRequestValueException.class
+            MissingRequestValueException.class,
+            MethodArgumentTypeMismatchException.class
     })
     public ResponseEntity<ErrorResponseDto> badRequest() {
         return toResponseEntity(HttpStatus.BAD_REQUEST, responseOf("error.application.invalid-data"));

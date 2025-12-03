@@ -47,7 +47,8 @@ spring:
 
     cache:
         type: simple
-        
+        cache-names: film, filmRating, filmComment, filmDubbing
+
     liquibase:
         change-log: db/changelog/db.changelog-master.xml
 
