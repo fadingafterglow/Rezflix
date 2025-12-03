@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import io.restassured.RestAssured;
 import org.springframework.boot.test.context.SpringBootTest;

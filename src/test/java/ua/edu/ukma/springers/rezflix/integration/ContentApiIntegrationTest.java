@@ -3,7 +3,6 @@ package ua.edu.ukma.springers.rezflix.integration;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateDubbingDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpdateEpisodeDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmDto;

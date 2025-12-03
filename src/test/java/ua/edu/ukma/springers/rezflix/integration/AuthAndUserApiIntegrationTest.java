@@ -2,7 +2,6 @@ package ua.edu.ukma.springers.rezflix.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CurrentUserInfoDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.LoginRequestDto;

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CommentDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateCommentDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateDubbingDto;
