@@ -119,7 +119,7 @@ public class WebSecurityConfiguration {
         var isWatchRoomHost = new IsWatchRoomHost();
         var isWatchRoomMember = new IsWatchRoomMember();
         return builder
-                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).permitAll()
+                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.UNSUBSCRIBE).permitAll()
                 .simpSubscribeDestMatchers("/rezflix/watch-room/{roomId}/init").access(isWatchRoomMember)
                 .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/sync").access(isWatchRoomHost)
                 .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/chat").access(isWatchRoomMember)
