@@ -1,13 +1,17 @@
 package ua.edu.ukma.springers.rezflix.services;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.criteria.FilmCommentCriteria;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmCommentEntity;
+import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.mappers.FilmCommentMapper;
+import ua.edu.ukma.springers.rezflix.repositories.FilmCommentRepository;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
@@ -48,5 +52,10 @@ public class FilmCommentService extends BaseCRUDService<FilmCommentEntity, Creat
     @Override
     public String getCacheName() {
         return CACHE_NAME;
+    }
+
+    @EventListener
+    public void clearComments(DeleteEntityEvent<? extends UserEntity, Integer> event) {
+        ((FilmCommentRepository) repository).deleteAllByAuthorId(event.getId());
     }
 }

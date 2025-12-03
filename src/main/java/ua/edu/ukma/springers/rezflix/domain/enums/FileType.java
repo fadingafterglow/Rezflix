@@ -9,7 +9,7 @@ import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 @RequiredArgsConstructor
 public enum FileType {
     USER_AVATAR(true, UserEntity.class),
-    FILM_POSTER(false, FilmEntity.class);
+    FILM_POSTER(true, FilmEntity.class);
 
     private final boolean isUnique;
     private final Class<?> entityClass;

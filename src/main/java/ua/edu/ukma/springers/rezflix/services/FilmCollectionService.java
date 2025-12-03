@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,10 @@ import ua.edu.ukma.springers.rezflix.domain.entities.FilmCollectionEntity;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.UpsertFilmCollectionDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCollectionListDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
+import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
+import ua.edu.ukma.springers.rezflix.events.DeleteEntityEvent;
 import ua.edu.ukma.springers.rezflix.mappers.FilmCollectionMapper;
+import ua.edu.ukma.springers.rezflix.repositories.FilmCollectionRepository;
 import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 
 import java.util.List;
@@ -47,5 +51,10 @@ public class FilmCollectionService extends BaseCRUDService<FilmCollectionEntity,
     @Override
     protected void postCreate(@NonNull FilmCollectionEntity entity, @NonNull UpsertFilmCollectionDto view) {
         entity.setOwner(securityUtils.getCurrentUser());
+    }
+
+    @EventListener
+    public void clearFilmCollections(DeleteEntityEvent<? extends UserEntity, Integer> event) {
+        ((FilmCollectionRepository) repository).deleteAllByOwnerId(event.getId());
     }
 }

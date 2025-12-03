@@ -74,6 +74,7 @@ public class WebSecurityConfiguration {
                      .requestMatchers(POST, LOGIN_URL, REFRESH_URL).permitAll()
                      // user-api
                      .requestMatchers(POST, "/api/user").hasAuthority(SUPER_ADMIN.name())
+                     .requestMatchers(DELETE, "/api/user/*").hasAuthority(SUPER_ADMIN.name())
                      .requestMatchers("/api/user", "/api/user/*").permitAll()
                      // film-rating-api
                      .requestMatchers("/api/film/*/rating").hasAuthority(VIEWER.name())
@@ -102,6 +103,7 @@ public class WebSecurityConfiguration {
                      .requestMatchers("/api/file", "/api/file/*").authenticated()
                      // watch-room-api
                      .requestMatchers(POST, "/api/watch-room").hasAuthority(VIEWER.name())
+                     .requestMatchers("/watch-room-ws").permitAll()
                      // video resources
                      .requestMatchers(GET, "/video/**").permitAll()
                      // deny other requests
@@ -117,7 +119,7 @@ public class WebSecurityConfiguration {
         var isWatchRoomHost = new IsWatchRoomHost();
         var isWatchRoomMember = new IsWatchRoomMember();
         return builder
-                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).permitAll()
+                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.UNSUBSCRIBE).permitAll()
                 .simpSubscribeDestMatchers("/rezflix/watch-room/{roomId}/init").access(isWatchRoomMember)
                 .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/sync").access(isWatchRoomHost)
                 .simpMessageDestMatchers("/rezflix/watch-room/{roomId}/chat").access(isWatchRoomMember)

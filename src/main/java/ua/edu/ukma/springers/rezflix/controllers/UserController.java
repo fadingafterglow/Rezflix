@@ -40,4 +40,11 @@ public class UserController implements UserControllerApi {
         log.info("Create user {} of type {}", dto.getUsername(), dto.getType());
         return ResponseEntity.ok(userService.create(dto));
     }
+
+    @Override
+    public ResponseEntity<Void> deleteUser(Integer id) {
+        log.info("Delete user {}", id);
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
