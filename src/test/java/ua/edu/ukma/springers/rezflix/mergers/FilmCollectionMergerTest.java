@@ -36,6 +36,7 @@ class FilmCollectionMergerTest {
 
     @Test
     @DisplayName("Should merge name, description and existing films")
+    @SuppressWarnings("unchecked")
     void merge_Success() {
         when(filmRepository.findAllById(any())).thenReturn(List.of(new FilmEntity(), new FilmEntity()));
         merger.mergeForCreate(entity, dto);

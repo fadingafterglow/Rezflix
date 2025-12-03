@@ -3,7 +3,6 @@ package ua.edu.ukma.springers.rezflix.services;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CreateUserDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.CurrentUserInfoDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.RegisterUserDto;
@@ -135,6 +134,7 @@ class UserServiceTest extends BaseServiceTest<UserService, UserEntity, CreateUse
 
     @Test
     @DisplayName("Should throw NullPointerException when create DTO is null")
+    @SuppressWarnings("ConstantConditions")
     void create_ShouldThrow_WhenDtoIsNull() {
         assertThrows(NullPointerException.class, () -> service.create(null));
     }

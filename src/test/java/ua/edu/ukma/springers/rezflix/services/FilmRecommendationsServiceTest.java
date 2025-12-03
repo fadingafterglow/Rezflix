@@ -11,7 +11,6 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.data.domain.Pageable;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.FilmEntity;
-import ua.edu.ukma.springers.rezflix.domain.entities.FilmRecommendationEntity;
 import ua.edu.ukma.springers.rezflix.mappers.FilmMapper;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRatingRepository;
 import ua.edu.ukma.springers.rezflix.repositories.FilmRecommendationsRepository;
@@ -51,8 +50,6 @@ class FilmRecommendationsServiceTest {
     @DisplayName("Should return stored recommendations")
     void getRecommendationsForUser() {
         FilmEntity film = new FilmEntity();
-        FilmRecommendationEntity rec = new FilmRecommendationEntity(1, 100);
-        rec.setFilm(film);
 
         when(recommendationRepository.findRecommendedFilmsByUserId(1)).thenReturn(List.of(film));
         when(filmMapper.toResponse(eq(film), any())).thenReturn(new FilmDto());

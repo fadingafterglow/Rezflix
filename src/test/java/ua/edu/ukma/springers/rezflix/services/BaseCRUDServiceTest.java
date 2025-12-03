@@ -1,5 +1,6 @@
 package ua.edu.ukma.springers.rezflix.services;
 
+import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,6 +96,7 @@ class BaseCRUDServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void getList() {
         Criteria<TestEntity, ?> criteria = mock(Criteria.class);
         List<TestEntity> list = Collections.singletonList(existingEntity);
@@ -105,6 +107,7 @@ class BaseCRUDServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void count() {
         Criteria<TestEntity, ?> criteria = mock(Criteria.class);
         when(criteriaRepository.count(any())).thenReturn(10L);
@@ -164,6 +167,7 @@ class BaseCRUDServiceTest {
         verify(cacheManager, never()).getCache(any());
     }
 
+    @Data
     static class TestEntity implements IGettableById<Integer> {
         private Integer id;
         private String data;

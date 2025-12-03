@@ -2,6 +2,7 @@ package ua.edu.ukma.springers.rezflix.validators;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,7 @@ class BaseValidatorTest {
     }
     @Test
     @DisplayName("Should throw ValidationException when violations exist")
+    @SuppressWarnings("unchecked")
     void validateData() {
         ConstraintViolation<TestEntity> violation = mock(ConstraintViolation.class);
         when(validator.validate(testEntity)).thenReturn(Set.of(violation));
@@ -76,12 +78,11 @@ class BaseValidatorTest {
         assertNotNull(localValidator.validator);
     }
     private static class BaseValidatorImpl extends BaseValidator<TestEntity> {}
+
+    @Data
     private static class TestEntity implements IGettableById<Integer> {
         private Integer id;
         private String data;
-        public TestEntity() {}
         public TestEntity(Integer id, String data) { this.id = id; this.data = data; }
-        @Override public Integer getId() { return id; }
-        @Override public void setId(Integer id) { this.id = id; }
     }
 }

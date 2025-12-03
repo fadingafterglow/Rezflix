@@ -3,7 +3,6 @@ package ua.edu.ukma.springers.rezflix.services;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ua.edu.ukma.springers.rezflix.controllers.rest.model.*;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmCriteriaDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmDto;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.FilmListDto;
