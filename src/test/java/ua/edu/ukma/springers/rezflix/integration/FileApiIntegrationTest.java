@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.api_tests;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import org.junit.jupiter.api.BeforeEach;
 
-class FileApiTest extends BaseIntegrationTest {
+class FileApiIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired private ApiTestHelper apiHelper;
+    @Autowired private IntegrationTestHelper apiHelper;
     @Autowired private GeneralRequests requests;
 
     private String token;

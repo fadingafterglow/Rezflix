@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.user;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.*;
 
-class UserIntegrationTest extends BaseIntegrationTest {
+class UserApiIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private UserRequests userRequests;

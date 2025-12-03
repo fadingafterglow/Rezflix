@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.api_tests;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
 import org.junit.jupiter.api.BeforeEach;
 
-class AuthAndUserApiTest extends BaseIntegrationTest {
+class AuthAndUserApiIntegrationTest extends BaseIntegrationTest {
 
     @Autowired private GeneralRequests requests;
-    @Autowired private ApiTestHelper apiHelper;
+    @Autowired private IntegrationTestHelper apiHelper;
 
     private String superAdminToken;
     private String baseUserPath;

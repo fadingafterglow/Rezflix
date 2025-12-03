@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.api_tests;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import ua.edu.ukma.springers.rezflix.utils.GeneralRequests;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
 
 @Component
-public class ApiTestHelper {
+public class IntegrationTestHelper {
 
     @Autowired
     private GeneralRequests requests;

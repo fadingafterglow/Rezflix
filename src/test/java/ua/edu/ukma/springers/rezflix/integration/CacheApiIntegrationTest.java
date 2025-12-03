@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.api_tests;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ua.edu.ukma.springers.rezflix.BaseIntegrationTest;
 import ua.edu.ukma.springers.rezflix.utils.GeneralRequests;
 
-class SystemApiTest extends BaseIntegrationTest {
+class CacheApiIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired private ApiTestHelper apiHelper;
+    @Autowired private IntegrationTestHelper apiHelper;
     @Autowired private GeneralRequests requests;
 
     private String adminToken;

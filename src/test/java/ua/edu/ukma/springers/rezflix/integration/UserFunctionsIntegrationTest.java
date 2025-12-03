@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.api_tests;
+package ua.edu.ukma.springers.rezflix.integration;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,9 +30,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ua.edu.ukma.springers.rezflix.utils.RandomUtils.getRandomString;
 
 
-class UserFuncTest extends BaseIntegrationTest {
+class UserFunctionsIntegrationTest extends BaseIntegrationTest {
 
-    @Autowired private ApiTestHelper apiHelper;
+    @Autowired private IntegrationTestHelper apiHelper;
     @Autowired private GeneralRequests requests;
     @Autowired private FilmEpisodeRepository episodeRepository;
     @Autowired private FilmDubbingRepository dubbingRepository;

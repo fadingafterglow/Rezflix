@@ -1,4 +1,4 @@
-package ua.edu.ukma.springers.rezflix.security;
+package ua.edu.ukma.springers.rezflix.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,11 +14,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ua.edu.ukma.springers.rezflix.configuration.WebSecurityConfiguration;
-import ua.edu.ukma.springers.rezflix.controllers.AuthenticationController;
 import ua.edu.ukma.springers.rezflix.controllers.rest.model.LoginRequestDto;
 import ua.edu.ukma.springers.rezflix.domain.entities.UserEntity;
 import ua.edu.ukma.springers.rezflix.domain.enums.UserType;
 import ua.edu.ukma.springers.rezflix.repositories.UserRepository;
+import ua.edu.ukma.springers.rezflix.security.CustomUserDetailsService;
+import ua.edu.ukma.springers.rezflix.security.JWTService;
+import ua.edu.ukma.springers.rezflix.security.SecurityUtils;
 import ua.edu.ukma.springers.rezflix.utils.ApiPaths;
 import ua.edu.ukma.springers.rezflix.utils.DefaultMessageResolver;
 
@@ -35,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     WebSecurityConfiguration.class, CustomUserDetailsService.class, JWTService.class, SecurityUtils.class,
     DefaultMessageResolver.class
 })
-class AuthenticationTest {
+class AuthenticationControllerTest {
 
     @MockitoBean
     private UserRepository userRepository;
